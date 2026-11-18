@@ -70,7 +70,7 @@
             <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות</p>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.2)</p>
         </div>
       </div>
 
@@ -120,7 +120,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs text-slate-300 mb-1 font-bold">תאריך</label>
-            <select id="sellerDaySelect" onchange="onSellerDaySelect()" class="input-dark text-sm font-bold"></select>
+            <select id="sellerDaySelect" onchange="userPickedDay=true;onSellerDaySelect()" class="input-dark text-sm font-bold"></select>
           </div>
           <div>
             <label class="block text-xs text-slate-300 mb-1 font-bold">סטטוס יום</label>
@@ -974,12 +974,16 @@
       const daySel = document.getElementById("sellerDaySelect");
       const prev = daySel.value;
       daySel.innerHTML = state.dailyRows.map((r, i) => `<option value="${i}">${r.date} — ${r.status}</option>`).join("");
-      if (prev !== "" && state.dailyRows[prev]) {
+      if (userPickedDay && prev !== "" && state.dailyRows[prev]) {
         daySel.value = prev;
       } else {
         const now = new Date();
-        const todayStr = String(now.getDate()).padStart(2, "0") + "/" + String(now.getMonth() + 1).padStart(2, "0") + "/" + now.getFullYear();
-        const todayIdx = state.dailyRows.findIndex(r => r.date === todayStr);
+        const dNum = now.getDate(), mNum = now.getMonth() + 1, yNum = now.getFullYear();
+        const dd = String(dNum).padStart(2, "0"), mm = String(mNum).padStart(2, "0");
+        const todayIdx = state.dailyRows.findIndex(r => {
+          const s = String(r.date || "").trim();
+          return s.includes(`${dd}/${mm}/${yNum}`) || s.includes(`${dd}.${mm}.${yNum}`) || s.includes(`${yNum}-${mm}-${dd}`) || s.startsWith(`${dNum}/${mNum}/`) || s.startsWith(`${dd}/${mm}`);
+        });
         if (todayIdx >= 0) daySel.value = String(todayIdx);
       }
       onSellerDaySelect();
@@ -1030,6 +1034,7 @@
 
     async 
     let pendingWhatsAppSend = false;
+    let userPickedDay = false;
 
     function openEodChecklistModal(withWhatsApp) {
       pendingWhatsAppSend = withWhatsApp;
