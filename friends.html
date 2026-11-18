@@ -54,13 +54,15 @@
     <nav class="max-w-3xl mx-auto flex overflow-x-auto no-scrollbar border-t border-[#1e3a5f] bg-[#0b192c]">
       <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-3 px-3 text-xs whitespace-nowrap">💰 הכנסות ובנק</button>
       <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">📉 הוצאות</button>
+      <button type="button" onclick="openOwnerTab('queues')" id="otab-queues" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">⏳ תורים</button>
       <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">🎓 מלגות שערי עתיד</button>
-      <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">🛠️ תקלות ומדריכים</button>
+      <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">🛠️ תקלות, משימות והתראות</button>
     </nav>
   </header>
 
   <main class="max-w-3xl mx-auto p-3 space-y-4">
 
+    <!-- 1. הכנסות ובנק -->
     <section id="osec-income" class="owner-section space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
         <div class="card p-3 text-center">
@@ -125,6 +127,7 @@
       </div>
     </section>
 
+    <!-- 2. הוצאות -->
     <section id="osec-expenses" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">📉 רישום הוצאות</h2>
@@ -147,12 +150,71 @@
       </div>
     </section>
 
+    <!-- 3. תורים וזמני המתנה (סוני וסנוקר) -->
+    <section id="osec-queues" class="owner-section hidden space-y-3">
+      <div class="grid grid-cols-3 gap-2.5">
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400">🎮 תורים לסוני</div>
+          <div id="qSonyTotal" class="text-lg font-black text-sky-400 mt-0.5">0</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400">🎱 תורים לסנוקר</div>
+          <div id="qSnookerTotal" class="text-lg font-black text-emerald-400 mt-0.5">0</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400">⏱️ ממוצע המתנה</div>
+          <div id="qAvgWait" class="text-lg font-black text-orange-400 mt-0.5">0 דק׳</div>
+        </div>
+      </div>
+
+      <div class="card p-4 space-y-3">
+        <h2 class="text-base font-black text-white">📅 סיכום תורים לפי ימים (כמה חיכו ובאיזה יום)</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-right">
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr>
+                <th class="py-2">תאריך ויום</th>
+                <th>סוני 🎮</th>
+                <th>סנוקר 🎱</th>
+                <th>ממוצע המתנה</th>
+                <th>מקסימום</th>
+              </tr>
+            </thead>
+            <tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]">
+              <tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card p-4 space-y-2">
+        <h3 class="text-sm font-black text-white">📋 פירוט כל הנרשמים בתור</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-right">
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr>
+                <th class="py-2">תאריך</th>
+                <th>תחום</th>
+                <th>שם</th>
+                <th>רישום</th>
+                <th>כניסה</th>
+                <th>המתנה</th>
+                <th>סטטוס</th>
+              </tr>
+            </thead>
+            <tbody id="qAllTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. מלגות שערי עתיד + מאגר קבוע -->
     <section id="osec-scholarships" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-black text-white">🎓 מלגות — עמותת שערי עתיד (ע״ר 580811925)</h2>
-            <p class="text-xs text-slate-400">סמן V לכל מורשה חתימה כדי לראות כמה כסף כל אחד וידא ולהפיק נספח ב׳ חתום</p>
+            <p class="text-xs text-slate-400">בחר מהמאגר הקבוע או הוסף ידנית, סמן V לכל מורשה חתימה והפק נספח ב׳ חתום</p>
           </div>
           <div class="flex items-center gap-2">
             <select id="schMonthSelect" onchange="renderScholarships()" class="input-dark px-2.5 py-1.5 text-xs font-bold">
@@ -175,11 +237,25 @@
           </div>
         </div>
 
+        <!-- מאגר אברכים קבוע לבחירה מהירה -->
+        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-black text-orange-400">📚 מאגר מקבלי מלגות קבוע (בחר את מי שמקבל החודש):</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="toggleAllDir(true)" class="text-[11px] bg-[#13253e] px-2.5 py-1 rounded-lg border border-[#26466d]">בחר הכל</button>
+              <button type="button" onclick="addSelectedFromDir()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1 rounded-lg text-xs">+ הוסף מסומנים לחודש</button>
+            </div>
+          </div>
+          <div id="schDirectoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto">
+            <div class="text-xs text-slate-400">טוען מאגר מהשיטס... (כשתביא לי את הרשימה אכניס אותה ישר לגיליון "מאגר אברכים קבוע")</div>
+          </div>
+        </div>
+
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] grid grid-cols-2 sm:grid-cols-4 gap-2">
           <input id="schName" type="text" placeholder="שם מלא של המלגאי" class="input-dark p-2 text-xs" />
           <input id="schId" type="text" placeholder="מספר ת.ז." class="input-dark p-2 text-xs" />
           <input id="schAmount" type="number" value="2500" class="input-dark p-2 text-xs text-center font-bold" />
-          <button type="button" onclick="addScholarshipRow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg text-xs py-2">+ הוסף מלגאי</button>
+          <button type="button" onclick="addScholarshipRow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg text-xs py-2">+ הוסף ידנית</button>
         </div>
 
         <div id="verifierSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs"></div>
@@ -203,7 +279,36 @@
       </div>
     </section>
 
+    <!-- 5. תקלות, משימות למנהל והתראות לצ'אט מרחב משותף -->
     <section id="osec-ops" class="owner-section hidden space-y-3">
+      <!-- משימות מהבעלים למנהל -->
+      <div class="card p-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-black text-white">📌 שליחת משימה למנהל (תזכורת כל יום עד סימון 'טופל')</h2>
+            <p class="text-xs text-slate-400">כל משימה שתשלח כאן תישלח למנהל ותזכיר לו כל יום אוטומטית עד שיסמן שטופל</p>
+          </div>
+          <button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs">⏰ הפעל תזכורת יומית</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="mgrTaskTitle" type="text" placeholder="נושא (למשל: לתקן שלט / נורה בשולחן 2)" class="input-dark p-2.5 text-xs" />
+          <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה למנהל..." class="input-dark p-2.5 text-xs" />
+          <button type="button" onclick="sendManagerTask()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">📨 שלח משימה למנהל</button>
+        </div>
+        <div id="mgrTasksList" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- הגדרות צ'אט מרחב משותף ומייל מנהל -->
+      <div class="card p-4 space-y-3">
+        <h2 class="text-base font-black text-white">🔔 התראות לצ׳אט מרחב משותף ומייל מנהל</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="chatWebhookInput" type="url" placeholder="קישור Webhook של צ'אט מרחב משותף" class="input-dark p-2 text-xs" />
+          <input id="managerEmailInput" type="email" placeholder="מייל המנהל לתזכורות" class="input-dark p-2 text-xs" />
+          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות התראה ✓</button>
+        </div>
+      </div>
+
+      <!-- מדריכים למוכרים -->
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">🛠️ הוספת מדריך "איך מסדרים" למוכרים</h2>
         <input id="newGuideTitle" type="text" placeholder="כותרת התקלה" class="input-dark w-full p-2.5 text-xs" />
@@ -232,6 +337,9 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let allShifts = [];
+    let allQueues = [];
+    let managerTasks = [];
+    let schDirectory = [];
     let scholarships = JSON.parse(localStorage.getItem('friends_scholarships') || '[]');
 
     const HEB_MONTHS = {
@@ -256,6 +364,9 @@
 
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
+      document.getElementById('chatWebhookInput').value = localStorage.getItem('friends_chat_webhook') || '';
+      document.getElementById('managerEmailInput').value = localStorage.getItem('friends_manager_email') || '';
+
       renderScholarships();
       refreshOwnerData();
     });
@@ -330,11 +441,19 @@
             cash = parseFloat(r.cash) || 0;
             credit = parseFloat(r.credit) || 0;
           } else {
-            // תיקון: col3 (עמודה D) הוא המזומן (1450) ו-col2 (עמודה E) הוא האשראי (492)
+            const c1 = parseFloat(r.col1) || 0;
             const c2 = parseFloat(r.col2) || 0;
             const c3 = parseFloat(r.col3) || 0;
-            cash = c3;
-            credit = c2;
+            // זיהוי אוטומטי: בלשוניות ישנות (עד אוקטובר 2026) עמודה B (col1/col2) היא מזומן ועמודה C היא אשראי.
+            // בלשוניות החדשות (נובמבר 2026 ומעלה) עמודה D (col3) היא מזומן ועמודה E (col2) היא אשראי.
+            const isNewSheet = String(r.sheetName || '').includes('נובמבר 2026') || String(r.sheetName || '').includes('דצמבר 2026') || Number(info.year) >= 2027;
+            if (isNewSheet) {
+              cash = c3;
+              credit = c2;
+            } else {
+              cash = c2;
+              credit = c3;
+            }
           }
 
           return {
@@ -349,6 +468,19 @@
           if (r.yearNum && r.yearNum !== selectedYear) return false;
           return r.cash > 0 || r.credit > 0;
         });
+
+        if (data.queues) {
+          allQueues = data.queues;
+          renderQueuesTab();
+        }
+        if (data.managerTasks) {
+          managerTasks = data.managerTasks;
+          renderManagerTasks();
+        }
+        if (data.directory) {
+          schDirectory = data.directory;
+          renderDirectoryList();
+        }
 
         renderIncomeTable();
       } catch (e) {
@@ -384,6 +516,145 @@
           <td class="text-orange-400 font-black">${r.total.toLocaleString()} ₪</td>
         </tr>
       `).join('');
+    }
+
+    function renderQueuesTab() {
+      const sonyQ = allQueues.filter(q => q.category === 'סוני');
+      const snookerQ = allQueues.filter(q => q.category === 'סנוקר');
+      const completed = allQueues.filter(q => q.completed && q.waitMinutes > 0);
+      const avg = completed.length ? Math.round(completed.reduce((a, b) => a + Number(b.waitMinutes || 0), 0) / completed.length) : 0;
+
+      document.getElementById('qSonyTotal').textContent = sonyQ.length;
+      document.getElementById('qSnookerTotal').textContent = snookerQ.length;
+      document.getElementById('qAvgWait').textContent = avg + " דק׳";
+
+      const byDay = {};
+      allQueues.forEach(q => {
+        const key = `${q.date || ''} (${q.dayOfWeek || ''})`;
+        if (!byDay[key]) byDay[key] = { sony: 0, snooker: 0, waits: [] };
+        if (q.category === 'סנוקר') byDay[key].snooker++;
+        else byDay[key].sony++;
+        if (q.completed && q.waitMinutes > 0) byDay[key].waits.push(Number(q.waitMinutes));
+      });
+
+      const dBody = document.getElementById('qDailyTableBody');
+      const keys = Object.keys(byDay);
+      if (!keys.length) {
+        dBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>';
+      } else {
+        dBody.innerHTML = keys.map(k => {
+          const d = byDay[k];
+          const dAvg = d.waits.length ? Math.round(d.waits.reduce((a, b) => a + b, 0) / d.waits.length) : 0;
+          const dMax = d.waits.length ? Math.max(...d.waits) : 0;
+          return `<tr>
+            <td class="py-2 font-bold text-slate-200">${k}</td>
+            <td class="text-sky-400 font-bold">${d.sony}</td>
+            <td class="text-emerald-400 font-bold">${d.snooker}</td>
+            <td class="text-orange-400 font-bold">${dAvg} דק׳</td>
+            <td class="text-rose-400 font-bold">${dMax} דק׳</td>
+          </tr>`;
+        }).join('');
+      }
+
+      document.getElementById('qAllTableBody').innerHTML = allQueues.map(q => `
+        <tr>
+          <td class="py-2 font-bold">${q.date}</td>
+          <td class="${q.category === 'סנוקר' ? 'text-emerald-400' : 'text-sky-400'} font-bold">${q.category}</td>
+          <td>${q.customerName}</td>
+          <td>${q.startTime}</td>
+          <td>${q.enteredTime || '-'}</td>
+          <td class="text-orange-400 font-bold">${q.completed ? q.waitMinutes + " דק׳" : 'ממתין'}</td>
+          <td>${q.completed ? '✓ נכנס' : '⏳ בתור'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderDirectoryList() {
+      const box = document.getElementById('schDirectoryList');
+      if (!schDirectory.length) return;
+      box.innerHTML = schDirectory.map((d, idx) => `
+        <label class="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] cursor-pointer text-xs">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" class="dir-chk w-4 h-4 accent-orange-600" data-idx="${idx}" ${d.active ? 'checked' : ''} />
+            <div>
+              <div class="font-bold text-white">${d.fullName}</div>
+              <div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber || '-'}</div>
+            </div>
+          </div>
+          <span class="text-emerald-400 font-bold">${Number(d.defaultAmount || 2500).toLocaleString()} ₪</span>
+        </label>
+      `).join('');
+    }
+
+    function toggleAllDir(val) {
+      document.querySelectorAll('.dir-chk').forEach(cb => cb.checked = val);
+    }
+
+    function addSelectedFromDir() {
+      const month = document.getElementById('schMonthSelect').value;
+      const checked = [...document.querySelectorAll('.dir-chk:checked')];
+      if (!checked.length) return alert('סמן לפחות אברך אחד מהמאגר');
+      checked.forEach((cb, idx) => {
+        const d = schDirectory[Number(cb.dataset.idx)];
+        if (d) {
+          scholarships.push({
+            id: Date.now() + idx,
+            month,
+            name: d.fullName,
+            tz: d.idNumber || '',
+            amount: Number(d.defaultAmount) || 2500,
+            verifiedMenachem: d.defaultVerifier === 'מנחם רובינשטיין',
+            verifiedGura: d.defaultVerifier === 'יהודה גורא'
+          });
+        }
+      });
+      localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+      renderScholarships();
+      showOwnerToast(`נוספו ${checked.length} מלגאים לחודש ✓`);
+    }
+
+    async function sendManagerTask() {
+      const title = document.getElementById('mgrTaskTitle').value.trim();
+      const details = document.getElementById('mgrTaskDetails').value.trim();
+      if (!title) return;
+      managerTasks.unshift({ id: 'T' + Date.now(), createdAt: new Date().toLocaleString('he-IL'), title, details, status: 'פתוח' });
+      document.getElementById('mgrTaskTitle').value = '';
+      document.getElementById('mgrTaskDetails').value = '';
+      renderManagerTasks();
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addManagerTask', title, details }) });
+      showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
+    }
+
+    function renderManagerTasks() {
+      const box = document.getElementById('mgrTasksList');
+      if (!managerTasks.length) {
+        box.innerHTML = '<div class="text-slate-400">אין משימות פתוחות למנהל.</div>';
+        return;
+      }
+      box.innerHTML = managerTasks.map(t => `
+        <div class="p-2.5 rounded-xl bg-[#091322] border ${t.status === 'טופל' ? 'border-emerald-500/40' : 'border-orange-500/50'} flex justify-between items-center">
+          <div>
+            <span class="font-bold ${t.status === 'טופל' ? 'text-emerald-400' : 'text-orange-400'}">[${t.status}]</span>
+            <strong class="text-white mr-1">${t.title}</strong>
+            <span class="text-slate-400 mr-1">${t.details || ''}</span>
+          </div>
+          <span class="text-[10px] text-slate-500">${t.createdAt || ''}</span>
+        </div>
+      `).join('');
+    }
+
+    async function setupDailyTrigger() {
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'setupDailyTrigger' }) });
+      showOwnerToast('תזכורת יומית למנהל הופעלה ✓');
+    }
+
+    async function saveNotifySettings() {
+      const chatWebhookUrl = document.getElementById('chatWebhookInput').value.trim();
+      const managerEmail = document.getElementById('managerEmailInput').value.trim();
+      localStorage.setItem('friends_chat_webhook', chatWebhookUrl);
+      localStorage.setItem('friends_manager_email', managerEmail);
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, emailNotify: true }) });
+      showOwnerToast('הגדרות צ׳אט מרחב משותף ומייל נשמרו ✓');
     }
 
     async function saveBankDeposit() {
