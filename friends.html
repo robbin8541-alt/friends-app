@@ -293,7 +293,10 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <input id="mgrTaskTitle" type="text" placeholder="נושא (למשל: לתקן שלט / נורה בשולחן 2)" class="input-dark p-2.5 text-xs" />
           <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה למנהל..." class="input-dark p-2.5 text-xs" />
-          <button type="button" onclick="sendManagerTask()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">📨 שלח משימה למנהל</button>
+          <div class="flex gap-1.5">
+            <button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-2 rounded-xl text-xs">📨 שלח משימה</button>
+            <button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs">📲 שלח לווצאפ</button>
+          </div>
         </div>
         <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
@@ -481,6 +484,20 @@
           schDirectory = data.directory;
           renderDirectoryList();
         }
+        if (data.scholarships && Array.isArray(data.scholarships)) {
+          scholarships = data.scholarships.map(s => ({
+            id: s.rowNumber || Date.now() + Math.random(),
+            rowNumber: s.rowNumber,
+            month: s.month,
+            name: s.fullName,
+            tz: s.idNumber,
+            amount: Number(s.amount) || 2500,
+            verifiedMenachem: (s.received && s.verifier === 'מנחם רובינשטיין'),
+            verifiedGura: (s.received && s.verifier === 'יהודה גורא')
+          }));
+          localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+          renderScholarships();
+        }
 
         renderIncomeTable();
       } catch (e) {
@@ -610,10 +627,14 @@
       });
       localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
       renderScholarships();
-      showOwnerToast(`נוספו ${checked.length} מלגאים לחודש ✓`);
+      const itemsToSave = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({
+        fullName: d.fullName, idNumber: d.idNumber, phoneOrNote: d.phoneOrNote, amount: d.defaultAmount, verifier: d.defaultVerifier
+      }));
+      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addMonthFromDirectory', month, items: itemsToSave }) }).catch(()=>{});
+      showOwnerToast(`נוספו ${checked.length} מלגאים לחודש ונשמרו בשיטס ✓`);
     }
 
-    async function sendManagerTask() {
+    async function sendManagerTask(alsoWhatsApp) {
       const title = document.getElementById('mgrTaskTitle').value.trim();
       const details = document.getElementById('mgrTaskDetails').value.trim();
       if (!title) return;
@@ -621,6 +642,10 @@
       document.getElementById('mgrTaskTitle').value = '';
       document.getElementById('mgrTaskDetails').value = '';
       renderManagerTasks();
+      if (alsoWhatsApp) {
+        const msg = `📌 *Friends — משימה למנהל מבעל המקום*\n• נושא: ${title}\n• פירוט: ${details || '-'}\nיש לסמן 'טופל' באפליקציה בסיום.`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      }
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addManagerTask', title, details }) });
       showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
     }
@@ -709,7 +734,8 @@
       nameInput.value = '';
       tzInput.value = '';
       renderScholarships();
-      showOwnerToast('המלגאי נוסף ✓');
+      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount }) }).catch(()=>{});
+      showOwnerToast('המלגאי נוסף ונשמר בשיטס ✓');
     }
 
     function toggleVerifier(id, field) {
@@ -718,13 +744,22 @@
         item[field] = !item[field];
         localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
         renderScholarships();
+        if (item.rowNumber) {
+          const isChecked = item.verifiedMenachem || item.verifiedGura;
+          const verifier = item.verifiedMenachem ? 'מנחם רובינשטיין' : (item.verifiedGura ? 'יהודה גורא' : '');
+          fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'toggleScholarshipVerified', rowNumber: item.rowNumber, received: isChecked, verifier }) }).catch(()=>{});
+        }
       }
     }
 
     function deleteScholarship(id) {
+      const item = scholarships.find(s => s.id === id);
       scholarships = scholarships.filter(s => s.id !== id);
       localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
       renderScholarships();
+      if (item && item.rowNumber) {
+        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteScholarship', rowNumber: item.rowNumber }) }).catch(()=>{});
+      }
     }
 
     function renderScholarships() {
