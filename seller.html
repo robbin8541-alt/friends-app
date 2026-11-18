@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Friends — סוני וסנוקר מקום של חברים | אפליקציית מוכרים ומנהל</title>
   <meta name="theme-color" content="#061626" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Friends מוכר" />
+  <meta name="application-name" content="Friends" />
+  <link rel="manifest" href="friends-manifest.json" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
@@ -70,7 +77,7 @@
             <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.2)</p>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.4)</p>
         </div>
       </div>
 
@@ -483,6 +490,14 @@
           <button onclick="changePinPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-slate-200 border border-[#23476e]">🔑 החלף קוד מנהל</button>
         </div>
 
+        <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-extrabold text-sky-300">📌 משימות והודעות מבעל המקום (מנחם) — סמן 'טופל' כדי לעצור תזכורות</h3>
+            <span id="managerTasksCount" class="text-xs font-bold text-slate-300">0 פתוחות</span>
+          </div>
+          <div id="managerTasksList" class="space-y-2 text-xs"></div>
+        </div>
+
         <div class="p-4 rounded-xl bg-[#07192b] border border-rose-500/30 space-y-2.5">
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-extrabold text-rose-300">⚠️ כל התקלות וההודעות הפתוחות למנהל (מסכים, סנוקר והודעות מוכרים)</h3>
@@ -556,7 +571,7 @@
 
 
   <!-- End-of-Day Tasks Popup Modal -->
-  <div id="eodModal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-4">
+  <div id="eodModal" class="fixed inset-0 z-[999] bg-black/85 hidden flex items-center justify-center p-4">
     <div class="card p-5 max-w-md w-full space-y-4 border-[#f05323]">
       <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
         <h3 class="text-base font-extrabold text-amber-300">✅ משימות סוף יום לפני סגירת קופה</h3>
@@ -678,30 +693,17 @@
       sel.innerHTML = html;
     }
 
-    function saveGasUrl() {
-      const url = document.getElementById("gasUrlInput").value.trim();
-      const mPhone = document.getElementById("managerPhoneInput").value.trim();
-      const oPhone = document.getElementById("ownerPhoneInput").value.trim();
-      localStorage.setItem("friends_gas_url", url);
-      localStorage.setItem("friends_manager_phone", mPhone);
-      localStorage.setItem("friends_owner_phone", oPhone);
-      state.managerPhone = mPhone;
-      state.ownerPhone = oPhone;
-      if (url) {
-        fetch(url, { method: "POST", body: JSON.stringify({ action: "saveNotifySettings", ownerPhone: oPhone, managerPhone: mPhone, emailNotify: true }) }).catch(()=>{});
-        fetchFromGas();
-      } else {
-        alert("הגדרות נשמרו!");
-      }
-    }
+
 
     function sendWhatsAppMessage(text, targetPhone) {
       let cleanPhone = (targetPhone || "").replace(/[^0-9]/g, "");
       if (cleanPhone.startsWith("0")) cleanPhone = "972" + cleanPhone.slice(1);
       const encoded = encodeURIComponent(text);
-      // אם אין מספר פרטי (כמו שליחה לקבוצה המשותפת), wa.me/?text=... פותח את ווצאפ עם ההודעה מוכנה לבחירת הקבוצה המשותפת
       const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
-      window.open(waUrl, "_blank");
+      const win = window.open(waUrl, "_blank");
+      if (!win) {
+        window.location.href = waUrl;
+      }
     }
 
     async function fetchFromGas() {
@@ -734,8 +736,6 @@
           if (data.managerPin) state.managerPin = String(data.managerPin);
           if (data.notifySettings && data.notifySettings.ownerPhone && !state.notifyPhone) {
             state.notifyPhone = data.notifySettings.ownerPhone;
-            document.getElementById("managerPhoneInput").value = state.managerPhone;
-      document.getElementById("ownerPhoneInput").value = state.ownerPhone;
           }
           renderAll();
         }
