@@ -61,7 +61,6 @@
 
   <main class="max-w-3xl mx-auto p-3 space-y-4">
 
-    <!-- לשונית 1: מזומן + אשראי + סה"כ יומי -->
     <section id="osec-income" class="owner-section space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
         <div class="card p-3 text-center">
@@ -126,7 +125,6 @@
       </div>
     </section>
 
-    <!-- לשונית 2: הוצאות -->
     <section id="osec-expenses" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">📉 רישום הוצאות</h2>
@@ -149,7 +147,6 @@
       </div>
     </section>
 
-    <!-- לשונית 3: מלגות שערי עתיד -->
     <section id="osec-scholarships" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -206,7 +203,6 @@
       </div>
     </section>
 
-    <!-- לשונית 4: תקלות ומדריכים -->
     <section id="osec-ops" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">🛠️ הוספת מדריך "איך מסדרים" למוכרים</h2>
@@ -328,20 +324,17 @@
 
         allShifts = rawRows.map(r => {
           const info = parseDateInfo(r.date, r.sheetName);
-          const c2 = r.col2 !== undefined ? r.col2 : r.seller;
-          const c3 = r.col3 !== undefined ? r.col3 : r.cash;
-          const c4 = r.col4 !== undefined ? r.col4 : r.credit;
-          const c5 = r.col5 !== undefined ? r.col5 : r.envelope;
-
-          const isNumericCol2 = !isNaN(parseFloat(c2)) && isFinite(c2);
           let cash = 0, credit = 0;
 
-          if (isNumericCol2) {
-            cash = parseFloat(c2) || 0;
-            credit = parseFloat(c3) || 0;
+          if (r.cash !== undefined && r.credit !== undefined) {
+            cash = parseFloat(r.cash) || 0;
+            credit = parseFloat(r.credit) || 0;
           } else {
-            cash = (c5 !== undefined && c5 !== "" && !isNaN(parseFloat(c5))) ? parseFloat(c5) : (parseFloat(c3) || 0);
-            credit = parseFloat(c4) || 0;
+            // תיקון: col3 (עמודה D) הוא המזומן (1450) ו-col2 (עמודה E) הוא האשראי (492)
+            const c2 = parseFloat(r.col2) || 0;
+            const c3 = parseFloat(r.col3) || 0;
+            cash = c3;
+            credit = c2;
           }
 
           return {
