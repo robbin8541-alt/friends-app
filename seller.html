@@ -77,7 +77,7 @@
             <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v6.0)</p>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v6.1)</p>
         </div>
       </div>
 
@@ -487,7 +487,7 @@
             <h2 class="text-base font-extrabold text-emerald-400">🔑 אזור מנהל מקום — אישור מעטפות (V) + שליחת הודעת אישור לפלאפון + תקלות</h2>
             <p class="text-xs text-slate-300">ברגע שתסמן V על מעטפה, נשלחת התראה אוטומטית לפלאפון וניתן לשלוח גם הודעת וואטסאפ בלחיצה</p>
           </div>
-          <button onclick="changePinPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-slate-200 border border-[#23476e]">🔑 החלף קוד מנהל</button>
+          <div class="flex gap-2"><button onclick="changeGasUrlPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-sky-300 border border-[#23476e]">🔗 קישור שיטס (Web App)</button><button onclick="changePinPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-slate-200 border border-[#23476e]">🔑 החלף קוד מנהל</button></div>
         </div>
 
         <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
@@ -684,7 +684,7 @@
     }
 
     function initApp() {
-      safeSet("friends_gas_url", SCRIPT_URL);
+      if (!safeGet("friends_gas_url")) safeSet("friends_gas_url", SCRIPT_URL);
       populateMonthSelect();
       populateScreenUnitSelect();
       renderSellersDropdown();
@@ -712,6 +712,32 @@
       const win = window.open(waUrl, "_blank");
       if (!win) {
         window.location.href = waUrl;
+      }
+    }
+
+    
+    async function sendToGas(payload) {
+      const url = safeGet("friends_gas_url") || SCRIPT_URL;
+      if (!url) return { ok: false };
+      const hasPhotos = Boolean(payload.receiptPhotoBase64 || payload.envelopePhotoBase64 || payload.photoBase64);
+      if (!hasPhotos) {
+        try {
+          const res = await fetch(url + "?payload=" + encodeURIComponent(JSON.stringify(payload)));
+          return await res.json();
+        } catch (e) {
+          await sendToGas(payload);
+          return { ok: true };
+        }
+      } else {
+        // 1. First save all numbers/text via GET so the sheet updates 100% reliably in 0.2s!
+        const lightPayload = Object.assign({}, payload, { receiptPhotoBase64: "", envelopePhotoBase64: "", photoBase64: "" });
+        try {
+          await fetch(url + "?payload=" + encodeURIComponent(JSON.stringify(lightPayload)));
+        } catch (e) {}
+        // 2. Then upload photos via POST
+        const photoOnlyPayload = Object.assign({}, payload, { onlyPhotos: true });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(photoOnlyPayload) });
+        return { ok: true };
       }
     }
 
@@ -1170,7 +1196,7 @@
         const btn = document.getElementById("btnSubmitSeller");
         btn.textContent = "שומר דוח Z ומעטפה...";
         try {
-          await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+          await sendToGas(payload);
           btn.textContent = "נשמר והטופס אופס ליום הבא! ✓";
           setTimeout(() => { btn.textContent = "שמור דיווח סוף יום ✓"; }, 2500);
           fetchFromGas();
@@ -1226,7 +1252,7 @@
 
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "addQueueItem", year: state.year, ...item }) });
+        await sendToGas({ action: "addQueueItem", year: state.year, ...item });
       }
     }
 
@@ -1256,18 +1282,7 @@
 
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, {
-          method: "POST",
-          mode: "no-cors",
-          body: JSON.stringify({
-            action: "completeQueueItem",
-            year: state.year,
-            id: q.id,
-            enteredTime: q.enteredTime,
-            waitMinutes: q.waitMinutes,
-            completed: q.completed
-          })
-        });
+        await sendToGas({ action: "completeQueueItem", year: state.year, id: q.id, enteredTime: q.enteredTime, waitMinutes: q.waitMinutes, completed: q.completed });
       }
     }
 
@@ -1376,7 +1391,7 @@
 
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg }) });
+        await sendToGas({ action: "addFault", year: state.year, ...newMsg });
       } else if (!alsoWhatsApp) {
         alert("ההודעה נשלחה!");
       }
@@ -1507,11 +1522,7 @@
 
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, {
-          method: "POST",
-          mode: "no-cors",
-          body: JSON.stringify({ action: "addFault", year: state.year, ...newFault, photoBase64: photoB64 })
-        });
+        await sendToGas({ action: "addFault", year: state.year, ...newFault, photoBase64: photoB64 });
         fetchFromGas();
       }
     }
@@ -1523,7 +1534,7 @@
       renderAll();
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "resolveFault", year: state.year, id, status: "תוקן" }) });
+        await sendToGas({ action: "resolveFault", year: state.year, id, status: "תוקן" });
       }
     }
 
@@ -1568,7 +1579,7 @@
       renderManagerSection();
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "completeManagerTask", year: state.year, id }) });
+        await sendToGas({ action: "completeManagerTask", year: state.year, id });
       }
     }
 
@@ -1617,7 +1628,17 @@
       if (r) r.approved = checked;
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "toggleCashApproved", year: state.year, monthTab: state.activeTab, rowNumber, approved: checked }) });
+        await sendToGas({ action: "toggleCashApproved", year: state.year, monthTab: state.activeTab, rowNumber, approved: checked });
+      }
+    }
+
+    
+    function changeGasUrlPrompt() {
+      const current = safeGet("friends_gas_url") || SCRIPT_URL;
+      const entered = prompt("הדבק כתובת Web App (.../exec) של ה-Apps Script:", current);
+      if (entered && entered.trim().startsWith("https://")) {
+        safeSet("friends_gas_url", entered.trim());
+        fetchFromGas();
       }
     }
 
@@ -1631,7 +1652,7 @@
       safeSet("friends_manager_pin", state.managerPin);
       const url = safeGet("friends_gas_url", '');
       if (url) {
-        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "changeManagerPin", oldPin, newPin: state.managerPin }) });
+        await sendToGas({ action: "changeManagerPin", oldPin, newPin: state.managerPin });
       }
       alert("קוד המנהל הוחלף בהצלחה!");
     }
