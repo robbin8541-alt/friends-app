@@ -304,11 +304,12 @@
       <!-- הגדרות מנהל נוכחי (טלפון + מייל) וצ'אט מרחב משותף -->
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">🔔 פרטי מנהל נוכחי (להחלפה בכל עת) והתראות</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <input id="gasUrlOwnerInput" type="url" placeholder="קישור Web App של Apps Script (.../exec)" class="input-dark p-2 text-xs sm:col-span-2" />
           <input id="managerPhoneInput" type="tel" placeholder="נייד מנהל לווצאפ (97250...)" class="input-dark p-2 text-xs font-bold" />
           <input id="managerEmailInput" type="email" placeholder="מייל מנהל לתזכורות" class="input-dark p-2 text-xs" />
           <input id="chatWebhookInput" type="url" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs" />
-          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור פרטי מנהל ✓</button>
+          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות ופרטי מנהל ✓</button>
         </div>
       </div>
 
@@ -346,7 +347,8 @@
     function safeSet(k, v) {
       try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); }
     }
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
+    let SCRIPT_URL = safeGet("friends_gas_url") || DEFAULT_SCRIPT_URL;
     let allShifts = [];
     let allQueues = [];
     let managerTasks = [];
@@ -375,6 +377,7 @@
 
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
+      document.getElementById('gasUrlOwnerInput').value = SCRIPT_URL;
       document.getElementById('chatWebhookInput').value = safeGet('friends_chat_webhook', '');
       document.getElementById('managerPhoneInput').value = safeGet('friends_manager_phone', '972503265609');
       document.getElementById('managerEmailInput').value = safeGet('friends_manager_email', 'arri.karp@gmail.com');
@@ -436,6 +439,17 @@
         month,
         year
       };
+    }
+
+    
+    async function sendToGas(payload) {
+      try {
+        const res = await fetch(SCRIPT_URL + "?payload=" + encodeURIComponent(JSON.stringify(payload)));
+        return await res.json();
+      } catch (e) {
+        await sendToGas(payload);
+        return { ok: true };
+      }
     }
 
     async function refreshOwnerData() {
@@ -643,7 +657,7 @@
       const itemsToSave = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({
         fullName: d.fullName, idNumber: d.idNumber, phoneOrNote: d.phoneOrNote, amount: d.defaultAmount, verifier: d.defaultVerifier
       }));
-      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addMonthFromDirectory', month, items: itemsToSave }) }).catch(()=>{});
+      sendToGas({ action: 'addMonthFromDirectory', month, items: itemsToSave }).catch(()=>{});
       showOwnerToast(`נוספו ${checked.length} מלגאים לחודש ונשמרו בשיטס ✓`);
     }
 
@@ -661,7 +675,7 @@
         if (mPhone.startsWith('0')) mPhone = '972' + mPhone.slice(1);
         window.open(`https://wa.me/${mPhone}?text=${encodeURIComponent(msg)}`, '_blank');
       }
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addManagerTask', title, details }) });
+      await sendToGas({ action: 'addManagerTask', title, details });
       showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
     }
 
@@ -670,7 +684,7 @@
       const t = managerTasks.find(x => x.id === id);
       if (t) t.status = 'טופל';
       renderManagerTasks();
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'completeManagerTask', id, managerNote: 'נסגר ע"י הבעלים' }) });
+      await sendToGas({ action: 'completeManagerTask', id, managerNote: 'נסגר ע"י הבעלים' });
       showOwnerToast('המשימה נסגרה והתזכורת נעצרה ✓');
     }
 
@@ -696,11 +710,13 @@
     }
 
     async function setupDailyTrigger() {
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'setupDailyTrigger' }) });
+      await sendToGas({ action: 'setupDailyTrigger' });
       showOwnerToast('תזכורת יומית למנהל הופעלה ✓');
     }
 
     async function saveNotifySettings() {
+      const newGasUrl = document.getElementById('gasUrlOwnerInput').value.trim();
+      if (newGasUrl) { SCRIPT_URL = newGasUrl; safeSet('friends_gas_url', newGasUrl); }
       const chatWebhookUrl = document.getElementById('chatWebhookInput').value.trim();
       const managerEmail = document.getElementById('managerEmailInput').value.trim();
       let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g, '');
@@ -708,7 +724,7 @@
       safeSet('friends_chat_webhook', chatWebhookUrl);
       safeSet('friends_manager_email', managerEmail);
       safeSet('friends_manager_phone', managerPhone);
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, emailNotify: true }) });
+      await sendToGas({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, emailNotify: true });
       showOwnerToast('פרטי המנהל והתראות עודכנו בכל המערכת ✓');
     }
 
@@ -719,7 +735,7 @@
       const amount = parseFloat(amtInput.value) || 0;
       if (!amount) return;
 
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveBankDeposit', date, amount }) });
+      await sendToGas({ action: 'saveBankDeposit', date, amount });
       amtInput.value = '';
       dateInput.valueAsDate = new Date();
       showOwnerToast('הפקדת הבנק נרשמה והשדה נוקה ✓');
@@ -737,7 +753,7 @@
       const note = noteInput.value.trim();
       if (!amount) return;
 
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveExpense', date, category, amount, note }) });
+      await sendToGas({ action: 'saveExpense', date, category, amount, note });
       amtInput.value = '';
       noteInput.value = '';
       dateInput.valueAsDate = new Date();
@@ -764,7 +780,7 @@
       nameInput.value = '';
       tzInput.value = '';
       renderScholarships();
-      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount }) }).catch(()=>{});
+      sendToGas({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount }).catch(()=>{});
       showOwnerToast('המלגאי נוסף ונשמר בשיטס ✓');
     }
 
@@ -777,7 +793,7 @@
         if (item.rowNumber) {
           const isChecked = item.verifiedMenachem || item.verifiedGura;
           const verifier = item.verifiedMenachem ? 'מנחם רובינשטיין' : (item.verifiedGura ? 'יהודה גורא' : '');
-          fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'toggleScholarshipVerified', rowNumber: item.rowNumber, received: isChecked, verifier }) }).catch(()=>{});
+          sendToGas({ action: 'toggleScholarshipVerified', rowNumber: item.rowNumber, received: isChecked, verifier }).catch(()=>{});
         }
       }
     }
@@ -788,7 +804,7 @@
       safeSet('friends_scholarships', JSON.stringify(scholarships));
       renderScholarships();
       if (item && item.rowNumber) {
-        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteScholarship', rowNumber: item.rowNumber }) }).catch(()=>{});
+        sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber }).catch(()=>{});
       }
     }
 
@@ -912,7 +928,7 @@
       const steps = stepsInput.value.trim();
       if (!title || !steps) return;
 
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveGuide', title, steps }) });
+      await sendToGas({ action: 'saveGuide', title, steps });
       titleInput.value = '';
       stepsInput.value = '';
       showOwnerToast('המדריך פורסם והשדות נוקו ✓');
