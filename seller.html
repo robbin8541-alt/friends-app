@@ -77,7 +77,7 @@
             <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.6)</p>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v6.0)</p>
         </div>
       </div>
 
@@ -255,8 +255,8 @@
             הפרש מעטפה: <strong id="lblEnvelopeDiff" class="text-sm font-extrabold text-slate-400">טרם הוזן</strong>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="submitSellerReport(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
-            <button type="button" onclick="submitSellerReport(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
+            <button type="button" onclick="openEodChecklistModal(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
+            <button type="button" onclick="openEodChecklistModal(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
           </div>
         </div>
       </div>
@@ -612,6 +612,13 @@
   </div>
 
   <script>
+    const _memStore = {};
+    function safeGet(k, defVal) {
+      try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; }
+    }
+    function safeSet(k, v) {
+      try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); }
+    }
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ\"ש"];
     const HEB_MONTHS_LIST = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
@@ -619,19 +626,21 @@
     const _curYear = String(_nowDt.getFullYear());
     const _curMonthTab = HEB_MONTHS_LIST[_nowDt.getMonth()] + " " + _curYear;
 
+    let pendingWhatsAppSend = false;
+    let userPickedDay = false;
     let state = {
       mode: "seller",
       year: _curYear,
       activeTab: _curMonthTab,
       queueFilter: "all",
-      managerPin: localStorage.getItem("friends_manager_pin") || "1111",
-      managerPhone: localStorage.getItem("friends_manager_phone") || "972503265609",
-      ownerPhone: localStorage.getItem("friends_owner_phone") || "",
-      sellers: JSON.parse(localStorage.getItem("friends_sellers") || '["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"]'),
+      managerPin: safeGet("friends_manager_pin", "1111"),
+      managerPhone: safeGet("friends_manager_phone", "972503265609"),
+      ownerPhone: safeGet("friends_owner_phone", ""),
+      sellers: JSON.parse(safeGet("friends_sellers") || '["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"]'),
       dailyRows: [],
-      faults: JSON.parse(localStorage.getItem("friends_faults") || "[]"),
-      queues: JSON.parse(localStorage.getItem("friends_queues") || "[]"),
-      managerTasks: JSON.parse(localStorage.getItem("friends_manager_tasks") || "[]"),
+      faults: JSON.parse(safeGet("friends_faults") || "[]"),
+      queues: JSON.parse(safeGet("friends_queues") || "[]"),
+      managerTasks: JSON.parse(safeGet("friends_manager_tasks") || "[]"),
       guides: [
         {
           id: "g1",
@@ -675,7 +684,7 @@
     }
 
     function initApp() {
-      localStorage.setItem("friends_gas_url", SCRIPT_URL);
+      safeSet("friends_gas_url", SCRIPT_URL);
       populateMonthSelect();
       populateScreenUnitSelect();
       renderSellersDropdown();
@@ -707,7 +716,7 @@
     }
 
     async function fetchFromGas() {
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (!url) return;
       try {
         const res = await fetch(url + "?action=init&mode=seller&year=" + encodeURIComponent(state.year) + "&monthTab=" + encodeURIComponent(state.activeTab));
@@ -717,20 +726,20 @@
           state.dailyRows = data.dailyRows || [];
           if (data.faults) {
             state.faults = data.faults;
-            localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+            safeSet("friends_faults", JSON.stringify(state.faults));
           }
           if (data.managerTasks) {
             state.managerTasks = data.managerTasks;
-            localStorage.setItem("friends_manager_tasks", JSON.stringify(state.managerTasks));
+            safeSet("friends_manager_tasks", JSON.stringify(state.managerTasks));
           }
           if (data.queues) {
             state.queues = data.queues;
-            localStorage.setItem("friends_queues", JSON.stringify(state.queues));
+            safeSet("friends_queues", JSON.stringify(state.queues));
           }
           if (data.guides && data.guides.length) state.guides = data.guides;
           if (data.sellers && data.sellers.length) {
             state.sellers = data.sellers;
-            localStorage.setItem("friends_sellers", JSON.stringify(state.sellers));
+            safeSet("friends_sellers", JSON.stringify(state.sellers));
             renderSellersDropdown();
           }
           if (data.managerPin) state.managerPin = String(data.managerPin);
@@ -1003,11 +1012,6 @@
       const r = state.dailyRows[idx];
       if (!r) return;
       document.getElementById("sellerStatusSelect").value = r.status || "פעיל רגיל";
-      document.getElementById("inpReceiptCash").value = r.receiptCash || "";
-      document.getElementById("inpReceiptCredit").value = r.receiptCredit || "";
-      document.getElementById("inpEnvelopeActual").value = r.envelopeActual === "" ? "" : r.envelopeActual;
-      document.getElementById("inpExtraIncome").value = r.extraIncome || "";
-      document.getElementById("inpExtraDetails").value = r.extraDetails || "";
       updateSellerDiff();
     }
 
@@ -1057,9 +1061,7 @@
       });
     }
 
-    async 
-    let pendingWhatsAppSend = false;
-    let userPickedDay = false;
+
 
     function openEodChecklistModal(withWhatsApp) {
       pendingWhatsAppSend = withWhatsApp;
@@ -1122,7 +1124,7 @@
         if (!sellerName) return alert("הקלד שם מוכר");
         if (!state.sellers.includes(sellerName)) {
           state.sellers.push(sellerName);
-          localStorage.setItem("friends_sellers", JSON.stringify(state.sellers));
+          safeSet("friends_sellers", JSON.stringify(state.sellers));
           renderSellersDropdown();
         }
       }
@@ -1163,7 +1165,7 @@
       // Clear all form fields immediately so tomorrow starts completely clean!
       clearSellerClosingForm();
 
-      const url = localStorage.getItem("friends_gas_url") || SCRIPT_URL;
+      const url = safeGet("friends_gas_url", SCRIPT_URL);
       if (url) {
         const btn = document.getElementById("btnSubmitSeller");
         btn.textContent = "שומר דוח Z ומעטפה...";
@@ -1216,13 +1218,13 @@
         completed: false,
         seller: seller
       };
-      state.queues.unshift(item);
-      localStorage.setItem("friends_queues", JSON.stringify(state.queues));
+      state.queues.push(item);
+      safeSet("friends_queues", JSON.stringify(state.queues));
       document.getElementById("qCustomerName").value = "";
       document.getElementById("qPartyNote").value = "";
       renderQueuesTab();
 
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "addQueueItem", year: state.year, ...item }) });
       }
@@ -1249,10 +1251,10 @@
         q.enteredTime = "";
         q.waitMinutes = 0;
       }
-      localStorage.setItem("friends_queues", JSON.stringify(state.queues));
+      safeSet("friends_queues", JSON.stringify(state.queues));
       renderQueuesTab();
 
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, {
           method: "POST",
@@ -1353,7 +1355,7 @@
         status: "פתוח"
       };
       state.faults.unshift(newMsg);
-      localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+      safeSet("friends_faults", JSON.stringify(state.faults));
       document.getElementById("msgModalText").value = "";
       closeMessageModal();
       renderAll();
@@ -1372,7 +1374,7 @@
         }
       }
 
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg }) });
       } else if (!alsoWhatsApp) {
@@ -1492,7 +1494,7 @@
         status: "פתוח"
       };
       state.faults.unshift(newFault);
-      localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+      safeSet("friends_faults", JSON.stringify(state.faults));
       descEl.value = "";
       if (isScreen) {
         state.faultScreenPhotoBase64 = "";
@@ -1503,7 +1505,7 @@
       }
       renderAll();
 
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, {
           method: "POST",
@@ -1517,9 +1519,9 @@
     async function markFaultResolved(id) {
       const f = state.faults.find(x => x.id === id);
       if (f) f.status = "תוקן";
-      localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+      safeSet("friends_faults", JSON.stringify(state.faults));
       renderAll();
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "resolveFault", year: state.year, id, status: "תוקן" }) });
       }
@@ -1562,9 +1564,9 @@
     async function markManagerTaskDone(id) {
       const t = (state.managerTasks || []).find(x => x.id === id);
       if (t) t.status = "טופל";
-      localStorage.setItem("friends_manager_tasks", JSON.stringify(state.managerTasks));
+      safeSet("friends_manager_tasks", JSON.stringify(state.managerTasks));
       renderManagerSection();
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "completeManagerTask", year: state.year, id }) });
       }
@@ -1613,7 +1615,7 @@
     async function toggleApproved(rowNumber, checked) {
       const r = state.dailyRows.find(x => x.rowNumber === rowNumber);
       if (r) r.approved = checked;
-      const url = localStorage.getItem("friends_gas_url");
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "toggleCashApproved", year: state.year, monthTab: state.activeTab, rowNumber, approved: checked }) });
       }
@@ -1626,8 +1628,8 @@
       const newPin = prompt("הזן קוד מנהל חדש:", "");
       if (!newPin) return;
       state.managerPin = newPin.trim();
-      localStorage.setItem("friends_manager_pin", state.managerPin);
-      const url = localStorage.getItem("friends_gas_url");
+      safeSet("friends_manager_pin", state.managerPin);
+      const url = safeGet("friends_gas_url", '');
       if (url) {
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "changeManagerPin", oldPin, newPin: state.managerPin }) });
       }
