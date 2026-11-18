@@ -339,12 +339,19 @@
   <div id="ownerToast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-2xl z-50"></div>
 
   <script>
+    const _memStore = {};
+    function safeGet(k, defVal = null) {
+      try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; }
+    }
+    function safeSet(k, v) {
+      try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); }
+    }
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let allShifts = [];
     let allQueues = [];
     let managerTasks = [];
     let schDirectory = [];
-    let scholarships = JSON.parse(localStorage.getItem('friends_scholarships') || '[]');
+    let scholarships = JSON.parse(safeGet('friends_scholarships') || '[]');
 
     const HEB_MONTHS = {
       "ינואר": "01", "פברואר": "02", "מרץ": "03", "אפריל": "04",
@@ -368,9 +375,9 @@
 
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
-      document.getElementById('chatWebhookInput').value = localStorage.getItem('friends_chat_webhook') || '';
-      document.getElementById('managerPhoneInput').value = localStorage.getItem('friends_manager_phone') || '972503265609';
-      document.getElementById('managerEmailInput').value = localStorage.getItem('friends_manager_email') || 'arri.karp@gmail.com';
+      document.getElementById('chatWebhookInput').value = safeGet('friends_chat_webhook', '');
+      document.getElementById('managerPhoneInput').value = safeGet('friends_manager_phone', '972503265609');
+      document.getElementById('managerEmailInput').value = safeGet('friends_manager_email', 'arri.karp@gmail.com');
 
       renderScholarships();
       refreshOwnerData();
@@ -483,8 +490,8 @@
           renderManagerTasks();
         }
         if (data.notifySettings) {
-          if (data.notifySettings.managerPhone) { localStorage.setItem('friends_manager_phone', data.notifySettings.managerPhone); document.getElementById('managerPhoneInput').value = data.notifySettings.managerPhone; }
-          if (data.notifySettings.managerEmail) { localStorage.setItem('friends_manager_email', data.notifySettings.managerEmail); document.getElementById('managerEmailInput').value = data.notifySettings.managerEmail; }
+          if (data.notifySettings.managerPhone) { safeSet('friends_manager_phone', data.notifySettings.managerPhone); document.getElementById('managerPhoneInput').value = data.notifySettings.managerPhone; }
+          if (data.notifySettings.managerEmail) { safeSet('friends_manager_email', data.notifySettings.managerEmail); document.getElementById('managerEmailInput').value = data.notifySettings.managerEmail; }
         }
         if (data.directory) {
           schDirectory = data.directory;
@@ -501,7 +508,7 @@
             verifiedMenachem: (s.received && s.verifier === 'מנחם רובינשטיין'),
             verifiedGura: (s.received && s.verifier === 'יהודה גורא')
           }));
-          localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+          safeSet('friends_scholarships', JSON.stringify(scholarships));
           renderScholarships();
         }
 
@@ -631,7 +638,7 @@
           });
         }
       });
-      localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+      safeSet('friends_scholarships', JSON.stringify(scholarships));
       renderScholarships();
       const itemsToSave = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({
         fullName: d.fullName, idNumber: d.idNumber, phoneOrNote: d.phoneOrNote, amount: d.defaultAmount, verifier: d.defaultVerifier
@@ -650,7 +657,7 @@
       renderManagerTasks();
       if (alsoWhatsApp) {
         const msg = `📌 *Friends — משימה למנהל מבעל המקום*\n• נושא: ${title}\n• פירוט: ${details || '-'}\nיש לסמן 'טופל' באפליקציה בסיום.`;
-        let mPhone = (document.getElementById('managerPhoneInput')?.value || localStorage.getItem('friends_manager_phone') || '972503265609').replace(/[^0-9]/g, '');
+        let mPhone = (document.getElementById('managerPhoneInput')?.value || safeGet('friends_manager_phone', '972503265609')).replace(/[^0-9]/g, '');
         if (mPhone.startsWith('0')) mPhone = '972' + mPhone.slice(1);
         window.open(`https://wa.me/${mPhone}?text=${encodeURIComponent(msg)}`, '_blank');
       }
@@ -698,9 +705,9 @@
       const managerEmail = document.getElementById('managerEmailInput').value.trim();
       let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g, '');
       if (managerPhone.startsWith('0')) managerPhone = '972' + managerPhone.slice(1);
-      localStorage.setItem('friends_chat_webhook', chatWebhookUrl);
-      localStorage.setItem('friends_manager_email', managerEmail);
-      localStorage.setItem('friends_manager_phone', managerPhone);
+      safeSet('friends_chat_webhook', chatWebhookUrl);
+      safeSet('friends_manager_email', managerEmail);
+      safeSet('friends_manager_phone', managerPhone);
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, emailNotify: true }) });
       showOwnerToast('פרטי המנהל והתראות עודכנו בכל המערכת ✓');
     }
@@ -752,7 +759,7 @@
         id: Date.now(), month, name, tz, amount,
         verifiedMenachem: false, verifiedGura: false
       });
-      localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+      safeSet('friends_scholarships', JSON.stringify(scholarships));
 
       nameInput.value = '';
       tzInput.value = '';
@@ -765,7 +772,7 @@
       const item = scholarships.find(s => s.id === id);
       if (item) {
         item[field] = !item[field];
-        localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+        safeSet('friends_scholarships', JSON.stringify(scholarships));
         renderScholarships();
         if (item.rowNumber) {
           const isChecked = item.verifiedMenachem || item.verifiedGura;
@@ -778,7 +785,7 @@
     function deleteScholarship(id) {
       const item = scholarships.find(s => s.id === id);
       scholarships = scholarships.filter(s => s.id !== id);
-      localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
+      safeSet('friends_scholarships', JSON.stringify(scholarships));
       renderScholarships();
       if (item && item.rowNumber) {
         fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteScholarship', rowNumber: item.rowNumber }) }).catch(()=>{});
