@@ -494,7 +494,7 @@
     }
     #protocolModal:not(.hidden) > div,
     #messageModal:not(.hidden) > div,
-    #eodModal:not(.hidden) > div {
+    #eodModal:not(.hidden) > div, #confirmDeleteModal:not(.hidden) > div {
       animation: modalPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
     }
     #ownerToast:not(.hidden) {
@@ -925,6 +925,22 @@
     <div id="protocolPrintSheet" class="bg-white text-black w-full max-w-2xl p-6 rounded-xl shadow-2xl"></div>
   </div>
 
+  
+  <!-- Custom Delete Confirmation Modal -->
+  <div id="confirmDeleteModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle">
+    <div class="card w-full max-w-sm p-5 space-y-4 border-rose-500/40">
+      <div class="flex items-center justify-between">
+        <h3 id="confirmDeleteTitle" class="text-base font-black text-white">אישור מחיקה</h3>
+        <button type="button" onclick="closeConfirmDeleteModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1" aria-label="סגור">✕</button>
+      </div>
+      <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה מהרשימה החודשית?</p>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" onclick="closeConfirmDeleteModal()" class="px-3.5 py-2 rounded-xl bg-slate-700 text-white text-xs font-bold">ביטול</button>
+        <button type="button" onclick="confirmDeleteScholarshipNow()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black">מחק לצמיתות</button>
+      </div>
+    </div>
+  </div>
+
   <div id="ownerToast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-2xl z-50"></div>
 
   <script>
@@ -1230,7 +1246,7 @@
     function addSelectedFromDir() {
       const month = document.getElementById('schMonthSelect').value;
       const checked = [...document.querySelectorAll('.dir-chk:checked')];
-      if (!checked.length) return alert('סמן לפחות אברך אחד מהמאגר');
+      if (!checked.length) return showOwnerToast('סמן לפחות אברך אחד מהמאגר');
       checked.forEach((cb, idx) => {
         const d = schDirectory[Number(cb.dataset.idx)];
         if (d) {
@@ -1393,12 +1409,14 @@
 
     function deleteScholarship(id) {
       const item = scholarships.find(s => s.id === id);
-      scholarships = scholarships.filter(s => s.id !== id);
-      safeSet('friends_scholarships', JSON.stringify(scholarships));
-      renderScholarships();
-      if (item && item.rowNumber) {
-        sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber }).catch(()=>{});
+      _pendingDeleteScholarshipId = id;
+      const msgEl = document.getElementById('confirmDeleteMsg');
+      if (msgEl) {
+        msgEl.textContent = item
+          ? `האם למחוק את ${item.name} (${item.amount.toLocaleString()} ₪) מרשימת המלגות של החודש?`
+          : 'האם למחוק את המלגאי מהרשימה החודשית?';
       }
+      document.getElementById('confirmDeleteModal').classList.remove('hidden');
     }
 
     function renderScholarships() {
@@ -1715,6 +1733,28 @@
         out += '</tr>';
       }
       return out;
+    }
+
+
+
+    let _pendingDeleteScholarshipId = null;
+    function closeConfirmDeleteModal() {
+      _pendingDeleteScholarshipId = null;
+      const m = document.getElementById('confirmDeleteModal');
+      if (m) m.classList.add('hidden');
+    }
+    function confirmDeleteScholarshipNow() {
+      if (_pendingDeleteScholarshipId === null) return;
+      const id = _pendingDeleteScholarshipId;
+      closeConfirmDeleteModal();
+      const item = scholarships.find(s => s.id === id);
+      scholarships = scholarships.filter(s => s.id !== id);
+      safeSet('friends_scholarships', JSON.stringify(scholarships));
+      renderScholarships();
+      if (item && item.rowNumber) {
+        sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber }).catch(()=>{});
+      }
+      showOwnerToast('המלגאי הוסר מהרשימה ✓');
     }
 
 </script>
