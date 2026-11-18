@@ -33,7 +33,6 @@
 </head>
 <body class="pb-20">
 
-  <!-- Header עם הלוגו שלך -->
   <header class="bg-[#0d1c2e] border-b border-[#1e3a5f] sticky top-0 z-40 shadow-lg">
     <div class="max-w-3xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
       <div class="flex items-center">
@@ -52,7 +51,6 @@
       </div>
     </div>
 
-    <!-- לשוניות בעלים -->
     <nav class="max-w-3xl mx-auto flex overflow-x-auto no-scrollbar border-t border-[#1e3a5f] bg-[#0b192c]">
       <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-3 px-3 text-xs whitespace-nowrap">💰 הכנסות ובנק</button>
       <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">📉 הוצאות</button>
@@ -63,7 +61,7 @@
 
   <main class="max-w-3xl mx-auto p-3 space-y-4">
 
-    <!-- לשונית 1: מעטפה + אשראי + סה"כ ביחד -->
+    <!-- לשונית 1: מעטפה + אשראי + סה"כ יומי (מעטפה + אשראי) -->
     <section id="osec-income" class="owner-section space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
         <div class="card p-3 text-center">
@@ -115,9 +113,9 @@
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
               <tr>
                 <th class="py-2">תאריך</th>
-                <th>✉️ במעטפה</th>
+                <th>✉️ מעטפה</th>
                 <th>💳 אשראי</th>
-                <th>💰 סה״כ ביחד</th>
+                <th>💰 סה״כ יומי</th>
               </tr>
             </thead>
             <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]">
@@ -222,7 +220,6 @@
 
   </main>
 
-  <!-- חלון תצוגה והדפסת נספח ב' על דף לבן נקי -->
   <div id="protocolModal" class="hidden fixed inset-0 bg-black/85 z-50 overflow-y-auto p-3 flex flex-col items-center">
     <div class="no-print w-full max-w-2xl flex items-center justify-between bg-[#13253e] p-3 rounded-xl mb-3 border border-orange-500">
       <span class="text-xs font-bold text-white">נספח ב׳ מוכן לשמירה כ-PDF / הדפסה:</span>
@@ -270,45 +267,54 @@
       if (btn) btn.classList.add('active');
     }
 
-    function formatCleanDate(raw) {
-      if (!raw) return '';
-      const s = String(raw).trim();
-      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
-        const [y, m, d] = s.split('-');
-        return `${d}/${m}/${y}`;
-      }
-      if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(s)) {
-        return s.replace(/[.-]/g, '/');
-      }
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) {
-        return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-      }
-      return s;
-    }
-
-    function extractMonth(raw, sheetName) {
+    function parseDateInfo(raw, sheetName) {
       const s = String(raw || '').trim();
-      let m = s.match(/^\d{4}-(\d{2})-\d{2}/);
-      if (m) return m[1];
-      m = s.match(/^\d{1,2}[./-](\d{1,2})[./-]\d{2,4}/);
-      if (m) return m[1].padStart(2, '0');
-      if (sheetName) {
-        for (const [heb, num] of Object.entries(HEB_MONTHS)) {
-          if (String(sheetName).includes(heb)) return num;
+      let day = '', month = '', year = '';
+
+      if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+        const parts = s.substring(0, 10).split('-');
+        year = parts[0]; month = parts[1]; day = parts[2];
+      } else if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}/.test(s)) {
+        const parts = s.split(/[./-]/);
+        day = parts[0].padStart(2, '0');
+        month = parts[1].padStart(2, '0');
+        year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+      } else {
+        const d = new Date(s);
+        if (!isNaN(d.getTime())) {
+          day = String(d.getDate()).padStart(2, '0');
+          month = String(d.getMonth() + 1).padStart(2, '0');
+          year = String(d.getFullYear());
         }
       }
-      return '';
+
+      if (!month && sheetName) {
+        for (const [heb, num] of Object.entries(HEB_MONTHS)) {
+          if (String(sheetName).includes(heb)) { month = num; break; }
+        }
+      }
+      if (!year && sheetName) {
+        const ym = String(sheetName).match(/20\d{2}/);
+        if (ym) year = ym[0];
+        else if (String(sheetName).includes('25')) year = '2025';
+      }
+
+      return {
+        display: (day && month && year) ? `${day}/${month}/${year}` : s,
+        month,
+        year
+      };
     }
 
     async function refreshOwnerData() {
-      const year = document.getElementById('yearSelect').value;
+      const selectedYear = document.getElementById('yearSelect').value;
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getOwnerData&year=${year}`);
+        const res = await fetch(`${SCRIPT_URL}?action=getOwnerData&year=${selectedYear}`);
         const data = await res.json();
         const rawRows = data.shifts || data.rows || [];
 
         allShifts = rawRows.map(r => {
+          const info = parseDateInfo(r.date, r.sheetName);
           const c2 = r.col2 !== undefined ? r.col2 : r.seller;
           const c3 = r.col3 !== undefined ? r.col3 : r.cash;
           const c4 = r.col4 !== undefined ? r.col4 : r.credit;
@@ -318,21 +324,28 @@
           let envelope = 0, credit = 0;
 
           if (isNumericCol2) {
-            envelope = parseFloat(c2) || 0;
-            credit = parseFloat(c3) || 0;
+            // בעמודה 2 מופיע האשראי ובעמודה 3 המזומן/מעטפה (תיקון ההחלפה ביניהם)
+            credit = parseFloat(c2) || 0;
+            envelope = parseFloat(c3) || 0;
           } else {
+            // מבנה אפליקציית המוכרים: עמודה 4 אשראי, עמודה 5 מעטפה (מחליפה את מזומן קבלה)
             credit = parseFloat(c4) || 0;
             envelope = (c5 !== undefined && c5 !== "" && !isNaN(parseFloat(c5))) ? parseFloat(c5) : (parseFloat(c3) || 0);
           }
 
           return {
-            date: formatCleanDate(r.date),
-            monthNum: extractMonth(r.date, r.sheetName),
+            date: info.display,
+            monthNum: info.month,
+            yearNum: info.year,
             envelope: envelope,
             credit: credit,
             total: envelope + credit
           };
-        }).filter(r => r.envelope > 0 || r.credit > 0 || r.date);
+        }).filter(r => {
+          // סינון קשיח לשנה שנבחרה (מונע ערבוב של נובמבר-דצמבר 2025 בתוך 2026)
+          if (r.yearNum && r.yearNum !== selectedYear) return false;
+          return r.envelope > 0 || r.credit > 0;
+        });
 
         renderIncomeTable();
       } catch (e) {
@@ -371,31 +384,48 @@
     }
 
     async function saveBankDeposit() {
-      const date = document.getElementById('bankDepositDate').value;
-      const amount = parseFloat(document.getElementById('bankDepositAmount').value) || 0;
+      const dateInput = document.getElementById('bankDepositDate');
+      const amtInput = document.getElementById('bankDepositAmount');
+      const date = dateInput.value;
+      const amount = parseFloat(amtInput.value) || 0;
       if (!amount) return;
+
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveBankDeposit', date, amount }) });
-      document.getElementById('bankDepositAmount').value = '';
-      showOwnerToast('הפקדת הבנק נרשמה ✓');
+      // ניקוי השדות לפעם הבאה
+      amtInput.value = '';
+      dateInput.valueAsDate = new Date();
+      showOwnerToast('הפקדת הבנק נרשמה והשדה נוקה ✓');
     }
 
     async function saveExpense() {
-      const date = document.getElementById('expDate').value;
-      const category = document.getElementById('expCat').value;
-      const amount = parseFloat(document.getElementById('expAmount').value) || 0;
-      const note = document.getElementById('expNote').value.trim();
+      const dateInput = document.getElementById('expDate');
+      const catInput = document.getElementById('expCat');
+      const amtInput = document.getElementById('expAmount');
+      const noteInput = document.getElementById('expNote');
+
+      const date = dateInput.value;
+      const category = catInput.value;
+      const amount = parseFloat(amtInput.value) || 0;
+      const note = noteInput.value.trim();
       if (!amount) return;
+
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveExpense', date, category, amount, note }) });
-      document.getElementById('expAmount').value = '';
-      document.getElementById('expNote').value = '';
-      showOwnerToast('ההוצאה נשמרה ✓');
+      // ניקוי השדות לפעם הבאה
+      amtInput.value = '';
+      noteInput.value = '';
+      dateInput.valueAsDate = new Date();
+      showOwnerToast('ההוצאה נשמרה והשדות נוקו ✓');
     }
 
     function addScholarshipRow() {
       const month = document.getElementById('schMonthSelect').value;
-      const name = document.getElementById('schName').value.trim();
-      const tz = document.getElementById('schId').value.trim();
-      const amount = parseFloat(document.getElementById('schAmount').value) || 2500;
+      const nameInput = document.getElementById('schName');
+      const tzInput = document.getElementById('schId');
+      const amtInput = document.getElementById('schAmount');
+
+      const name = nameInput.value.trim();
+      const tz = tzInput.value.trim();
+      const amount = parseFloat(amtInput.value) || 2500;
       if (!name) return;
 
       scholarships.push({
@@ -403,8 +433,10 @@
         verifiedMenachem: false, verifiedGura: false
       });
       localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
-      document.getElementById('schName').value = '';
-      document.getElementById('schId').value = '';
+
+      // ניקוי השדות לפעם הבאה
+      nameInput.value = '';
+      tzInput.value = '';
       renderScholarships();
       showOwnerToast('המלגאי נוסף ✓');
     }
@@ -540,13 +572,17 @@
     }
 
     async function addNewGuide() {
-      const title = document.getElementById('newGuideTitle').value.trim();
-      const steps = document.getElementById('newGuideSteps').value.trim();
+      const titleInput = document.getElementById('newGuideTitle');
+      const stepsInput = document.getElementById('newGuideSteps');
+      const title = titleInput.value.trim();
+      const steps = stepsInput.value.trim();
       if (!title || !steps) return;
-      await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveGuide', title, steps }) });
-      document.getElementById('newGuideTitle').value = '';
-      document.getElementById('newGuideSteps').value = '';
-      showOwnerToast('המדריך פורסם למוכרים ✓');
+
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveGuide', title, steps }) });
+      // ניקוי השדות לפעם הבאה
+      titleInput.value = '';
+      stepsInput.value = '';
+      showOwnerToast('המדריך פורסם והשדות נוקו ✓');
     }
   </script>
 </body>
