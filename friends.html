@@ -301,13 +301,14 @@
         <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
 
-      <!-- הגדרות צ'אט מרחב משותף ומייל מנהל -->
+      <!-- הגדרות מנהל נוכחי (טלפון + מייל) וצ'אט מרחב משותף -->
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white">🔔 התראות לצ׳אט מרחב משותף ומייל מנהל</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <input id="chatWebhookInput" type="url" placeholder="קישור Webhook של צ'אט מרחב משותף" class="input-dark p-2 text-xs" />
-          <input id="managerEmailInput" type="email" placeholder="מייל המנהל לתזכורות" class="input-dark p-2 text-xs" />
-          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות התראה ✓</button>
+        <h2 class="text-base font-black text-white">🔔 פרטי מנהל נוכחי (להחלפה בכל עת) והתראות</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <input id="managerPhoneInput" type="tel" placeholder="נייד מנהל לווצאפ (97250...)" class="input-dark p-2 text-xs font-bold" />
+          <input id="managerEmailInput" type="email" placeholder="מייל מנהל לתזכורות" class="input-dark p-2 text-xs" />
+          <input id="chatWebhookInput" type="url" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs" />
+          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור פרטי מנהל ✓</button>
         </div>
       </div>
 
@@ -368,7 +369,8 @@
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
       document.getElementById('chatWebhookInput').value = localStorage.getItem('friends_chat_webhook') || '';
-      document.getElementById('managerEmailInput').value = localStorage.getItem('friends_manager_email') || '';
+      document.getElementById('managerPhoneInput').value = localStorage.getItem('friends_manager_phone') || '972503265609';
+      document.getElementById('managerEmailInput').value = localStorage.getItem('friends_manager_email') || 'arri.karp@gmail.com';
 
       renderScholarships();
       refreshOwnerData();
@@ -479,6 +481,10 @@
         if (data.managerTasks) {
           managerTasks = data.managerTasks;
           renderManagerTasks();
+        }
+        if (data.notifySettings) {
+          if (data.notifySettings.managerPhone) { localStorage.setItem('friends_manager_phone', data.notifySettings.managerPhone); document.getElementById('managerPhoneInput').value = data.notifySettings.managerPhone; }
+          if (data.notifySettings.managerEmail) { localStorage.setItem('friends_manager_email', data.notifySettings.managerEmail); document.getElementById('managerEmailInput').value = data.notifySettings.managerEmail; }
         }
         if (data.directory) {
           schDirectory = data.directory;
@@ -644,7 +650,9 @@
       renderManagerTasks();
       if (alsoWhatsApp) {
         const msg = `📌 *Friends — משימה למנהל מבעל המקום*\n• נושא: ${title}\n• פירוט: ${details || '-'}\nיש לסמן 'טופל' באפליקציה בסיום.`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        let mPhone = (document.getElementById('managerPhoneInput')?.value || localStorage.getItem('friends_manager_phone') || '972503265609').replace(/[^0-9]/g, '');
+        if (mPhone.startsWith('0')) mPhone = '972' + mPhone.slice(1);
+        window.open(`https://wa.me/${mPhone}?text=${encodeURIComponent(msg)}`, '_blank');
       }
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'addManagerTask', title, details }) });
       showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
@@ -676,10 +684,13 @@
     async function saveNotifySettings() {
       const chatWebhookUrl = document.getElementById('chatWebhookInput').value.trim();
       const managerEmail = document.getElementById('managerEmailInput').value.trim();
+      let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g, '');
+      if (managerPhone.startsWith('0')) managerPhone = '972' + managerPhone.slice(1);
       localStorage.setItem('friends_chat_webhook', chatWebhookUrl);
       localStorage.setItem('friends_manager_email', managerEmail);
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, emailNotify: true }) });
-      showOwnerToast('הגדרות צ׳אט מרחב משותף ומייל נשמרו ✓');
+      localStorage.setItem('friends_manager_phone', managerPhone);
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, emailNotify: true }) });
+      showOwnerToast('פרטי המנהל והתראות עודכנו בכל המערכת ✓');
     }
 
     async function saveBankDeposit() {
