@@ -90,22 +90,7 @@
 
   <main class="max-w-5xl mx-auto px-4 pt-4 space-y-5">
 
-    <!-- Connection & Private WhatsApp Numbers Bar -->
-    <div class="card p-3 space-y-2 text-xs">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#f05323] inline-block"></span>
-          <span class="text-slate-200 font-bold">חיבור מערכת Friends וטלפונים לניתוב הודעות:</span>
-        </div>
-        <div class="flex gap-3"><a href="https://chat.whatsapp.com/IBZb2lBgToG7QYesS6AHp2?s=cl&p=a&iam=2" target="_blank" class="text-emerald-400 underline font-bold">קבוצה משותפת (מנהל+בעלים) ↗</a><a href="https://chat.whatsapp.com/Fs305YmW66bLraDMmO6Nn4?s=cl&p=a&iam=2" target="_blank" class="text-amber-300 underline font-bold">קבוצת בעלים (מנחם+יהודה) ↗</a></div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-        <input id="gasUrlInput" type="url" placeholder="כתובת Web App (.../exec)" class="input-dark text-xs py-1.5" />
-        <input id="managerPhoneInput" type="tel" placeholder="נייד פרטי מנהל (05...)" class="input-dark text-xs py-1.5" />
-        <input id="ownerPhoneInput" type="tel" placeholder="נייד פרטי בעלים מנחם (05...)" class="input-dark text-xs py-1.5" />
-        <button onclick="saveGasUrl()" class="px-3.5 py-1.5 rounded-lg btn-friends font-bold whitespace-nowrap">שמור וחבר ✓</button>
-      </div>
-    </div>
+
 
     <!-- 5 Main Navigation Tabs -->
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -597,6 +582,10 @@
         </label>
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
+          <span>🍫 מילוי חטיפים ושתייה במקררים ובמדפים</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
+          <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
           <span>🔒 בדיקת נעילת דלתות וכיבוי אורות ראשיים</span>
         </label>
       </div>
@@ -608,11 +597,17 @@
   </div>
 
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ\"ש"];
+    const HEB_MONTHS_LIST = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+    const _nowDt = new Date();
+    const _curYear = String(_nowDt.getFullYear());
+    const _curMonthTab = HEB_MONTHS_LIST[_nowDt.getMonth()] + " " + _curYear;
+
     let state = {
       mode: "seller",
-      year: "2026",
-      activeTab: "נובמבר 2026",
+      year: _curYear,
+      activeTab: _curMonthTab,
       queueFilter: "all",
       managerPin: localStorage.getItem("friends_manager_pin") || "1111",
       managerPhone: localStorage.getItem("friends_manager_phone") || "972503265609",
@@ -654,15 +649,24 @@
       faultSnookerPhotoBase64: ""
     };
 
+    function populateMonthSelect(extraTabs) {
+      const ms = document.getElementById("monthSelect");
+      const defaultTabs = [
+        "נובמבר 2026", "דצמבר 2026",
+        ...HEB_MONTHS_LIST.map(m => m + " 2027")
+      ];
+      const merged = [...new Set([...defaultTabs, ...(extraTabs || []), state.activeTab])];
+      ms.innerHTML = merged.map(t => `<option value="${t}" ${t === state.activeTab ? 'selected' : ''}>${t}</option>`).join("");
+    }
+
     function initApp() {
-      document.getElementById("gasUrlInput").value = localStorage.getItem("friends_gas_url") || "";
-      document.getElementById("managerPhoneInput").value = state.managerPhone;
-      document.getElementById("ownerPhoneInput").value = state.ownerPhone;
+      localStorage.setItem("friends_gas_url", SCRIPT_URL);
+      populateMonthSelect();
       populateScreenUnitSelect();
       renderSellersDropdown();
       buildDemoDaysIfEmpty();
       renderAll();
-      if (localStorage.getItem("friends_gas_url")) fetchFromGas();
+      fetchFromGas();
     }
 
     function populateScreenUnitSelect() {
@@ -707,6 +711,7 @@
         const res = await fetch(url + "?action=init&mode=seller&year=" + encodeURIComponent(state.year) + "&monthTab=" + encodeURIComponent(state.activeTab));
         const data = await res.json();
         if (data && data.ok) {
+          if (data.tabs && data.tabs.length) populateMonthSelect(data.tabs);
           state.dailyRows = data.dailyRows || [];
           if (data.faults) {
             state.faults = data.faults;
@@ -739,12 +744,17 @@
 
     function buildDemoDaysIfEmpty() {
       if (state.dailyRows.length > 0) return;
-      for (let d = 1; d <= 30; d++) {
+      const parts = state.activeTab.split(" ");
+      const mIdx = Math.max(0, HEB_MONTHS_LIST.indexOf(parts[0]));
+      const yr = Number(parts[1]) || Number(state.year) || new Date().getFullYear();
+      const daysInMonth = new Date(yr, mIdx + 1, 0).getDate();
+      const mm = String(mIdx + 1).padStart(2, "0");
+      for (let d = 1; d <= daysInMonth; d++) {
         const dd = String(d).padStart(2, "0");
-        const dt = new Date(2026, 10, d);
+        const dt = new Date(yr, mIdx, d);
         state.dailyRows.push({
           rowNumber: d + 1,
-          date: `${dd}/11/2026`,
+          date: `${dd}/${mm}/${yr}`,
           status: dt.getDay() === 5 ? "ליל שבת - סגור" : "פעיל רגיל",
           receiptCash: 0,
           receiptCredit: 0,
@@ -964,7 +974,14 @@
       const daySel = document.getElementById("sellerDaySelect");
       const prev = daySel.value;
       daySel.innerHTML = state.dailyRows.map((r, i) => `<option value="${i}">${r.date} — ${r.status}</option>`).join("");
-      if (prev !== "" && state.dailyRows[prev]) daySel.value = prev;
+      if (prev !== "" && state.dailyRows[prev]) {
+        daySel.value = prev;
+      } else {
+        const now = new Date();
+        const todayStr = String(now.getDate()).padStart(2, "0") + "/" + String(now.getMonth() + 1).padStart(2, "0") + "/" + now.getFullYear();
+        const todayIdx = state.dailyRows.findIndex(r => r.date === todayStr);
+        if (todayIdx >= 0) daySel.value = String(todayIdx);
+      }
       onSellerDaySelect();
       renderQueuesTab();
       renderScreensAndSnookerTabs();
@@ -1046,6 +1063,25 @@
       submitSellerReport(pendingWhatsAppSend);
     }
 
+    
+    function clearSellerClosingForm() {
+      document.getElementById("inpReceiptCash").value = "";
+      document.getElementById("inpReceiptCredit").value = "";
+      document.getElementById("inpEnvelopeActual").value = "";
+      document.getElementById("inpExtraIncome").value = "";
+      document.getElementById("inpExtraDetails").value = "";
+      state.receiptPhotoBase64 = "";
+      state.envelopePhotoBase64 = "";
+      document.getElementById("zFullBadge").textContent = "לא נבחר קובץ";
+      document.getElementById("envPhotoBadge").textContent = "לא נבחר קובץ";
+      document.getElementById("zFullPreviewBox").classList.add("hidden");
+      document.getElementById("envPreviewBox").classList.add("hidden");
+      document.getElementById("detectedNumbersBox").classList.add("hidden");
+      document.getElementById("ocrStatusBadge").textContent = "מוכן לסריקה מקרוב";
+      document.querySelectorAll(".eod-chk").forEach(c => c.checked = false);
+      updateSellerDiff();
+    }
+
     async function submitSellerReport(sendWhatsApp) {
       const idx = Number(document.getElementById("sellerDaySelect").value || 0);
       const r = state.dailyRows[idx];
@@ -1074,37 +1110,41 @@
 
       if (sendWhatsApp) {
         const diff = (Number(r.envelopeActual)||0) - r.receiptCash;
-        sendWhatsAppMessage(`🧾 *Friends — דיווח סגירת קופה*\n• תאריך: ${r.date}\n• מוכר: ${sellerName}\n• מזומן בדוח Z: ${r.receiptCash} ₪\n• אשראי בדוח Z: ${r.receiptCredit} ₪\n• במעטפה בפועל: ${r.envelopeActual} ₪ (הפרש: ${diff} ₪)`);
+        sendWhatsAppMessage(`🧾 *Friends — דיווח סגירת קופה*\n• תאריך: ${r.date}\n• מוכר: ${sellerName}\n• מזומן בדוח Z: ${r.receiptCash} ₪\n• אשראי בדוח Z: ${r.receiptCredit} ₪\n• במעטפה בפועל: ${r.envelopeActual} ₪ (הפרש: ${diff} ₪)\n✓ בוצעו כל 6 משימות סוף היום`);
       }
 
-      const url = localStorage.getItem("friends_gas_url");
+      const payload = {
+        action: "saveSellerReport",
+        year: state.year,
+        monthTab: state.activeTab,
+        rowNumber: r.rowNumber,
+        date: r.date,
+        status: r.status,
+        receiptCash: r.receiptCash,
+        receiptCredit: r.receiptCredit,
+        extraIncome: r.extraIncome,
+        extraDetails: r.extraDetails,
+        envelopeActual: r.envelopeActual,
+        sellerName: r.sellerName,
+        receiptPhotoBase64: state.receiptPhotoBase64,
+        envelopePhotoBase64: state.envelopePhotoBase64
+      };
+
+      // Clear all form fields immediately so tomorrow starts completely clean!
+      clearSellerClosingForm();
+
+      const url = localStorage.getItem("friends_gas_url") || SCRIPT_URL;
       if (url) {
         const btn = document.getElementById("btnSubmitSeller");
         btn.textContent = "שומר דוח Z ומעטפה...";
-        await fetch(url, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "saveSellerReport",
-            year: state.year,
-            monthTab: state.activeTab,
-            rowNumber: r.rowNumber,
-            date: r.date,
-            status: r.status,
-            receiptCash: r.receiptCash,
-            receiptCredit: r.receiptCredit,
-            extraIncome: r.extraIncome,
-            extraDetails: r.extraDetails,
-            envelopeActual: r.envelopeActual,
-            sellerName: r.sellerName,
-            receiptPhotoBase64: state.receiptPhotoBase64,
-            envelopePhotoBase64: state.envelopePhotoBase64
-          })
-        });
-        btn.textContent = "נשמר ונשלחה התראה! ✓";
-        setTimeout(() => { btn.textContent = "שמור דיווח סוף יום ✓"; }, 2000);
-        fetchFromGas();
-      } else if (!sendWhatsApp) {
-        alert("הדיווח נשמר!");
+        try {
+          await fetch(url, { method: "POST", body: JSON.stringify(payload) });
+          btn.textContent = "נשמר והטופס אופס ליום הבא! ✓";
+          setTimeout(() => { btn.textContent = "שמור דיווח סוף יום ✓"; }, 2500);
+          fetchFromGas();
+        } catch (e) {
+          btn.textContent = "שמור דיווח סוף יום ✓";
+        }
       }
     }
 
@@ -1211,17 +1251,22 @@
       if (waiting.length === 0) {
         activeContainer.innerHTML = `<div class="p-3.5 rounded-xl bg-[#07192b] border border-[#1b3a5c] text-xs text-emerald-400 font-bold">אין כרגע ממתינים בתור ${state.queueFilter === 'all' ? '' : 'ל' + state.queueFilter} ✓</div>`;
       } else {
-        activeContainer.innerHTML = waiting.map((q, idx) => {
+        const sonyWaiting = state.queues.filter(x => !x.completed && x.category !== "סנוקר");
+        const snookerWaiting = state.queues.filter(x => !x.completed && x.category === "סנוקר");
+        activeContainer.innerHTML = waiting.map((q) => {
           const liveWait = calcMinutesBetween(q.startTime, nowHHMM);
+          const catList = q.category === "סנוקר" ? snookerWaiting : sonyWaiting;
+          const posInCat = catList.findIndex(x => x.id === q.id) + 1;
+          const aheadCount = Math.max(0, posInCat - 1);
           return `
             <div class="p-3.5 rounded-xl bg-[#07192b] border border-[#f05323]/60 flex flex-wrap items-center justify-between gap-3 text-xs">
               <div class="flex items-center gap-3">
-                <span class="w-7 h-7 rounded-full btn-friends flex items-center justify-center font-extrabold text-sm">${idx + 1}</span>
+                <span class="w-8 h-8 rounded-full btn-friends flex items-center justify-center font-extrabold text-sm" title="מקום בתור">#${posInCat}</span>
                 <div>
                   <span class="px-2 py-0.5 rounded bg-slate-800 text-amber-300 font-extrabold ml-2">${q.category === 'סנוקר' ? '🎱 סנוקר' : '🎮 סוני'}</span>
                   <strong class="text-white text-sm">${q.customerName}</strong>
                   <span class="text-slate-300 mr-2">${q.partyOrNote || ''}</span>
-                  <div class="text-[11px] text-slate-400 mt-0.5">נרשם בשעה <strong>${q.startTime}</strong> (${q.date} ${q.dayOfWeek || ''}) | ממתין כבר <strong class="text-amber-300">${liveWait} דקות</strong></div>
+                  <div class="text-[11px] text-slate-400 mt-0.5">מקום <strong>#${posInCat}</strong> (לפניו: <strong>${aheadCount}</strong>) | נרשם ב-<strong>${q.startTime}</strong> (${q.date} ${q.dayOfWeek || ''}) | ממתין כבר <strong class="text-amber-300">${liveWait} דקות</strong></div>
                 </div>
               </div>
               <label class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 text-emerald-300 font-extrabold cursor-pointer">
@@ -1559,6 +1604,11 @@
 
     function onMonthChange() {
       state.activeTab = document.getElementById("monthSelect").value;
+      const ym = state.activeTab.match(/20\d{2}/);
+      if (ym) state.year = ym[0];
+      state.dailyRows = [];
+      buildDemoDaysIfEmpty();
+      renderAll();
       fetchFromGas();
     }
 
