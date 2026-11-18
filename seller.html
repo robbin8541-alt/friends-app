@@ -3,9 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="google" content="notranslate" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Friends — סוני וסנוקר מקום של חברים | אפליקציית מוכרים ומנהל</title>
-  <meta name="theme-color" content="#061626" />
+        <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0d1c2e" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("friends-color-scheme");
+        var meta = document.querySelector('meta[name="color-scheme"]');
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+        var sysDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var resolved = (saved === "light" || saved === "dark") ? saved : (sysDark ? "dark" : "light");
+        if (meta && (saved === "light" || saved === "dark")) meta.setAttribute("content", saved);
+        if (saved === "light" || saved === "dark") document.documentElement.style.colorScheme = saved;
+        document.documentElement.dataset.theme = resolved;
+        if (themeMeta) themeMeta.setAttribute("content", resolved === "light" ? "#ffffff" : "#061626");
+      } catch (e) {}
+    })();
+  </script>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Friends מוכר" />
@@ -13,10 +29,13 @@
   <link rel="manifest" href="friends-manifest.json" />
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap');
+    /* Heebo loaded via preconnect link in head */
     :root {
       --friends-navy: #061626;
       --friends-card: #0c2238;
@@ -63,6 +82,285 @@
       letter-spacing: 0.2em;
       font-weight: 900;
     }
+      /* MWG_UPGRADED */
+
+    :root {
+      color-scheme: light dark;
+      --bg-canvas: light-dark(#f1f5f9, #061626);
+      --bg-header: light-dark(rgba(255, 255, 255, 0.94), rgba(6, 22, 38, 0.95));
+      --bg-nav: light-dark(#ffffff, #0c2238);
+      --bg-card: light-dark(#ffffff, #0c2238);
+      --bg-card-subtle: light-dark(#f8fafc, #051321);
+      --bg-input: light-dark(#f8fafc, #051321);
+      --border-subtle: light-dark(#cbd5e1, #1b3a5c);
+      --border-input: light-dark(#cbd5e1, #23476e);
+      --text-primary: light-dark(#0f172a, #f8fafc);
+      --text-secondary: light-dark(#334155, #cbd5e1);
+      --text-muted: light-dark(#64748b, #94a3b8);
+      --brand-accent: light-dark(#e04416, #f05323);
+      --sb-track: light-dark(#e2e8f0, #051321);
+      --sb-thumb: light-dark(#94a3b8, #2b4d77);
+    }
+    :root:has(> head > meta[name="color-scheme"][content="dark"]),
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+    }
+    :root:has(> head > meta[name="color-scheme"][content="light"]),
+    :root[data-theme="light"] {
+      color-scheme: light;
+    }
+    html {
+      accent-color: var(--brand-accent);
+      scrollbar-gutter: stable;
+      scrollbar-color: var(--sb-thumb) var(--sb-track);
+    }
+    body {
+      min-height: 100dvh;
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+      background-color: light-dark(#f1f5f9, #061626) !important;
+      color: light-dark(#0f172a, #f8fafc) !important;
+      
+    }
+    :root[data-theme="dark"] body {
+      background-color: #061626 !important;
+      color: #f8fafc !important;
+    }
+    :root[data-theme="light"] body {
+      background-color: #f1f5f9 !important;
+      background-image: none !important;
+      color: #0f172a !important;
+    }
+    h1, h2, h3, h4 {
+      text-wrap: balance;
+    }
+    p {
+      text-wrap: pretty;
+    }
+    button, a, select, input, textarea, [role="button"] {
+      touch-action: manipulation;
+    }
+    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--brand-accent);
+      outline-offset: 2px;
+    }
+    .tabular-nums, #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #qSonyTotal, #qSnookerTotal, #qAvgWait, #lblTotalDaily, #lblEnvelopeDiff {
+      font-variant-numeric: tabular-nums;
+    }
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-height: 36px;
+      padding: 0.35rem 0.65rem;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid light-dark(#cbd5e1, #26466d);
+      background: light-dark(#f8fafc, #091322);
+      color: light-dark(#0f172a, #f8fafc);
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--brand-accent);
+    }
+    .theme-toggle-btn:active {
+      transform: scale(0.97);
+    }
+    #protocolModal, #messageModal, #eodModal {
+      overscroll-behavior: contain;
+    }
+    #protocolModal, #protocolPrintSheet {
+      color-scheme: light;
+    }
+
+    :root:has(> head > meta[name="color-scheme"][content="light"]),
+    :root[data-theme="light"] {
+      & header {
+        background: rgba(255, 255, 255, 0.94) !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important;
+      }
+      & header img[alt="Friends"] {
+        background: #0d1c2e;
+        padding: 4px 10px;
+        border-radius: 12px;
+      }
+      & nav {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+      }
+      & .card {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 18px -6px rgba(15, 23, 42, 0.08) !important;
+      }
+      & .input-dark {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      & .input-dark::placeholder {
+        color: #64748b !important;
+      }
+      & .owner-tab {
+        color: #334155 !important;
+      }
+      & .owner-tab.active {
+        color: #c2410c !important;
+        background: rgba(249, 115, 22, 0.1) !important;
+      }
+      & .bg-\[\#091322\], & .bg-\[\#051321\], & .bg-\[\#07192b\], & .bg-\[\#0a1e33\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] {
+        background-color: #f8fafc !important;
+      }
+      & .bg-\[\#13253e\], & .bg-\[\#0c2238\], & .bg-\[\#13304d\] {
+        background-color: #ffffff !important;
+      }
+      & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .border-\[\#1b3a5c\], & .border-\[\#23476e\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]), & .divide-\[\#1b3a5c\] > :not([hidden]) ~ :not([hidden]) {
+        border-color: #cbd5e1 !important;
+      }
+      & h1, & h2, & h3, & h4 {
+        color: #0f172a !important;
+      }
+      & .text-white:not(.btn-friends):not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-red-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 {
+        color: #0f172a !important;
+      }
+      & .text-slate-300 {
+        color: #334155 !important;
+      }
+      & .text-slate-400 {
+        color: #475569 !important;
+      }
+      & .text-amber-300 {
+        color: #b45309 !important;
+      }
+      & .text-sky-400 {
+        color: #0369a1 !important;
+      }
+      & .text-emerald-400 {
+        color: #047857 !important;
+      }
+      & .text-orange-400 {
+        color: #c2410c !important;
+      }
+      & #tabBtnClosing:not(.btn-friends), & #tabBtnQueues:not(.btn-friends), & #tabBtnScreens:not(.btn-friends), & #tabBtnSnooker:not(.btn-friends), & #tabBtnGuides:not(.btn-friends) {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      & #btnModeSeller:not(.btn-friends), & #btnModeManager:not(.btn-friends), & #qBtnSony:not(.btn-friends), & #qBtnSnooker:not(.btn-friends), & #qBtnAll:not(.btn-friends) {
+        color: #334155 !important;
+      }
+      & header img {
+        background: #061626;
+        padding: 3px 8px;
+        border-radius: 10px;
+      }
+    }
+    @media (prefers-color-scheme: light) {
+      :root:has(> head > meta[name="color-scheme"][content="light dark"]) {
+      & header {
+        background: rgba(255, 255, 255, 0.94) !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important;
+      }
+      & header img[alt="Friends"] {
+        background: #0d1c2e;
+        padding: 4px 10px;
+        border-radius: 12px;
+      }
+      & nav {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+      }
+      & .card {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 18px -6px rgba(15, 23, 42, 0.08) !important;
+      }
+      & .input-dark {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      & .input-dark::placeholder {
+        color: #64748b !important;
+      }
+      & .owner-tab {
+        color: #334155 !important;
+      }
+      & .owner-tab.active {
+        color: #c2410c !important;
+        background: rgba(249, 115, 22, 0.1) !important;
+      }
+      & .bg-\[\#091322\], & .bg-\[\#051321\], & .bg-\[\#07192b\], & .bg-\[\#0a1e33\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] {
+        background-color: #f8fafc !important;
+      }
+      & .bg-\[\#13253e\], & .bg-\[\#0c2238\], & .bg-\[\#13304d\] {
+        background-color: #ffffff !important;
+      }
+      & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .border-\[\#1b3a5c\], & .border-\[\#23476e\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]), & .divide-\[\#1b3a5c\] > :not([hidden]) ~ :not([hidden]) {
+        border-color: #cbd5e1 !important;
+      }
+      & h1, & h2, & h3, & h4 {
+        color: #0f172a !important;
+      }
+      & .text-white:not(.btn-friends):not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-red-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 {
+        color: #0f172a !important;
+      }
+      & .text-slate-300 {
+        color: #334155 !important;
+      }
+      & .text-slate-400 {
+        color: #475569 !important;
+      }
+      & .text-amber-300 {
+        color: #b45309 !important;
+      }
+      & .text-sky-400 {
+        color: #0369a1 !important;
+      }
+      & .text-emerald-400 {
+        color: #047857 !important;
+      }
+      & .text-orange-400 {
+        color: #c2410c !important;
+      }
+      & #tabBtnClosing:not(.btn-friends), & #tabBtnQueues:not(.btn-friends), & #tabBtnScreens:not(.btn-friends), & #tabBtnSnooker:not(.btn-friends), & #tabBtnGuides:not(.btn-friends) {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      & #btnModeSeller:not(.btn-friends), & #btnModeManager:not(.btn-friends), & #qBtnSony:not(.btn-friends), & #qBtnSnooker:not(.btn-friends), & #qBtnAll:not(.btn-friends) {
+        color: #334155 !important;
+      }
+      & header img {
+        background: #061626;
+        padding: 3px 8px;
+        border-radius: 10px;
+      }
+    }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    .icon-svg {
+      width: 1.05em;
+      height: 1.05em;
+      display: inline-block;
+      vertical-align: -0.18em;
+      flex-shrink: 0;
+      margin-inline-end: 0.25rem;
+    }
+    .theme-toggle-btn .icon-svg {
+      margin-inline-end: 0;
+    }
+
   </style>
 </head>
 <body class="min-h-screen pb-24">
@@ -74,7 +372,7 @@
         <img src="data:image/png;base64,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" alt="Friends Logo" class="h-12 sm:h-14 rounded-xl border border-[#23476e] object-contain bg-[#07192b] px-2 py-1 shadow" />
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
+            <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>  סנוקר &amp; סוני <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg> </span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
           <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v6.1)</p>
@@ -82,8 +380,9 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="openMessageModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs font-extrabold">
-          💬 שלח הודעה/שאלה למנהלים
+        <button type="button" id="themeToggleBtn" onclick="toggleColorScheme()" class="theme-toggle-btn" aria-label="החלף ערכת נושא"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> <span class="hidden sm:inline">בהיר</span></button>
+        <button type="button" onclick="openMessageModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs font-extrabold">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>  שלח הודעה/שאלה למנהלים
         </button>
         <!-- Mode Switch: Seller vs Manager (PIN 1111) -->
         <div class="flex items-center bg-[#0a1e33] p-1 rounded-xl border border-[#23476e] text-xs font-bold">
@@ -101,11 +400,11 @@
 
     <!-- 5 Main Navigation Tabs -->
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-      <button onclick="showSellerTab('closing')" id="tabBtnClosing" class="py-2.5 px-3 rounded-xl btn-friends font-extrabold text-xs sm:text-sm shadow">🧾 סגירת קופה (Z ומעטפה)</button>
-      <button onclick="showSellerTab('queues')" id="tabBtnQueues" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]">⏳ תורים (סוני / סנוקר) <span id="badgeQueueCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-[#f05323] text-white text-[10px]">0</span></button>
-      <button onclick="showSellerTab('screens')" id="tabBtnScreens" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]">🎮 24 מסכים ושלטים <span id="badgeScreensCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
-      <button onclick="showSellerTab('snooker')" id="tabBtnSnooker" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]">🎱 4 שולחנות סנוקר <span id="badgeSnookerCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
-      <button onclick="showSellerTab('guides')" id="tabBtnGuides" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c] col-span-2 sm:col-span-1">🛠️ איך מסדרים?</button>
+      <button onclick="showSellerTab('closing')" id="tabBtnClosing" class="py-2.5 px-3 rounded-xl btn-friends font-extrabold text-xs sm:text-sm shadow"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>  סגירת קופה (Z ומעטפה)</button>
+      <button onclick="showSellerTab('queues')" id="tabBtnQueues" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>  תורים (סוני / סנוקר) <span id="badgeQueueCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-[#f05323] text-white text-[10px]">0</span></button>
+      <button onclick="showSellerTab('screens')" id="tabBtnScreens" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>  24 מסכים ושלטים <span id="badgeScreensCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
+      <button onclick="showSellerTab('snooker')" id="tabBtnSnooker" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>  4 שולחנות סנוקר <span id="badgeSnookerCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
+      <button onclick="showSellerTab('guides')" id="tabBtnGuides" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c] col-span-2 sm:col-span-1"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>  איך מסדרים?</button>
     </div>
 
     <!-- ================================================= -->
@@ -115,7 +414,7 @@
       <div class="card p-5 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
           <div>
-            <h2 class="text-lg font-extrabold text-white">🧾 סגירת קופה בסוף יום — מוכר</h2>
+            <h2 class="text-lg font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>  סגירת קופה בסוף יום — מוכר</h2>
             <p class="text-xs text-slate-300">1. צלם מקרוב רק את שורות האשראי והמזומן למילוי אוטומטי | 2. העלה תמונה או קובץ של דוח ה-Z המלא והמעטפה</p>
           </div>
           <select id="monthSelect" onchange="onMonthChange()" class="input-dark !w-auto text-xs font-bold py-1.5">
@@ -151,7 +450,7 @@
         <div class="p-4 rounded-xl bg-[#07192b] border border-[#f05323]/50 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 class="text-sm font-extrabold text-[#ff764d]">🔍 שלב 1 (אוטומטי): צילום מקרוב (בקרבה) רק של שורות האשראי והמזומן</h3>
+              <h3 class="text-sm font-extrabold text-[#ff764d]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>  שלב 1 (אוטומטי): צילום מקרוב (בקרבה) רק של שורות האשראי והמזומן</h3>
               <p class="text-xs text-slate-300">צלם מקרוב רק את שורות ה<strong>אשראי</strong> וה<strong>מזומן</strong> מתוך דוח ה-Z — והמערכת תמלא לבד את שני הסכומים!</p>
             </div>
             <span id="ocrStatusBadge" class="px-2.5 py-1 rounded-full bg-[#051321] text-amber-300 text-xs font-bold border border-[#f05323]/40">מוכן לסריקה מקרוב</span>
@@ -162,10 +461,10 @@
 
           <div class="flex flex-wrap gap-2">
             <button type="button" onclick="document.getElementById('ocrCameraInput').click()" class="flex-1 py-2.5 px-4 rounded-xl btn-friends font-extrabold text-xs shadow">
-              📷 צלם מקרוב (רק אשראי ומזומן) לסריקה אוטומטית
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>  צלם מקרוב (רק אשראי ומזומן) לסריקה אוטומטית
             </button>
             <button type="button" onclick="document.getElementById('ocrFileInput').click()" class="py-2.5 px-4 rounded-xl bg-[#0c2238] hover:bg-[#13304d] border border-[#23476e] text-slate-200 font-bold text-xs">
-              📁 בחר תמונה / קובץ מהמכשיר
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>  בחר תמונה / קובץ מהמכשיר
             </button>
           </div>
 
@@ -179,17 +478,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2.5">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold text-emerald-400">📄 תיעוד 1: צילום / קובץ דוח Z מלא (שיראו הכל)</span>
+              <span class="text-xs font-extrabold text-emerald-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>  תיעוד 1: צילום / קובץ דוח Z מלא (שיראו הכל)</span>
               <span id="zFullBadge" class="text-[11px] text-slate-400">לא נבחר קובץ</span>
             </div>
             <input id="zFullCameraInput" type="file" accept="image/*" capture="environment" onchange="onZFullSelected(this)" class="hidden" />
             <input id="zFullFileInput" type="file" accept="image/*,application/pdf,*/*" onchange="onZFullSelected(this)" class="hidden" />
             <div class="grid grid-cols-2 gap-2">
               <button type="button" onclick="document.getElementById('zFullCameraInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-emerald-500/40 text-emerald-300 text-xs font-bold">
-                📷 צלם דוח Z מלא
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>  צלם דוח Z מלא
               </button>
               <button type="button" onclick="document.getElementById('zFullFileInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-[#23476e] text-slate-200 text-xs font-bold">
-                📁 העלה מהקבצים
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>  העלה מהקבצים
               </button>
             </div>
             <div id="zFullPreviewBox" class="hidden pt-1">
@@ -199,17 +498,17 @@
 
           <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2.5">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold text-sky-400">✉️ תיעוד 2: צילום / קובץ מעטפה (או מעטפה + דוח Z יחד)</span>
+              <span class="text-xs font-extrabold text-sky-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>  תיעוד 2: צילום / קובץ מעטפה (או מעטפה + דוח Z יחד)</span>
               <span id="envPhotoBadge" class="text-[11px] text-slate-400">לא נבחר קובץ</span>
             </div>
             <input id="envCameraInput" type="file" accept="image/*" capture="environment" onchange="onEnvelopeSelected(this)" class="hidden" />
             <input id="envFileInput" type="file" accept="image/*,application/pdf,*/*" onchange="onEnvelopeSelected(this)" class="hidden" />
             <div class="grid grid-cols-2 gap-2">
               <button type="button" onclick="document.getElementById('envCameraInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-sky-500/40 text-sky-300 text-xs font-bold">
-                📷 צלם מעטפה ודוח Z
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>  צלם מעטפה ודוח Z
               </button>
               <button type="button" onclick="document.getElementById('envFileInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-[#23476e] text-slate-200 text-xs font-bold">
-                📁 העלה מהקבצים
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>  העלה מהקבצים
               </button>
             </div>
             <div id="envPreviewBox" class="hidden pt-1">
@@ -255,8 +554,8 @@
             הפרש מעטפה: <strong id="lblEnvelopeDiff" class="text-sm font-extrabold text-slate-400">טרם הוזן</strong>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="openEodChecklistModal(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
-            <button type="button" onclick="openEodChecklistModal(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
+            <button type="button" onclick="openEodChecklistModal(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> </button>
+            <button type="button" onclick="openEodChecklistModal(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>  שמור ושלח לקבוצת הווצאפ</button>
           </div>
         </div>
       </div>
@@ -269,21 +568,21 @@
       <div class="card p-5 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#1b3a5c] pb-3">
           <div>
-            <h2 class="text-lg font-extrabold text-white">⏳ ניהול תורים וזמני המתנה — סוני &amp; סנוקר</h2>
+            <h2 class="text-lg font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>  ניהול תורים וזמני המתנה — סוני &amp; סנוקר</h2>
             <p class="text-xs text-slate-300">רשום לקוחות שמחכים בתור, החלף בין תור לסוני ותור לסנוקר, וסמן V כשנכנסו לשחק (המערכת מחשבת אוטומטית באיזה יום וכמה זמן חיכו!)</p>
           </div>
 
           <!-- Switch between Sony Queue and Snooker Queue -->
           <div class="flex items-center bg-[#051321] p-1 rounded-xl border border-[#23476e] text-xs font-extrabold">
             <button onclick="setQueueFilter('all')" id="qBtnAll" class="px-3 py-1.5 rounded-lg btn-friends">הכל</button>
-            <button onclick="setQueueFilter('סוני')" id="qBtnSony" class="px-3 py-1.5 rounded-lg text-slate-300">🎮 תור לסוני</button>
-            <button onclick="setQueueFilter('סנוקר')" id="qBtnSnooker" class="px-3 py-1.5 rounded-lg text-slate-300">🎱 תור לסנוקר</button>
+            <button onclick="setQueueFilter('סוני')" id="qBtnSony" class="px-3 py-1.5 rounded-lg text-slate-300"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>  תור לסוני</button>
+            <button onclick="setQueueFilter('סנוקר')" id="qBtnSnooker" class="px-3 py-1.5 rounded-lg text-slate-300"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>  תור לסנוקר</button>
           </div>
         </div>
 
         <!-- Add to Queue Form -->
         <div class="p-4 rounded-xl bg-[#07192b] border border-[#23476e] space-y-3">
-          <h3 class="text-sm font-extrabold text-[#ff764d]">➕ הוספת ממתין חדש לתור</h3>
+          <h3 class="text-sm font-extrabold text-[#ff764d]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>  הוספת ממתין חדש לתור</h3>
           <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
             <div>
               <label class="block text-xs text-slate-300 mb-1 font-bold">מחכה ל:</label>
@@ -318,7 +617,7 @@
 
         <!-- Completed Queue History & Daily Wait Time Stats -->
         <div class="pt-4 border-t border-[#1b3a5c] space-y-3">
-          <h3 class="text-sm font-extrabold text-sky-400">📊 סיכום תורים וזמני המתנה לפי ימים (באיזה יום היה תור וכמה חיכו)</h3>
+          <h3 class="text-sm font-extrabold text-sky-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>  סיכום תורים וזמני המתנה לפי ימים (באיזה יום היה תור וכמה חיכו)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-right">
               <thead>
@@ -346,7 +645,7 @@
       <div class="card p-5 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
           <div>
-            <h2 class="text-lg font-extrabold text-white">🎮 מפת 24 מסכים ושלטים (סוני) — דיווח ומעקב תקלות</h2>
+            <h2 class="text-lg font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>  מפת 24 מסכים ושלטים (סוני) — דיווח ומעקב תקלות</h2>
             <p class="text-xs text-slate-300">לחץ על מספר המסך שבו יש בעיה (מסך / שלט / סוני) כדי לדווח או לראות מה התקלה</p>
           </div>
           <div class="flex items-center gap-3 text-xs">
@@ -358,7 +657,7 @@
         <div id="screensGrid" class="grid grid-cols-4 sm:grid-cols-6 gap-2.5"></div>
 
         <div class="p-4 rounded-xl bg-[#07192b] border border-[#23476e] space-y-3">
-          <h3 class="text-sm font-extrabold text-[#ff764d]">➕ דיווח תקלה במסך / שלט / סוני</h3>
+          <h3 class="text-sm font-extrabold text-[#ff764d]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>  דיווח תקלה במסך / שלט / סוני</h3>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div>
               <label class="block text-xs text-slate-300 mb-1 font-bold">בחר מסך (1–24)</label>
@@ -382,8 +681,8 @@
               <input id="faultScreenCam" type="file" accept="image/*" capture="environment" onchange="onFaultFileSelected(this, 'screen')" class="hidden" />
               <input id="faultScreenFile" type="file" accept="image/*,application/pdf,*/*" onchange="onFaultFileSelected(this, 'screen')" class="hidden" />
               <div class="flex gap-1.5">
-                <button type="button" onclick="document.getElementById('faultScreenCam').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📷 צלם</button>
-                <button type="button" onclick="document.getElementById('faultScreenFile').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📁 קובץ</button>
+                <button type="button" onclick="document.getElementById('faultScreenCam').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>  צלם</button>
+                <button type="button" onclick="document.getElementById('faultScreenFile').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>  קובץ</button>
               </div>
               <span id="faultScreenFileBadge" class="text-[10px] text-emerald-400"></span>
             </div>
@@ -408,7 +707,7 @@
       <div class="card p-5 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
           <div>
-            <h2 class="text-lg font-extrabold text-white">🎱 4 שולחנות סנוקר — דיווח ומעקב תקלות</h2>
+            <h2 class="text-lg font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>  4 שולחנות סנוקר — דיווח ומעקב תקלות</h2>
             <p class="text-xs text-slate-300">לחץ על שולחן סנוקר (1 עד 4) לדיווח על מקל, ראש מקל, לבד, כדורים או תאורה</p>
           </div>
         </div>
@@ -416,7 +715,7 @@
         <div id="snookerGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
 
         <div class="p-4 rounded-xl bg-[#07192b] border border-[#23476e] space-y-3">
-          <h3 class="text-sm font-extrabold text-[#ff764d]">➕ דיווח תקלה בשולחן סנוקר</h3>
+          <h3 class="text-sm font-extrabold text-[#ff764d]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>  דיווח תקלה בשולחן סנוקר</h3>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div>
               <label class="block text-xs text-slate-300 mb-1 font-bold">בחר שולחן סנוקר</label>
@@ -445,8 +744,8 @@
               <input id="faultSnookerCam" type="file" accept="image/*" capture="environment" onchange="onFaultFileSelected(this, 'snooker')" class="hidden" />
               <input id="faultSnookerFile" type="file" accept="image/*,application/pdf,*/*" onchange="onFaultFileSelected(this, 'snooker')" class="hidden" />
               <div class="flex gap-1.5">
-                <button type="button" onclick="document.getElementById('faultSnookerCam').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📷 צלם</button>
-                <button type="button" onclick="document.getElementById('faultSnookerFile').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📁 קובץ</button>
+                <button type="button" onclick="document.getElementById('faultSnookerCam').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>  צלם</button>
+                <button type="button" onclick="document.getElementById('faultSnookerFile').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>  קובץ</button>
               </div>
               <span id="faultSnookerFileBadge" class="text-[10px] text-emerald-400"></span>
             </div>
@@ -470,7 +769,7 @@
     <section id="tabGuides" class="hidden space-y-4">
       <div class="card p-5 space-y-4">
         <div class="border-b border-[#1b3a5c] pb-3">
-          <h2 class="text-lg font-extrabold text-white">🛠️ מדריכים מהירים: איך מסדרים תקלות נפוצות?</h2>
+          <h2 class="text-lg font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>  מדריכים מהירים: איך מסדרים תקלות נפוצות?</h2>
           <p class="text-xs text-slate-300">לפני שמשביתים מסך, שלט או שולחן — בדוק כאן איך פותרים את הבעיה תוך דקה</p>
         </div>
         <div id="guidesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
@@ -484,15 +783,15 @@
       <div class="card p-5 space-y-4 border-emerald-500/50">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
           <div>
-            <h2 class="text-base font-extrabold text-emerald-400">🔑 אזור מנהל מקום — אישור מעטפות (V) + שליחת הודעת אישור לפלאפון + תקלות</h2>
+            <h2 class="text-base font-extrabold text-emerald-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>  אזור מנהל מקום — אישור מעטפות (V) + שליחת הודעת אישור לפלאפון + תקלות</h2>
             <p class="text-xs text-slate-300">ברגע שתסמן V על מעטפה, נשלחת התראה אוטומטית לפלאפון וניתן לשלוח גם הודעת וואטסאפ בלחיצה</p>
           </div>
-          <div class="flex gap-2"><button onclick="changeGasUrlPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-sky-300 border border-[#23476e]">🔗 קישור שיטס (Web App)</button><button onclick="changePinPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-slate-200 border border-[#23476e]">🔑 החלף קוד מנהל</button></div>
+          <div class="flex gap-2"><button onclick="changeGasUrlPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-sky-300 border border-[#23476e]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>  קישור שיטס (Web App)</button><button onclick="changePinPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-slate-200 border border-[#23476e]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>  החלף קוד מנהל</button></div>
         </div>
 
         <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-extrabold text-sky-300">📌 משימות והודעות מבעל המקום (מנחם) — סמן 'טופל' כדי לעצור תזכורות</h3>
+            <h3 class="text-sm font-extrabold text-sky-300"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>  משימות והודעות מבעל המקום (מנחם) — סמן 'טופל' כדי לעצור תזכורות</h3>
             <span id="managerTasksCount" class="text-xs font-bold text-slate-300">0 פתוחות</span>
           </div>
           <div id="managerTasksList" class="space-y-2 text-xs"></div>
@@ -500,7 +799,7 @@
 
         <div class="p-4 rounded-xl bg-[#07192b] border border-rose-500/30 space-y-2.5">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-extrabold text-rose-300">⚠️ כל התקלות וההודעות הפתוחות למנהל (מסכים, סנוקר והודעות מוכרים)</h3>
+            <h3 class="text-sm font-extrabold text-rose-300"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>  כל התקלות וההודעות הפתוחות למנהל (מסכים, סנוקר והודעות מוכרים)</h3>
             <span id="managerFaultsCount" class="text-xs font-bold text-slate-300">0 פתוחות</span>
           </div>
           <div id="managerFaultsList" class="space-y-2 text-xs"></div>
@@ -532,8 +831,8 @@
   <div id="messageModal" class="fixed inset-0 z-50 bg-black/80 hidden flex items-center justify-center p-4">
     <div class="card p-5 max-w-md w-full space-y-3 border-[#f05323]">
       <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
-        <h3 class="text-base font-extrabold text-white">💬 שליחת הודעה / שאלה למנהלים</h3>
-        <button onclick="closeMessageModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+        <h3 class="text-base font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>  שליחת הודעה / שאלה למנהלים</h3>
+        <button onclick="closeMessageModal()" class="text-slate-400 hover:text-white text-sm"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> </button>
       </div>
       <p class="text-xs text-slate-300">בחר למי לשלוח את ההודעה — למנהל בפרטי, לבעלים בפרטי, או לשניהם בקבוצה המשותפת:</p>
       <div class="grid grid-cols-2 gap-2">
@@ -564,7 +863,7 @@
       </div>
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="sendGeneralMessage(false)" class="px-4 py-2 rounded-xl btn-friends text-xs font-extrabold">שלח למערכת ולמייל</button>
-        <button onclick="sendGeneralMessage(true)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">📲 שלח גם בוואטסאפ למנהל</button>
+        <button onclick="sendGeneralMessage(true)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>  שלח גם בוואטסאפ למנהל</button>
       </div>
     </div>
   </div>
@@ -574,39 +873,39 @@
   <div id="eodModal" class="fixed inset-0 z-[999] bg-black/85 hidden flex items-center justify-center p-4">
     <div class="card p-5 max-w-md w-full space-y-4 border-[#f05323]">
       <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
-        <h3 class="text-base font-extrabold text-amber-300">✅ משימות סוף יום לפני סגירת קופה</h3>
-        <button type="button" onclick="closeEodModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+        <h3 class="text-base font-extrabold text-amber-300"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>  משימות סוף יום לפני סגירת קופה</h3>
+        <button type="button" onclick="closeEodModal()" class="text-slate-400 hover:text-white text-sm"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> </button>
       </div>
       <p class="text-xs text-slate-300">סמן V על כל המשימות שבוצעו כדי לאשר ולשלוח את סגירת הקופה:</p>
       <div class="space-y-2 text-xs">
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
-          <span>❄️ כיבוי מזגנים בכל המתחם</span>
+          <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>  כיבוי מזגנים בכל המתחם</span>
         </label>
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
-          <span>🎮 כיבוי 24 מסכים וקונסולות הסוני + טעינת שלטים</span>
+          <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>  כיבוי 24 מסכים וקונסולות הסוני + טעינת שלטים</span>
         </label>
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
-          <span>🎱 איסוף כדורים ומקלות ב-4 שולחנות הסנוקר + כיבוי תאורה</span>
+          <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>  איסוף כדורים ומקלות ב-4 שולחנות הסנוקר + כיבוי תאורה</span>
         </label>
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
-          <span>🧹 ניקיון דלפק, פינוי אשפה וסידור שתייה</span>
+          <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>  ניקיון דלפק, פינוי אשפה וסידור שתייה</span>
         </label>
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
-          <span>🍫 מילוי חטיפים ושתייה במקררים ובמדפים</span>
+          <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8"/><path d="M5 8h14"/><path d="M7 15a6.47 6.47 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/><path d="m12 8 1-6h2"/></svg>  מילוי חטיפים ושתייה במקררים ובמדפים</span>
         </label>
         <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
           <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
-          <span>🔒 בדיקת נעילת דלתות וכיבוי אורות ראשיים</span>
+          <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>  בדיקת נעילת דלתות וכיבוי אורות ראשיים</span>
         </label>
       </div>
       <div class="flex justify-end gap-2 pt-2 border-t border-[#1b3a5c]">
         <button type="button" onclick="closeEodModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">חזור</button>
-        <button type="button" id="btnConfirmEod" onclick="confirmAndSubmitEod()" disabled class="px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold opacity-40 cursor-not-allowed">🔒 סמן את כל ה-V לאישור סגירה</button>
+        <button type="button" id="btnConfirmEod" onclick="confirmAndSubmitEod()" disabled class="px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold opacity-40 cursor-not-allowed"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>  סמן את כל ה-V לאישור סגירה</button>
       </div>
     </div>
   </div>
@@ -1668,6 +1967,83 @@
     }
 
     window.addEventListener("DOMContentLoaded", initApp);
-  </script>
+
+
+
+  // --- Modern Web Guidance: Color Scheme Toggle (System / Light / Dark) ---
+  (function initThemeToggle() {
+    var STORAGE_KEY = "friends-color-scheme";
+    var memScheme = null;
+    var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+    function getSystemScheme() {
+      return (mql && mql.matches) ? "dark" : "light";
+    }
+
+    function getStoredScheme() {
+      try {
+        var v = window.localStorage.getItem(STORAGE_KEY);
+        return (v === "light" || v === "dark") ? v : memScheme;
+      } catch (e) {
+        return memScheme;
+      }
+    }
+
+    function applyScheme(stored) {
+      var meta = document.querySelector('meta[name="color-scheme"]');
+      var themeMeta = document.querySelector('meta[name="theme-color"]');
+      var content = stored || "light dark";
+      var resolved = stored || getSystemScheme();
+      if (meta) meta.setAttribute("content", content);
+      document.documentElement.style.colorScheme = stored || "";
+      document.documentElement.dataset.theme = resolved;
+      if (themeMeta) themeMeta.setAttribute("content", resolved === "light" ? "#ffffff" : "#061626");
+
+      var btn = document.getElementById("themeToggleBtn");
+      if (btn) {
+        var isDark = resolved === "dark";
+        btn.setAttribute("aria-pressed", String(isDark));
+        btn.setAttribute("aria-label", isDark ? "עבור למצב בהיר" : "עבור למצב כהה");
+        btn.setAttribute("title", isDark ? "מצב כהה פעיל — לחץ למצב בהיר" : "מצב בהיר פעיל — לחץ למצב כהה");
+        btn.innerHTML = isDark
+          ? '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><span class="hidden sm:inline">בהיר</span>'
+          : '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="hidden sm:inline">כהה</span>';
+      }
+    }
+
+    window.toggleColorScheme = function () {
+      var stored = getStoredScheme();
+      var current = stored || getSystemScheme();
+      var target = current === "dark" ? "light" : "dark";
+      var sys = getSystemScheme();
+      memScheme = (target === sys) ? null : target;
+      try {
+        if (target === sys) {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } else {
+          window.localStorage.setItem(STORAGE_KEY, target);
+        }
+      } catch (e) {}
+      applyScheme(memScheme);
+    };
+
+    if (mql) {
+      var onChange = function () { applyScheme(getStoredScheme()); };
+      if (mql.addEventListener) mql.addEventListener("change", onChange);
+      else if (mql.addListener) mql.addListener(onChange);
+    }
+
+    window.addEventListener("storage", function (ev) {
+      if (ev.key === STORAGE_KEY) applyScheme(getStoredScheme());
+    });
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function () { applyScheme(getStoredScheme()); });
+    } else {
+      applyScheme(getStoredScheme());
+    }
+  })();
+
+</script>
 </body>
 </html>
