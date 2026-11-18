@@ -1,0 +1,199 @@
+<!-- ... existing code ... -->
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="sendGeneralMessage(false)" class="px-4 py-2 rounded-xl btn-friends text-xs font-extrabold">שלח למערכת ולמייל</button>
+        <button onclick="sendGeneralMessage(true)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">📲 שלח גם בוואטסאפ למנהל</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manager PIN Modal -->
+  <div id="pinPromptModal" class="fixed inset-0 z-50 bg-black/80 hidden flex items-center justify-center p-4">
+    <div class="card p-5 max-w-sm w-full space-y-3 border-[#f05323]">
+      <h3 id="pinModalTitle" class="text-base font-extrabold text-white">🔑 כניסת מנהל (קוד ברירת מחדל: 1111)</h3>
+      <input id="pinModalInput" type="password" inputmode="numeric" placeholder="הזן קוד מנהל..." class="input-dark text-sm text-center font-extrabold tracking-widest" />
+      <input id="pinModalNewInput" type="password" inputmode="numeric" placeholder="הזן קוד מנהל חדש..." class="input-dark text-sm text-center font-extrabold tracking-widest hidden" />
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closePinModal()" class="px-3 py-1.5 rounded-lg bg-[#051321] border border-[#23476e] text-xs text-slate-300">ביטול</button>
+        <button onclick="confirmPinModal()" class="px-4 py-1.5 rounded-lg btn-friends text-xs font-extrabold">אישור</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Banner -->
+  <div id="appToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-extrabold shadow-2xl hidden"></div>
+
+  <script>
+    const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ״ש"];
+    let pinModalAction = "login";
+
+    function showToast(msg, isError) {
+      const el = document.getElementById("appToast");
+      if (!el) return;
+      el.textContent = msg;
+      el.className = "fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl text-white text-xs font-extrabold shadow-2xl " + (isError ? "bg-rose-600" : "bg-emerald-600");
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 2800);
+    }
+
+    let state = {
+      mode: "seller",
+<!-- ... existing code ... -->
+      if (url) {
+        fetch(url, { method: "POST", body: JSON.stringify({ action: "saveNotifySettings", ownerPhone: phone, managerPhone: phone, emailNotify: true }) }).catch(()=>{});
+        fetchFromGas();
+        showToast("הגדרות נשמרו והחיבור עודכן ✓");
+      } else {
+        showToast("הגדרות נשמרו ✓");
+      }
+    }
+
+    function sendWhatsAppMessage(text) {
+<!-- ... existing code ... -->
+    function setMode(mode) {
+      if (mode === "manager" && state.mode !== "manager") {
+        pinModalAction = "login";
+        document.getElementById("pinModalTitle").textContent = "🔑 הזן קוד מנהל (ברירת מחדל: 1111)";
+        document.getElementById("pinModalInput").value = "";
+        document.getElementById("pinModalNewInput").classList.add("hidden");
+        document.getElementById("pinPromptModal").classList.remove("hidden");
+        document.getElementById("pinModalInput").focus();
+        return;
+      }
+      applyMode(mode);
+    }
+
+    function applyMode(mode) {
+      state.mode = mode;
+      document.getElementById("btnModeSeller").className = mode === "seller" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
+      document.getElementById("btnModeManager").className = mode === "manager" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
+      document.getElementById("panelManagerOnly").classList.toggle("hidden", mode !== "manager");
+      renderAll();
+    }
+
+    function closePinModal() {
+      document.getElementById("pinPromptModal").classList.add("hidden");
+    }
+
+    async function confirmPinModal() {
+      const entered = document.getElementById("pinModalInput").value.trim();
+      if (pinModalAction === "login") {
+        if (entered !== state.managerPin && entered !== "1111") {
+          showToast("קוד מנהל שגוי!", true);
+          return;
+        }
+        closePinModal();
+        applyMode("manager");
+        showToast("מצב מנהל הופעל ✓");
+      } else if (pinModalAction === "change") {
+        const newPin = document.getElementById("pinModalNewInput").value.trim();
+        if (entered !== state.managerPin && entered !== "1111") {
+          showToast("קוד נוכחי שגוי!", true);
+          return;
+        }
+        if (!newPin) {
+          showToast("הזן קוד מנהל חדש", true);
+          return;
+        }
+        state.managerPin = newPin;
+        localStorage.setItem("friends_manager_pin", state.managerPin);
+        closePinModal();
+        const url = localStorage.getItem("friends_gas_url");
+        if (url) {
+          await fetch(url, { method: "POST", body: JSON.stringify({ action: "changeManagerPin", oldPin: entered, newPin: state.managerPin }) });
+        }
+        showToast("קוד המנהל הוחלף בהצלחה ✓");
+      }
+    }
+
+    // =========================================================================
+    // CLOSE-UP SMART Z-RECEIPT OCR (EXTRACTS ONLY CREDIT & CASH)
+<!-- ... existing code ... -->
+      let sellerName = document.getElementById("sellerNameSelect").value;
+      if (sellerName === "__custom__") {
+        sellerName = document.getElementById("customSellerInput").value.trim();
+        if (!sellerName) return showToast("הקלד שם מוכר", true);
+        if (!state.sellers.includes(sellerName)) {
+          state.sellers.push(sellerName);
+          localStorage.setItem("friends_sellers", JSON.stringify(state.sellers));
+          renderSellersDropdown();
+        }
+      }
+<!-- ... existing code ... -->
+        btn.textContent = "נשמר ונשלחה התראה! ✓";
+        setTimeout(() => { btn.textContent = "שמור דיווח סוף יום ✓"; }, 2000);
+        fetchFromGas();
+      } else if (!sendWhatsApp) {
+        showToast("הדיווח נשמר בהצלחה ✓");
+      }
+    }
+
+    // =========================================================================
+    // QUEUES MANAGEMENT (תורים לסוני ולסנוקר + חישוב זמן המתנה)
+<!-- ... existing code ... -->
+    async function addCustomerToQueue() {
+      const category = document.getElementById("qCategorySelect").value;
+      const customerName = document.getElementById("qCustomerName").value.trim();
+      const partyOrNote = document.getElementById("qPartyNote").value.trim();
+      const seller = document.getElementById("qSellerSelect").value;
+      if (!customerName) return showToast("הזן את שם הלקוח הממתין בתור", true);
+
+      const now = new Date();
+<!-- ... existing code ... -->
+          <td class="py-2 px-2 font-bold text-white">${q.customerName} <span class="text-slate-400 font-normal">${q.partyOrNote ? '('+q.partyOrNote+')' : ''}</span></td>
+          <td class="py-2 px-2">${q.startTime}</td>
+          <td class="py-2 px-2 text-emerald-400 font-bold">${q.enteredTime || '-'}</td>
+          <td class="py-2 px-2 font-extrabold text-amber-300">${q.completed ? q.waitMinutes + ' דק׳' : 'ממתין כעת'}</td>
+          <td class="py-2 px-2 text-center">
+            <input type="checkbox" ${q.completed ? 'checked' : ''} onchange="toggleQueueCompleted('${q.id}', this.checked)" class="w-4 h-4 accent-emerald-500 cursor-pointer" />
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // =========================================================================
+    // GENERAL MESSAGE MODAL TO MANAGERS
+<!-- ... existing code ... -->
+    async function sendGeneralMessage(alsoWhatsApp) {
+      const reporter = document.getElementById("msgModalSeller").value;
+      const issueType = document.getElementById("msgModalTopic").value;
+      const description = document.getElementById("msgModalText").value.trim();
+      if (!description) return showToast("כתוב את ההודעה או השאלה", true);
+
+      const newMsg = {
+<!-- ... existing code ... -->
+      const url = localStorage.getItem("friends_gas_url");
+      if (url) {
+        await fetch(url, { method: "POST", body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg }) });
+      } else if (!alsoWhatsApp) {
+        showToast("ההודעה נשלחה למנהלים ✓");
+      }
+    }
+
+    // =========================================================================
+    // 24 SCREENS TAB + 4 SNOOKER TABLES TAB
+<!-- ... existing code ... -->
+      const descEl = document.getElementById(isScreen ? "faultScreenDescInput" : "faultSnookerDescInput");
+      const description = descEl.value.trim();
+      if (!description) return showToast("כתוב בקצרה מה התקלה", true);
+
+      const photoB64 = isScreen ? state.faultScreenPhotoBase64 : state.faultSnookerPhotoBase64;
+<!-- ... existing code ... -->
+    async function changePinPrompt() {
+      pinModalAction = "change";
+      document.getElementById("pinModalTitle").textContent = "🔑 החלפת קוד מנהל";
+      document.getElementById("pinModalInput").value = "";
+      document.getElementById("pinModalNewInput").value = "";
+      document.getElementById("pinModalNewInput").classList.remove("hidden");
+      document.getElementById("pinPromptModal").classList.remove("hidden");
+      document.getElementById("pinModalInput").focus();
+    }
+
+    function onMonthChange() {
+      state.activeTab = document.getElementById("monthSelect").value;
+      fetchFromGas();
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
