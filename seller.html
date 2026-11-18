@@ -77,7 +77,7 @@
             <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.4)</p>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.5)</p>
         </div>
       </div>
 
@@ -699,7 +699,7 @@
       let cleanPhone = (targetPhone || "").replace(/[^0-9]/g, "");
       if (cleanPhone.startsWith("0")) cleanPhone = "972" + cleanPhone.slice(1);
       const encoded = encodeURIComponent(text);
-      const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+      const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encoded}` : `https://api.whatsapp.com/send?text=${encoded}`;
       const win = window.open(waUrl, "_blank");
       if (!win) {
         window.location.href = waUrl;
@@ -1143,7 +1143,7 @@
         const btn = document.getElementById("btnSubmitSeller");
         btn.textContent = "שומר דוח Z ומעטפה...";
         try {
-          await fetch(url, { method: "POST", body: JSON.stringify(payload) });
+          await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
           btn.textContent = "נשמר והטופס אופס ליום הבא! ✓";
           setTimeout(() => { btn.textContent = "שמור דיווח סוף יום ✓"; }, 2500);
           fetchFromGas();
@@ -1199,7 +1199,7 @@
 
       const url = localStorage.getItem("friends_gas_url");
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "addQueueItem", year: state.year, ...item }) });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "addQueueItem", year: state.year, ...item }) });
       }
     }
 
@@ -1231,6 +1231,7 @@
       if (url) {
         await fetch(url, {
           method: "POST",
+          mode: "no-cors",
           body: JSON.stringify({
             action: "completeQueueItem",
             year: state.year,
@@ -1348,7 +1349,7 @@
 
       const url = localStorage.getItem("friends_gas_url");
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg }) });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg }) });
       } else if (!alsoWhatsApp) {
         alert("ההודעה נשלחה!");
       }
@@ -1481,6 +1482,7 @@
       if (url) {
         await fetch(url, {
           method: "POST",
+          mode: "no-cors",
           body: JSON.stringify({ action: "addFault", year: state.year, ...newFault, photoBase64: photoB64 })
         });
         fetchFromGas();
@@ -1494,7 +1496,7 @@
       renderAll();
       const url = localStorage.getItem("friends_gas_url");
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "resolveFault", year: state.year, id, status: "תוקן" }) });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "resolveFault", year: state.year, id, status: "תוקן" }) });
       }
     }
 
@@ -1539,7 +1541,7 @@
       renderManagerSection();
       const url = localStorage.getItem("friends_gas_url");
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "completeManagerTask", year: state.year, id }) });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "completeManagerTask", year: state.year, id }) });
       }
     }
 
@@ -1588,7 +1590,7 @@
       if (r) r.approved = checked;
       const url = localStorage.getItem("friends_gas_url");
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "toggleCashApproved", year: state.year, monthTab: state.activeTab, rowNumber, approved: checked }) });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "toggleCashApproved", year: state.year, monthTab: state.activeTab, rowNumber, approved: checked }) });
       }
     }
 
@@ -1602,7 +1604,7 @@
       localStorage.setItem("friends_manager_pin", state.managerPin);
       const url = localStorage.getItem("friends_gas_url");
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "changeManagerPin", oldPin, newPin: state.managerPin }) });
+        await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "changeManagerPin", oldPin, newPin: state.managerPin }) });
       }
       alert("קוד המנהל הוחלף בהצלחה!");
     }
