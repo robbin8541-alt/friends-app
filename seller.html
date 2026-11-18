@@ -1,7 +1,526 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl" translate="no" class="notranslate">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Friends — סוני וסנוקר מקום של חברים | מוכרים ומנהל</title>
+  <meta name="theme-color" content="#061626" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap');
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: radial-gradient(circle at top, #0d2844 0%, #061626 65%, #040d17 100%);
+      color: #f8fafc;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(14, 36, 60, 0.96) 0%, rgba(8, 24, 42, 0.98) 100%);
+      border: 1px solid #1b3a5c;
+      border-radius: 1.1rem;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.65);
+    }
+    .input-dark {
+      background: #051321;
+      border: 1px solid #23476e;
+      color: #f8fafc;
+      border-radius: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      width: 100%;
+    }
+    .input-dark:focus {
+      outline: none;
+      border-color: #f05323;
+      box-shadow: 0 0 0 2px rgba(240, 83, 35, 0.25);
+    }
+    .btn-friends {
+      background: linear-gradient(135deg, #f05323 0%, #d9380a 100%);
+      color: #ffffff;
+    }
+    .btn-friends:hover {
+      background: linear-gradient(135deg, #ff6436 0%, #e64010 100%);
+    }
+    .cue-divider {
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f05323 0%, #f05323 18%, #ffffff 18%, #ffffff 92%, #f05323 92%, #f05323 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24">
+
+  <!-- Friends Branded Top Header -->
+  <header class="sticky top-0 z-30 bg-[#061626]/95 backdrop-blur-md border-b border-[#1b3a5c] px-4 py-2.5 shadow-xl">
+    <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="h-11 px-3 rounded-xl border border-[#23476e] bg-[#07192b] flex items-center gap-2 shadow">
+          <span class="text-xl">🎱</span>
+          <span class="font-black text-lg tracking-tight text-white">Frien<span class="text-[#f05323]">d</span>s</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">סוני וסנוקר מקום של חברים</span>
+          </div>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים, 24 מסכים ו-4 שולחנות</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="openMessageModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs font-extrabold">
+          💬 הודעה למנהלים
+        </button>
+        <div class="flex items-center bg-[#0a1e33] p-1 rounded-xl border border-[#23476e] text-xs font-bold">
+          <button type="button" onclick="setMode('seller')" id="btnModeSeller" class="px-3 py-1.5 rounded-lg btn-friends">מוכר</button>
+          <button type="button" onclick="setMode('manager')" id="btnModeManager" class="px-3 py-1.5 rounded-lg text-slate-300">מנהל (1111)</button>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto mt-2 cue-divider opacity-80"></div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 pt-4 space-y-5">
+
+    <!-- Connection & Mobile Notification Settings Bar -->
+    <div class="card p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div class="flex items-center gap-2">
+        <span id="connDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
+        <span class="text-slate-200 font-bold">חיבור מערכת Friends:</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 flex-1 max-w-2xl">
+        <input id="gasUrlInput" type="url" placeholder="כתובת Web App (.../exec)" class="input-dark text-xs py-1.5 flex-1 min-w-[180px]" />
+        <input id="notifyPhoneInput" type="tel" placeholder="נייד לוואטסאפ (052...)" class="input-dark text-xs py-1.5 sm:w-48" />
+        <button type="button" onclick="saveGasUrl()" class="px-3.5 py-1.5 rounded-lg btn-friends font-bold whitespace-nowrap">שמור וחבר</button>
+      </div>
+    </div>
+
+    <!-- 5 Main Navigation Tabs -->
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+      <button type="button" onclick="showSellerTab('closing')" id="tabBtnClosing" class="py-2.5 px-3 rounded-xl btn-friends font-extrabold text-xs sm:text-sm shadow">🧾 סגירת קופה (Z)</button>
+      <button type="button" onclick="showSellerTab('queues')" id="tabBtnQueues" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]">⏳ תורים <span id="badgeQueueCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-[#f05323] text-white text-[10px]">0</span></button>
+      <button type="button" onclick="showSellerTab('screens')" id="tabBtnScreens" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]">🎮 24 מסכים <span id="badgeScreensCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
+      <button type="button" onclick="showSellerTab('snooker')" id="tabBtnSnooker" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]">🎱 4 שולחנות <span id="badgeSnookerCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
+      <button type="button" onclick="showSellerTab('guides')" id="tabBtnGuides" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c] col-span-2 sm:col-span-1">🛠️ איך מסדרים?</button>
+    </div>
+
+    <!-- ================================================= -->
+    <!-- TAB 1: END OF DAY Z-REPORT & ENVELOPE             -->
+    <!-- ================================================= -->
+    <section id="tabClosing" class="space-y-4">
+      <div class="card p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
+          <div>
+            <h2 class="text-lg font-extrabold text-white">🧾 סגירת קופה בסוף יום — מוכר</h2>
+            <p class="text-xs text-slate-300">מלא את פרטי המשמרת, צלם דוח Z ומעטפה, ושלח בלחיצה</p>
+          </div>
+          <select id="monthSelect" onchange="onMonthChange()" class="input-dark !w-auto text-xs font-bold py-1.5">
+            <option value="נובמבר 2026">נובמבר 2026</option>
+            <option value="דצמבר 2026">דצמבר 2026</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1 font-bold">תאריך</label>
+            <select id="sellerDaySelect" onchange="onSellerDaySelect()" class="input-dark text-sm font-bold"></select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1 font-bold">סטטוס יום</label>
+            <select id="sellerStatusSelect" class="input-dark text-sm font-bold">
+              <option value="פעיל רגיל">פעיל רגיל</option>
+              <option value="ליל שבת - סגור">ליל שבת - סגור</option>
+              <option value="חג - סגור">חג - סגור</option>
+              <option value="יום הזיכרון - סגור">יום הזיכרון - סגור</option>
+              <option value="צום / אבל - סגור">צום / אבל - סגור</option>
+              <option value="אירוע פרטי / סגור">אירוע פרטי / סגור</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1 font-bold">שם המוכר</label>
+            <select id="sellerNameSelect" onchange="onSellerNameChange()" class="input-dark text-sm font-bold"></select>
+            <input id="customSellerInput" type="text" placeholder="הקלד שם מוכר..." class="input-dark text-sm mt-2 hidden" />
+          </div>
+        </div>
+
+        <!-- STEP A: CLOSE-UP AUTOMATIC OCR FOR CASH & CREDIT ONLY -->
+        <div class="p-4 rounded-xl bg-[#07192b] border border-[#f05323]/50 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-[#ff764d]">🔍 שלב 1 (אוטומטי): צילום מקרוב של שורות האשראי והמזומן</h3>
+              <p class="text-xs text-slate-300">צלם מקרוב רק את שורות ה<strong>אשראי</strong> וה<strong>מזומן</strong> מתוך דוח ה-Z למילוי אוטומטי</p>
+            </div>
+            <span id="ocrStatusBadge" class="px-2.5 py-1 rounded-full bg-[#051321] text-amber-300 text-xs font-bold border border-[#f05323]/40">מוכן לסריקה</span>
+          </div>
+
+          <input id="ocrCameraInput" type="file" accept="image/*" capture="environment" onchange="onCloseUpSelected(this)" class="hidden" />
+          <input id="ocrFileInput" type="file" accept="image/*,application/pdf,*/*" onchange="onCloseUpSelected(this)" class="hidden" />
+
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="document.getElementById('ocrCameraInput').click()" class="flex-1 py-2.5 px-4 rounded-xl btn-friends font-extrabold text-xs shadow">
+              📷 צלם מקרוב (אשראי ומזומן)
+            </button>
+            <button type="button" onclick="document.getElementById('ocrFileInput').click()" class="py-2.5 px-4 rounded-xl bg-[#0c2238] hover:bg-[#13304d] border border-[#23476e] text-slate-200 font-bold text-xs">
+              📁 בחר קובץ מהמכשיר
+            </button>
+          </div>
+
+          <div id="detectedNumbersBox" class="hidden pt-2 border-t border-[#1b3a5c] space-y-1.5">
+            <p class="text-[11px] text-amber-300 font-bold">מספרים שזוהו (לחץ להזנה מהירה):</p>
+            <div id="detectedChips" class="flex flex-wrap gap-1.5"></div>
+          </div>
+        </div>
+
+        <!-- STEP B: FULL Z-REPORT + ENVELOPE ATTACHMENTS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-emerald-400">📄 תיעוד 1: דוח Z מלא</span>
+              <span id="zFullBadge" class="text-[11px] text-slate-400">לא נבחר קובץ</span>
+            </div>
+            <input id="zFullCameraInput" type="file" accept="image/*" capture="environment" onchange="onZFullSelected(this)" class="hidden" />
+            <input id="zFullFileInput" type="file" accept="image/*,application/pdf,*/*" onchange="onZFullSelected(this)" class="hidden" />
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="document.getElementById('zFullCameraInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+                📷 צלם דוח Z
+              </button>
+              <button type="button" onclick="document.getElementById('zFullFileInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-[#23476e] text-slate-200 text-xs font-bold">
+                📁 העלה קובץ
+              </button>
+            </div>
+            <div id="zFullPreviewBox" class="hidden pt-1">
+              <img id="zFullPreviewImg" class="max-h-28 rounded-lg border border-slate-700 mx-auto object-contain" />
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-sky-400">✉️ תיעוד 2: צילום מעטפה</span>
+              <span id="envPhotoBadge" class="text-[11px] text-slate-400">לא נבחר קובץ</span>
+            </div>
+            <input id="envCameraInput" type="file" accept="image/*" capture="environment" onchange="onEnvelopeSelected(this)" class="hidden" />
+            <input id="envFileInput" type="file" accept="image/*,application/pdf,*/*" onchange="onEnvelopeSelected(this)" class="hidden" />
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="document.getElementById('envCameraInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-sky-500/40 text-sky-300 text-xs font-bold">
+                📷 צלם מעטפה
+              </button>
+              <button type="button" onclick="document.getElementById('envFileInput').click()" class="py-2 px-3 rounded-lg bg-[#0c2238] hover:bg-[#13304d] border border-[#23476e] text-slate-200 text-xs font-bold">
+                📁 העלה קובץ
+              </button>
+            </div>
+            <div id="envPreviewBox" class="hidden pt-1">
+              <img id="envPreviewImg" class="max-h-28 rounded-lg border border-slate-700 mx-auto object-contain" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Amounts Inputs -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1 font-bold">מזומן שרשום בקבלה (₪)</label>
+            <input id="inpReceiptCash" type="number" inputmode="decimal" oninput="updateSellerDiff()" placeholder="למשל 1608" class="input-dark text-lg font-extrabold text-emerald-400" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1 font-bold">אשראי שרשום בקבלה (₪)</label>
+            <input id="inpReceiptCredit" type="number" inputmode="decimal" oninput="updateSellerDiff()" placeholder="למשל 1221" class="input-dark text-lg font-extrabold text-sky-400" />
+          </div>
+          <div>
+            <label class="block text-xs text-amber-300 mb-1 font-bold">כמה כסף יש במעטפה בפועל (₪)</label>
+            <input id="inpEnvelopeActual" type="number" inputmode="decimal" oninput="updateSellerDiff()" placeholder="ספור ורשום כמה במעטפה" class="input-dark text-lg font-extrabold text-amber-300 border-amber-500/50" />
+          </div>
+        </div>
+
+        <!-- Extra Non-Hours Income -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-[#1b3a5c]">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1 font-bold">הכנסה נוספת מחוץ לשעות (₪)</label>
+            <input id="inpExtraIncome" type="number" inputmode="decimal" oninput="updateSellerDiff()" placeholder="0 (השכרה בצהריים / אירוע)" class="input-dark text-sm font-bold" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs text-slate-300 mb-1 font-bold">פירוט הכנסה נוספת / הערה למשמרת</label>
+            <input id="inpExtraDetails" type="text" placeholder="פרט אם הייתה השכרה או הערה..." class="input-dark text-sm" />
+          </div>
+        </div>
+
+        <!-- Submit Bar -->
+        <div class="p-3.5 rounded-xl bg-[#07192b] border border-[#1b3a5c] flex flex-wrap items-center justify-between gap-3">
+          <div class="text-xs text-slate-300">
+            סה"כ יומי בקבלה: <strong id="lblTotalDaily" class="text-white text-sm">0 ₪</strong>
+          </div>
+          <div class="text-xs">
+            הפרש מעטפה: <strong id="lblEnvelopeDiff" class="text-sm font-extrabold text-slate-400">טרם הוזן</strong>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="submitSellerReport(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
+            <button type="button" onclick="submitSellerReport(true)" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור + וואטסאפ</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- TAB 2: WAITING QUEUES                             -->
+    <!-- ================================================= -->
+    <section id="tabQueues" class="hidden space-y-5">
+      <div class="card p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#1b3a5c] pb-3">
+          <div>
+            <h2 class="text-lg font-extrabold text-white">⏳ ניהול תורים וזמני המתנה — סוני &amp; סנוקר</h2>
+            <p class="text-xs text-slate-300">רשום ממתינים וסמן V כשנכנסו לשחק לחישוב זמן המתנה אוטומטי</p>
+          </div>
+          <div class="flex items-center bg-[#051321] p-1 rounded-xl border border-[#23476e] text-xs font-extrabold">
+            <button type="button" onclick="setQueueFilter('all')" id="qBtnAll" class="px-3 py-1.5 rounded-lg btn-friends">הכל</button>
+            <button type="button" onclick="setQueueFilter('סוני')" id="qBtnSony" class="px-3 py-1.5 rounded-lg text-slate-300">🎮 סוני</button>
+            <button type="button" onclick="setQueueFilter('סנוקר')" id="qBtnSnooker" class="px-3 py-1.5 rounded-lg text-slate-300">🎱 סנוקר</button>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#07192b] border border-[#23476e] space-y-3">
+          <h3 class="text-sm font-extrabold text-[#ff764d]">➕ הוספת ממתין חדש לתור</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">מחכה ל:</label>
+              <select id="qCategorySelect" class="input-dark text-xs font-extrabold">
+                <option value="סוני">🎮 סוני (24 מסכים)</option>
+                <option value="סנוקר">🎱 שולחן סנוקר (1–4)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">שם הלקוח / קבוצה</label>
+              <input id="qCustomerName" type="text" placeholder="למשל: דוד וחברים" class="input-dark text-xs font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">שחקנים / העדפה</label>
+              <input id="qPartyNote" type="text" placeholder="למשל: 4 שחקנים / FIFA" class="input-dark text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">מוכר רושם</label>
+              <select id="qSellerSelect" class="input-dark text-xs font-bold"></select>
+            </div>
+            <div class="flex items-end">
+              <button type="button" onclick="addCustomerToQueue()" class="w-full py-2.5 px-4 rounded-xl btn-friends font-extrabold text-xs shadow">+ הוסף לתור</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-sm font-extrabold text-white">ממתינים בתור כרגע:</h3>
+          <div id="activeQueueContainer" class="space-y-2"></div>
+        </div>
+
+        <div class="pt-4 border-t border-[#1b3a5c] space-y-3">
+          <h3 class="text-sm font-extrabold text-sky-400">📊 היסטוריית תורים וזמני המתנה</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right">
+              <thead>
+                <tr class="border-b border-[#23476e] text-slate-300">
+                  <th class="py-2 px-2">תאריך ויום</th>
+                  <th class="py-2 px-2">תחום</th>
+                  <th class="py-2 px-2">שם הלקוח</th>
+                  <th class="py-2 px-2">רישום</th>
+                  <th class="py-2 px-2">כניסה</th>
+                  <th class="py-2 px-2">המתנה</th>
+                  <th class="py-2 px-2 text-center">נכנס (V)</th>
+                </tr>
+              </thead>
+              <tbody id="queueHistoryTableBody" class="divide-y divide-[#1b3a5c]"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- TAB 3: 24 SCREENS & CONTROLLERS FAULT TRACKER     -->
+    <!-- ================================================= -->
+    <section id="tabScreens" class="hidden space-y-5">
+      <div class="card p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
+          <div>
+            <h2 class="text-lg font-extrabold text-white">🎮 מפת 24 מסכים ושלטים — דיווח תקלות</h2>
+            <p class="text-xs text-slate-300">לחץ על מספר המסך שבו יש תקלה כדי לדווח</p>
+          </div>
+        </div>
+
+        <div id="screensGrid" class="grid grid-cols-4 sm:grid-cols-6 gap-2.5"></div>
+
+        <div class="p-4 rounded-xl bg-[#07192b] border border-[#23476e] space-y-3">
+          <h3 class="text-sm font-extrabold text-[#ff764d]">➕ דיווח תקלה במסך / שלט / סוני</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">בחר מסך (1–24)</label>
+              <select id="faultScreenUnitSelect" class="input-dark text-xs font-bold"></select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">סוג התקלה</label>
+              <select id="faultScreenTypeSelect" class="input-dark text-xs font-bold">
+                <option value="תקלה בשלט 1 / שלט 2">🎮 תקלה בשלט</option>
+                <option value="תקלה במסך / HDMI">📺 תקלה במסך / HDMI</option>
+                <option value="תקלה בסוני / משחק">💿 תקלה בסוני / משחק</option>
+                <option value="ספק כוח / חשמל">🔌 תקלה בחשמל / כבלים</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">שם המדווח</label>
+              <select id="faultScreenReporterSelect" class="input-dark text-xs font-bold"></select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">צילום / קובץ</label>
+              <input id="faultScreenCam" type="file" accept="image/*" capture="environment" onchange="onFaultFileSelected(this, 'screen')" class="hidden" />
+              <input id="faultScreenFile" type="file" accept="image/*,application/pdf,*/*" onchange="onFaultFileSelected(this, 'screen')" class="hidden" />
+              <div class="flex gap-1.5">
+                <button type="button" onclick="document.getElementById('faultScreenCam').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📷 צלם</button>
+                <button type="button" onclick="document.getElementById('faultScreenFile').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📁 קובץ</button>
+              </div>
+              <span id="faultScreenFileBadge" class="text-[10px] text-emerald-400"></span>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="faultScreenDescInput" type="text" placeholder="פרט מה הבעיה..." class="input-dark text-xs flex-1" />
+            <button type="button" onclick="submitFault('screen')" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-xs whitespace-nowrap">שלח דיווח מסך</button>
+          </div>
+        </div>
+
+        <div id="screenFaultsListContainer" class="space-y-2"></div>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- TAB 4: 4 SNOOKER TABLES FAULT TRACKER             -->
+    <!-- ================================================= -->
+    <section id="tabSnooker" class="hidden space-y-5">
+      <div class="card p-5 space-y-4">
+        <div class="border-b border-[#1b3a5c] pb-3">
+          <h2 class="text-lg font-extrabold text-white">🎱 4 שולחנות סנוקר — דיווח תקלות</h2>
+        </div>
+
+        <div id="snookerGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+
+        <div class="p-4 rounded-xl bg-[#07192b] border border-[#23476e] space-y-3">
+          <h3 class="text-sm font-extrabold text-[#ff764d]">➕ דיווח תקלה בשולחן סנוקר</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">שולחן סנוקר</label>
+              <select id="faultSnookerUnitSelect" class="input-dark text-xs font-bold">
+                <option value="שולחן סנוקר 1">🎱 שולחן סנוקר 1</option>
+                <option value="שולחן סנוקר 2">🎱 שולחן סנוקר 2</option>
+                <option value="שולחן סנוקר 3">🎱 שולחן סנוקר 3</option>
+                <option value="שולחן סנוקר 4">🎱 שולחן סנוקר 4</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">סוג התקלה</label>
+              <select id="faultSnookerTypeSelect" class="input-dark text-xs font-bold">
+                <option value="מקל סנוקר / ראש מקל">🥢 מקל / ראש מקל</option>
+                <option value="קרע / לכלוך בלבד">🟩 לבד השולחן / כיס</option>
+                <option value="חוסר בכדורים / גיר">⚪ כדורים / גיר</option>
+                <option value="תאורה מעל השולחן">💡 תאורה</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">שם המדווח</label>
+              <select id="faultSnookerReporterSelect" class="input-dark text-xs font-bold"></select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">צילום / קובץ</label>
+              <input id="faultSnookerCam" type="file" accept="image/*" capture="environment" onchange="onFaultFileSelected(this, 'snooker')" class="hidden" />
+              <input id="faultSnookerFile" type="file" accept="image/*,application/pdf,*/*" onchange="onFaultFileSelected(this, 'snooker')" class="hidden" />
+              <div class="flex gap-1.5">
+                <button type="button" onclick="document.getElementById('faultSnookerCam').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📷 צלם</button>
+                <button type="button" onclick="document.getElementById('faultSnookerFile').click()" class="flex-1 py-1.5 px-2 rounded-lg bg-[#0c2238] border border-[#23476e] text-xs">📁 קובץ</button>
+              </div>
+              <span id="faultSnookerFileBadge" class="text-[10px] text-emerald-400"></span>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="faultSnookerDescInput" type="text" placeholder="פרט מה הבעיה בשולחן..." class="input-dark text-xs flex-1" />
+            <button type="button" onclick="submitFault('snooker')" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-xs whitespace-nowrap">שלח דיווח סנוקר</button>
+          </div>
+        </div>
+
+        <div id="snookerFaultsListContainer" class="space-y-2"></div>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- TAB 5: TROUBLESHOOTING GUIDES                     -->
+    <!-- ================================================= -->
+    <section id="tabGuides" class="hidden space-y-4">
+      <div class="card p-5 space-y-4">
+        <div class="border-b border-[#1b3a5c] pb-3">
+          <h2 class="text-lg font-extrabold text-white">🛠️ מדריכים מהירים: איך מסדרים תקלות נפוצות?</h2>
+        </div>
+        <div id="guidesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- ================================================= -->
+    <!-- MANAGER PANEL                                     -->
+    <!-- ================================================= -->
+    <section id="panelManagerOnly" class="hidden space-y-5">
+      <div class="card p-5 space-y-4 border-emerald-500/50">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
+          <div>
+            <h2 class="text-base font-extrabold text-emerald-400">🔑 אזור מנהל מקום — אישור מעטפות (V) ותקלות</h2>
+          </div>
+          <button type="button" onclick="changePinPrompt()" class="px-3 py-1.5 rounded-lg bg-[#07192b] text-xs text-slate-200 border border-[#23476e]">🔑 החלף קוד מנהל</button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#07192b] border border-rose-500/30 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-extrabold text-rose-300">⚠️ תקלות והודעות פתוחות</h3>
+            <span id="managerFaultsCount" class="text-xs font-bold text-slate-300">0 פתוחות</span>
+          </div>
+          <div id="managerFaultsList" class="space-y-2 text-xs"></div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-right">
+            <thead>
+              <tr class="border-b border-[#23476e] text-slate-300">
+                <th class="py-2 px-2">תאריך</th>
+                <th class="py-2 px-2">מוכר</th>
+                <th class="py-2 px-2">מזומן (Z)</th>
+                <th class="py-2 px-2">אשראי (Z)</th>
+                <th class="py-2 px-2">במעטפה</th>
+                <th class="py-2 px-2">הפרש</th>
+                <th class="py-2 px-2">קבצים</th>
+                <th class="py-2 px-2 text-center">אושר (V)</th>
+              </tr>
+            </thead>
+            <tbody id="managerTableBody" class="divide-y divide-[#1b3a5c]"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- General Message Modal -->
+  <div id="messageModal" class="fixed inset-0 z-50 bg-black/80 hidden flex items-center justify-center p-4">
+    <div class="card p-5 max-w-md w-full space-y-3 border-[#f05323]">
+      <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
+        <h3 class="text-base font-extrabold text-white">💬 שליחת הודעה / שאלה למנהלים</h3>
+        <button type="button" onclick="closeMessageModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-300 mb-1 font-bold">שם העובד</label>
+        <select id="msgModalSeller" class="input-dark text-xs font-bold"></select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-300 mb-1 font-bold">נושא</label>
+        <select id="msgModalTopic" class="input-dark text-xs font-bold">
+          <option value="שאלה / הודעה למנהל">💬 שאלה / הודעה למנהל</option>
+          <option value="חוסר במלאי / שתייה">🥤 חוסר במלאי / שתייה</option>
+          <option value="בעיה דחופה במתחם">🚨 בעיה דחופה במתחם</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-300 mb-1 font-bold">תוכן ההודעה</label>
+        <textarea id="msgModalText" rows="3" placeholder="כתוב כאן..." class="input-dark text-xs"></textarea>
+      </div>
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="sendGeneralMessage(false)" class="px-4 py-2 rounded-xl btn-friends text-xs font-extrabold">שלח למערכת ולמייל</button>
-        <button onclick="sendGeneralMessage(true)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">📲 שלח גם בוואטסאפ למנהל</button>
+        <button type="button" onclick="sendGeneralMessage(false)" class="px-4 py-2 rounded-xl btn-friends text-xs font-extrabold">שלח למערכת</button>
+        <button type="button" onclick="sendGeneralMessage(true)" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">📲 שלח בוואטסאפ</button>
       </div>
     </div>
   </div>
@@ -9,12 +528,12 @@
   <!-- Manager PIN Modal -->
   <div id="pinPromptModal" class="fixed inset-0 z-50 bg-black/80 hidden flex items-center justify-center p-4">
     <div class="card p-5 max-w-sm w-full space-y-3 border-[#f05323]">
-      <h3 id="pinModalTitle" class="text-base font-extrabold text-white">🔑 כניסת מנהל (קוד ברירת מחדל: 1111)</h3>
+      <h3 id="pinModalTitle" class="text-base font-extrabold text-white">🔑 כניסת מנהל (קוד: 1111)</h3>
       <input id="pinModalInput" type="password" inputmode="numeric" placeholder="הזן קוד מנהל..." class="input-dark text-sm text-center font-extrabold tracking-widest" />
-      <input id="pinModalNewInput" type="password" inputmode="numeric" placeholder="הזן קוד מנהל חדש..." class="input-dark text-sm text-center font-extrabold tracking-widest hidden" />
+      <input id="pinModalNewInput" type="password" inputmode="numeric" placeholder="קוד מנהל חדש..." class="input-dark text-sm text-center font-extrabold tracking-widest hidden" />
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closePinModal()" class="px-3 py-1.5 rounded-lg bg-[#051321] border border-[#23476e] text-xs text-slate-300">ביטול</button>
-        <button onclick="confirmPinModal()" class="px-4 py-1.5 rounded-lg btn-friends text-xs font-extrabold">אישור</button>
+        <button type="button" onclick="closePinModal()" class="px-3 py-1.5 rounded-lg bg-[#051321] border border-[#23476e] text-xs text-slate-300">ביטול</button>
+        <button type="button" onclick="confirmPinModal()" class="px-4 py-1.5 rounded-lg btn-friends text-xs font-extrabold">אישור</button>
       </div>
     </div>
   </div>
@@ -23,7 +542,8 @@
   <div id="appToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-extrabold shadow-2xl hidden"></div>
 
   <script>
-    const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ״ש"];
+    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbyhhbRaSo2Dxrhhp1-s21Xv7esUpYztVinXTuL9kpWkSc4K9u5xtrhCzc_ewJNf0EETiQ/exec";
+    const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצאי שבת"];
     let pinModalAction = "login";
 
     function showToast(msg, isError) {
@@ -37,22 +557,187 @@
 
     let state = {
       mode: "seller",
-<!-- ... existing code ... -->
-      if (url) {
-        fetch(url, { method: "POST", body: JSON.stringify({ action: "saveNotifySettings", ownerPhone: phone, managerPhone: phone, emailNotify: true }) }).catch(()=>{});
-        fetchFromGas();
-        showToast("הגדרות נשמרו והחיבור עודכן ✓");
-      } else {
-        showToast("הגדרות נשמרו ✓");
+      year: "2026",
+      activeTab: "נובמבר 2026",
+      queueFilter: "all",
+      managerPin: localStorage.getItem("friends_manager_pin") || "1111",
+      notifyPhone: localStorage.getItem("friends_notify_phone") || "",
+      sellers: JSON.parse(localStorage.getItem("friends_sellers") || '["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"]'),
+      dailyRows: [],
+      faults: JSON.parse(localStorage.getItem("friends_faults") || "[]"),
+      queues: JSON.parse(localStorage.getItem("friends_queues") || "[]"),
+      guides: [
+        {
+          id: "g1",
+          category: "שלט סוני",
+          title: "שלט לא מתחבר לסוני / מהבהב",
+          steps: "1. חבר את השלט עם כבל USB ישירות לסוני.\n2. לחץ על כפתור ה-PS האמצעי עד שהאור מתייצב.\n3. אם עדיין מהבהב: הכנס קיסם לחור האיפוס מאחורי השלט ל-5 שניות."
+        },
+        {
+          id: "g2",
+          category: "מסך / תצוגה",
+          title: "המסך כותב No Signal / מסך שחור",
+          steps: "1. ודא שהסוני דולק (אור לבן/כחול קבוע).\n2. בדוק בשלט הטלוויזיה שהערוץ מכוון ל-HDMI 1 או HDMI 2.\n3. הדק את כבל ה-HDMI מאחורי הסוני והמסך."
+        },
+        {
+          id: "g3",
+          category: "שלט / כפתורים",
+          title: "ג'ויסטיק זז לבד (דריפט) או כפתור תקוע",
+          steps: "1. החלף ללקוח לשלט חלופי מהמגירה בדלפק.\n2. סמן בלשונית 24 מסכים תקלה בשלט ושים מדבקה על השלט."
+        },
+        {
+          id: "g4",
+          category: "סנוקר / קופה",
+          title: "החלפת ראש מקל וצילום דוח Z",
+          steps: "1. החלף למקל חלופי מהמתקן ודווח בלשונית 4 שולחנות.\n2. בסגירת קופה צלם את דוח ה-Z ואת המעטפה."
+        }
+      ],
+      receiptPhotoBase64: "",
+      envelopePhotoBase64: "",
+      faultScreenPhotoBase64: "",
+      faultSnookerPhotoBase64: ""
+    };
+
+    function getActiveUrl() {
+      return localStorage.getItem("friends_gas_url") || DEFAULT_GAS_URL;
+    }
+
+    function initApp() {
+      const savedUrl = getActiveUrl();
+      localStorage.setItem("friends_gas_url", savedUrl);
+      document.getElementById("gasUrlInput").value = savedUrl;
+      document.getElementById("notifyPhoneInput").value = state.notifyPhone;
+      populateScreenUnitSelect();
+      renderSellersDropdown();
+      buildDemoDaysIfEmpty();
+      renderAll();
+      fetchFromGas();
+    }
+
+    function populateScreenUnitSelect() {
+      const sel = document.getElementById("faultScreenUnitSelect");
+      let html = "";
+      for (let i = 1; i <= 24; i++) {
+        html += `<option value="מסך ${i}">מסך ${i}</option>`;
       }
+      sel.innerHTML = html;
+    }
+
+    function saveGasUrl() {
+      const url = document.getElementById("gasUrlInput").value.trim() || DEFAULT_GAS_URL;
+      const phone = document.getElementById("notifyPhoneInput").value.trim();
+      localStorage.setItem("friends_gas_url", url);
+      localStorage.setItem("friends_notify_phone", phone);
+      state.notifyPhone = phone;
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "saveNotifySettings", ownerPhone: phone, managerPhone: phone, emailNotify: true })
+      }).catch(() => {});
+      fetchFromGas();
+      showToast("החיבור נשמר ועודכן ✓");
     }
 
     function sendWhatsAppMessage(text) {
-<!-- ... existing code ... -->
+      let cleanPhone = (state.notifyPhone || "").replace(/[^0-9]/g, "");
+      if (cleanPhone.startsWith("0")) cleanPhone = "972" + cleanPhone.slice(1);
+      const encoded = encodeURIComponent(text);
+      const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+      window.open(waUrl, "_blank");
+    }
+
+    async function fetchFromGas() {
+      const url = getActiveUrl();
+      if (!url) return;
+      try {
+        document.getElementById("statusSubtitle").textContent = "טוען נתונים מהגיליון...";
+        const res = await fetch(url + "?action=init&mode=seller&year=" + encodeURIComponent(state.year) + "&monthTab=" + encodeURIComponent(state.activeTab));
+        const data = await res.json();
+        if (data && data.ok) {
+          if (data.dailyRows && data.dailyRows.length) state.dailyRows = data.dailyRows;
+          if (data.faults) {
+            state.faults = data.faults;
+            localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+          }
+          if (data.queues) {
+            state.queues = data.queues;
+            localStorage.setItem("friends_queues", JSON.stringify(state.queues));
+          }
+          if (data.guides && data.guides.length) state.guides = data.guides;
+          if (data.sellers && data.sellers.length) {
+            state.sellers = data.sellers;
+            localStorage.setItem("friends_sellers", JSON.stringify(state.sellers));
+            renderSellersDropdown();
+          }
+          if (data.managerPin) state.managerPin = String(data.managerPin);
+          if (data.tabs && data.tabs.length) {
+            const ms = document.getElementById("monthSelect");
+            ms.innerHTML = data.tabs.map(t => `<option value="${t}" ${t===data.activeTab?'selected':''}>${t}</option>`).join("");
+            state.activeTab = data.activeTab;
+          }
+          document.getElementById("statusSubtitle").textContent = "מחובר לגיליון Friends ✓";
+          renderAll();
+        }
+      } catch (e) {
+        document.getElementById("statusSubtitle").textContent = "מצב מקומי — מוכן לעבודה";
+      }
+    }
+
+    function buildDemoDaysIfEmpty() {
+      if (state.dailyRows.length > 0) return;
+      for (let d = 1; d <= 30; d++) {
+        const dd = String(d).padStart(2, "0");
+        const dt = new Date(2026, 10, d);
+        state.dailyRows.push({
+          rowNumber: d + 1,
+          date: `${dd}/11/2026`,
+          status: dt.getDay() === 5 ? "ליל שבת - סגור" : "פעיל רגיל",
+          receiptCash: 0,
+          receiptCredit: 0,
+          extraIncome: 0,
+          extraDetails: "",
+          envelopeActual: "",
+          sellerName: "",
+          receiptPhotoUrl: "",
+          envelopePhotoUrl: "",
+          approved: false
+        });
+      }
+    }
+
+    function renderSellersDropdown() {
+      const html = state.sellers.map(s => `<option value="${s}">${s}</option>`).join("") +
+        `<option value="__custom__">+ רשום שם אחר / הוסף מוכר...</option>`;
+      document.getElementById("sellerNameSelect").innerHTML = html;
+      const reportersHtml = state.sellers.map(s => `<option value="${s}">${s}</option>`).join("");
+      document.getElementById("faultScreenReporterSelect").innerHTML = reportersHtml;
+      document.getElementById("faultSnookerReporterSelect").innerHTML = reportersHtml;
+      document.getElementById("qSellerSelect").innerHTML = reportersHtml;
+      document.getElementById("msgModalSeller").innerHTML = reportersHtml;
+    }
+
+    function onSellerNameChange() {
+      const isCustom = document.getElementById("sellerNameSelect").value === "__custom__";
+      document.getElementById("customSellerInput").classList.toggle("hidden", !isCustom);
+    }
+
+    function showSellerTab(tab) {
+      ["closing", "queues", "screens", "snooker", "guides"].forEach(t => {
+        const sec = document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1));
+        if (sec) sec.classList.toggle("hidden", t !== tab);
+        const btn = document.getElementById("tabBtn" + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) {
+          btn.className = (t === tab)
+            ? "py-2.5 px-3 rounded-xl btn-friends font-extrabold text-xs sm:text-sm shadow"
+            : "py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]";
+        }
+      });
+    }
+
     function setMode(mode) {
       if (mode === "manager" && state.mode !== "manager") {
         pinModalAction = "login";
-        document.getElementById("pinModalTitle").textContent = "🔑 הזן קוד מנהל (ברירת מחדל: 1111)";
+        document.getElementById("pinModalTitle").textContent = "🔑 הזן קוד מנהל (1111)";
         document.getElementById("pinModalInput").value = "";
         document.getElementById("pinModalNewInput").classList.add("hidden");
         document.getElementById("pinPromptModal").classList.remove("hidden");
@@ -97,17 +782,206 @@
         state.managerPin = newPin;
         localStorage.setItem("friends_manager_pin", state.managerPin);
         closePinModal();
-        const url = localStorage.getItem("friends_gas_url");
+        const url = getActiveUrl();
         if (url) {
-          await fetch(url, { method: "POST", body: JSON.stringify({ action: "changeManagerPin", oldPin: entered, newPin: state.managerPin }) });
+          await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "changeManagerPin", oldPin: entered, newPin: state.managerPin })
+          }).catch(() => {});
         }
         showToast("קוד המנהל הוחלף בהצלחה ✓");
       }
     }
 
-    // =========================================================================
-    // CLOSE-UP SMART Z-RECEIPT OCR (EXTRACTS ONLY CREDIT & CASH)
-<!-- ... existing code ... -->
+    async function preprocessReceiptImage(file) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = imgData.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const gray = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+            const contrast = gray < 145 ? Math.max(0, gray * 0.45) : Math.min(255, gray * 1.15);
+            d[i] = d[i+1] = d[i+2] = contrast;
+          }
+          ctx.putImageData(imgData, 0, 0);
+          resolve(canvas.toDataURL("image/jpeg", 0.92));
+        };
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    async function onCloseUpSelected(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      if (!state.receiptPhotoBase64) {
+        state.receiptPhotoBase64 = await fileToBase64(file);
+      }
+      const badge = document.getElementById("ocrStatusBadge");
+      badge.textContent = "קורא נתונים...";
+      try {
+        const processedDataUrl = await preprocessReceiptImage(file);
+        const result = await Tesseract.recognize(processedDataUrl, "eng");
+        const rawText = result.data.text || "";
+        const decimalMatches = rawText.match(/\d{2,5}[.,]\d{2}/g) || [];
+        let amounts = decimalMatches
+          .map(s => Math.round(parseFloat(s.replace(",", ".")) * 100) / 100)
+          .filter(n => n > 0 && n < 45000 && n !== 500);
+        if (amounts.length < 2) {
+          const intMatches = rawText.match(/\b\d{2,4}\b/g) || [];
+          const extraInts = intMatches.map(Number).filter(n => n >= 20 && n < 25000 && n !== 480 && n !== 500 && n !== 2026 && n !== 2027);
+          amounts = [...amounts, ...extraInts];
+        }
+        const uniqueAmounts = [...new Set(amounts)];
+        renderDetectedChips(uniqueAmounts);
+
+        let creditVal = null, cashVal = null;
+        for (let i = 0; i < amounts.length - 2; i++) {
+          if (Math.abs((amounts[i] + amounts[i+1]) - amounts[i+2]) <= 1) {
+            creditVal = amounts[i];
+            cashVal = amounts[i+1];
+            break;
+          }
+        }
+        if (cashVal === null && uniqueAmounts.length >= 2) {
+          creditVal = uniqueAmounts[0];
+          cashVal = uniqueAmounts[1];
+        }
+        if (cashVal !== null && creditVal !== null) {
+          document.getElementById("inpReceiptCredit").value = creditVal;
+          document.getElementById("inpReceiptCash").value = cashVal;
+          updateSellerDiff();
+          badge.textContent = `אשראי ${creditVal} ₪ | מזומן ${cashVal} ₪ ✓`;
+        } else if (uniqueAmounts.length === 1) {
+          document.getElementById("inpReceiptCash").value = uniqueAmounts[0];
+          updateSellerDiff();
+          badge.textContent = `נקלט: ${uniqueAmounts[0]} ₪ ✓`;
+        } else {
+          badge.textContent = "לא זוהה מספר — הקלד ידנית";
+        }
+      } catch (e) {
+        badge.textContent = "שגיאה בסריקה — הקלד ידנית";
+      }
+    }
+
+    function renderDetectedChips(numbers) {
+      const box = document.getElementById("detectedNumbersBox");
+      const container = document.getElementById("detectedChips");
+      if (!numbers || !numbers.length) {
+        box.classList.add("hidden");
+        return;
+      }
+      box.classList.remove("hidden");
+      container.innerHTML = numbers.map(n => `
+        <div class="inline-flex items-center gap-1 bg-[#051321] border border-[#23476e] rounded-lg px-2 py-1 text-xs">
+          <strong class="text-white">${n} ₪</strong>
+          <button type="button" onclick="document.getElementById('inpReceiptCash').value=${n};updateSellerDiff();" class="px-1.5 py-0.5 rounded bg-emerald-600/30 text-emerald-300 font-bold">מזומן</button>
+          <button type="button" onclick="document.getElementById('inpReceiptCredit').value=${n};updateSellerDiff();" class="px-1.5 py-0.5 rounded bg-sky-600/30 text-sky-300 font-bold">אשראי</button>
+        </div>
+      `).join("");
+    }
+
+    async function onZFullSelected(inp) {
+      if (inp.files && inp.files[0]) {
+        const file = inp.files[0];
+        state.receiptPhotoBase64 = await fileToBase64(file);
+        document.getElementById("zFullBadge").textContent = file.name + " ✓";
+        document.getElementById("zFullBadge").className = "text-[11px] text-emerald-400 font-bold";
+        if (file.type.startsWith("image/")) {
+          document.getElementById("zFullPreviewImg").src = state.receiptPhotoBase64;
+          document.getElementById("zFullPreviewBox").classList.remove("hidden");
+        }
+      }
+    }
+
+    async function onEnvelopeSelected(inp) {
+      if (inp.files && inp.files[0]) {
+        const file = inp.files[0];
+        state.envelopePhotoBase64 = await fileToBase64(file);
+        document.getElementById("envPhotoBadge").textContent = file.name + " ✓";
+        document.getElementById("envPhotoBadge").className = "text-[11px] text-sky-400 font-bold";
+        if (file.type.startsWith("image/")) {
+          document.getElementById("envPreviewImg").src = state.envelopePhotoBase64;
+          document.getElementById("envPreviewBox").classList.remove("hidden");
+        }
+      }
+    }
+
+    async function onFaultFileSelected(inp, target) {
+      if (inp.files && inp.files[0]) {
+        const b64 = await fileToBase64(inp.files[0]);
+        if (target === "screen") {
+          state.faultScreenPhotoBase64 = b64;
+          document.getElementById("faultScreenFileBadge").textContent = "צורף ✓";
+        } else {
+          state.faultSnookerPhotoBase64 = b64;
+          document.getElementById("faultSnookerFileBadge").textContent = "צורף ✓";
+        }
+      }
+    }
+
+    function renderAll() {
+      const daySel = document.getElementById("sellerDaySelect");
+      const prev = daySel.value;
+      daySel.innerHTML = state.dailyRows.map((r, i) => `<option value="${i}">${r.date} — ${r.status}</option>`).join("");
+      if (prev !== "" && state.dailyRows[prev]) daySel.value = prev;
+      onSellerDaySelect();
+      renderQueuesTab();
+      renderScreensAndSnookerTabs();
+      renderGuides();
+      renderManagerSection();
+    }
+
+    function onSellerDaySelect() {
+      const idx = Number(document.getElementById("sellerDaySelect").value || 0);
+      const r = state.dailyRows[idx];
+      if (!r) return;
+      document.getElementById("sellerStatusSelect").value = r.status || "פעיל רגיל";
+      document.getElementById("inpReceiptCash").value = r.receiptCash || "";
+      document.getElementById("inpReceiptCredit").value = r.receiptCredit || "";
+      document.getElementById("inpEnvelopeActual").value = r.envelopeActual === "" ? "" : r.envelopeActual;
+      document.getElementById("inpExtraIncome").value = r.extraIncome || "";
+      document.getElementById("inpExtraDetails").value = r.extraDetails || "";
+      updateSellerDiff();
+    }
+
+    function updateSellerDiff() {
+      const cash = Number(document.getElementById("inpReceiptCash").value) || 0;
+      const credit = Number(document.getElementById("inpReceiptCredit").value) || 0;
+      const extra = Number(document.getElementById("inpExtraIncome").value) || 0;
+      const envStr = document.getElementById("inpEnvelopeActual").value;
+      document.getElementById("lblTotalDaily").textContent = (cash + credit + extra).toLocaleString() + " ₪";
+      const diffEl = document.getElementById("lblEnvelopeDiff");
+      if (envStr === "") {
+        diffEl.textContent = "טרם הוזן סכום במעטפה";
+        diffEl.className = "text-sm font-extrabold text-slate-400";
+      } else {
+        const diff = Number(envStr) - cash;
+        diffEl.textContent = (diff > 0 ? "+" : "") + diff.toLocaleString() + " ₪ " + (diff === 0 ? "(מדויק ✓)" : (diff > 0 ? "(עודף)" : "(חוסר)"));
+        diffEl.className = "text-sm font-extrabold " + (diff === 0 ? "text-emerald-400" : (diff > 0 ? "text-sky-400" : "text-rose-400"));
+      }
+    }
+
+    function fileToBase64(file) {
+      return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+    }
+
+    async function submitSellerReport(sendWhatsApp) {
+      const idx = Number(document.getElementById("sellerDaySelect").value || 0);
+      const r = state.dailyRows[idx];
+      if (!r) return;
       let sellerName = document.getElementById("sellerNameSelect").value;
       if (sellerName === "__custom__") {
         sellerName = document.getElementById("customSellerInput").value.trim();
@@ -118,31 +992,189 @@
           renderSellersDropdown();
         }
       }
-<!-- ... existing code ... -->
-        btn.textContent = "נשמר ונשלחה התראה! ✓";
-        setTimeout(() => { btn.textContent = "שמור דיווח סוף יום ✓"; }, 2000);
-        fetchFromGas();
-      } else if (!sendWhatsApp) {
-        showToast("הדיווח נשמר בהצלחה ✓");
+      const envVal = document.getElementById("inpEnvelopeActual").value;
+      r.status = document.getElementById("sellerStatusSelect").value;
+      r.receiptCash = Number(document.getElementById("inpReceiptCash").value) || 0;
+      r.receiptCredit = Number(document.getElementById("inpReceiptCredit").value) || 0;
+      r.extraIncome = Number(document.getElementById("inpExtraIncome").value) || 0;
+      r.extraDetails = document.getElementById("inpExtraDetails").value.trim();
+      r.envelopeActual = envVal === "" ? "" : Number(envVal);
+      r.sellerName = sellerName;
+      if (state.receiptPhotoBase64 && !r.receiptPhotoUrl) r.receiptPhotoUrl = state.receiptPhotoBase64;
+      if (state.envelopePhotoBase64 && !r.envelopePhotoUrl) r.envelopePhotoUrl = state.envelopePhotoBase64;
+      renderAll();
+
+      if (sendWhatsApp) {
+        const diff = (Number(r.envelopeActual)||0) - r.receiptCash;
+        sendWhatsAppMessage(`🧾 *Friends — דיווח סגירת קופה*\n• תאריך: ${r.date}\n• מוכר: ${sellerName}\n• מזומן בדוח Z: ${r.receiptCash} ₪\n• אשראי בדוח Z: ${r.receiptCredit} ₪\n• במעטפה בפועל: ${r.envelopeActual} ₪ (הפרש: ${diff} ₪)`);
+      }
+
+      const url = getActiveUrl();
+      if (url) {
+        const btn = document.getElementById("btnSubmitSeller");
+        btn.disabled = true;
+        btn.textContent = "שומר בגיליון...";
+        try {
+          await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "saveSellerReport",
+              year: state.year,
+              monthTab: state.activeTab,
+              rowNumber: r.rowNumber,
+              date: r.date,
+              status: r.status,
+              receiptCash: r.receiptCash,
+              receiptCredit: r.receiptCredit,
+              extraIncome: r.extraIncome,
+              extraDetails: r.extraDetails,
+              envelopeActual: r.envelopeActual,
+              sellerName: r.sellerName,
+              receiptPhotoBase64: state.receiptPhotoBase64,
+              envelopePhotoBase64: state.envelopePhotoBase64
+            })
+          });
+          showToast("הדיווח נשמר בגיליון בהצלחה ✓");
+          fetchFromGas();
+        } catch (e) {
+          showToast("נשמר מקומית — בדוק חיבור רשת", true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "שמור דיווח סוף יום ✓";
+        }
       }
     }
 
-    // =========================================================================
-    // QUEUES MANAGEMENT (תורים לסוני ולסנוקר + חישוב זמן המתנה)
-<!-- ... existing code ... -->
+    function setQueueFilter(qf) {
+      state.queueFilter = qf;
+      document.getElementById("qBtnAll").className = qf === "all" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
+      document.getElementById("qBtnSony").className = qf === "סוני" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
+      document.getElementById("qBtnSnooker").className = qf === "סנוקר" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
+      if (qf !== "all") document.getElementById("qCategorySelect").value = qf;
+      renderQueuesTab();
+    }
+
     async function addCustomerToQueue() {
       const category = document.getElementById("qCategorySelect").value;
       const customerName = document.getElementById("qCustomerName").value.trim();
       const partyOrNote = document.getElementById("qPartyNote").value.trim();
       const seller = document.getElementById("qSellerSelect").value;
-      if (!customerName) return showToast("הזן את שם הלקוח הממתין בתור", true);
+      if (!customerName) return showToast("הזן את שם הלקוח", true);
 
       const now = new Date();
-<!-- ... existing code ... -->
-          <td class="py-2 px-2 font-bold text-white">${q.customerName} <span class="text-slate-400 font-normal">${q.partyOrNote ? '('+q.partyOrNote+')' : ''}</span></td>
+      const dateStr = now.toLocaleDateString("he-IL");
+      const dayOfWeek = DAYS_HE[now.getDay()];
+      const startTime = now.toTimeString().slice(0, 5);
+
+      const item = {
+        id: "Q" + Date.now(),
+        date: dateStr,
+        dayOfWeek: dayOfWeek,
+        category: category,
+        customerName: customerName,
+        partyOrNote: partyOrNote,
+        startTime: startTime,
+        enteredTime: "",
+        waitMinutes: 0,
+        completed: false,
+        seller: seller
+      };
+      state.queues.unshift(item);
+      localStorage.setItem("friends_queues", JSON.stringify(state.queues));
+      document.getElementById("qCustomerName").value = "";
+      document.getElementById("qPartyNote").value = "";
+      renderQueuesTab();
+      showToast("נוסף לתור ✓");
+
+      const url = getActiveUrl();
+      if (url) {
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "addQueueItem", year: state.year, ...item })
+        }).catch(() => {});
+      }
+    }
+
+    function calcMinutesBetween(startHHMM, endHHMM) {
+      if (!startHHMM || !endHHMM) return 15;
+      const [sh, sm] = startHHMM.split(":").map(Number);
+      const [eh, em] = endHHMM.split(":").map(Number);
+      let diff = (eh * 60 + em) - (sh * 60 + sm);
+      if (diff < 0) diff += 24 * 60;
+      return Math.max(1, diff);
+    }
+
+    async function toggleQueueCompleted(id, checked) {
+      const q = state.queues.find(x => x.id === id);
+      if (!q) return;
+      const nowTime = new Date().toTimeString().slice(0, 5);
+      q.completed = checked;
+      if (checked) {
+        q.enteredTime = nowTime;
+        q.waitMinutes = calcMinutesBetween(q.startTime, nowTime);
+      } else {
+        q.enteredTime = "";
+        q.waitMinutes = 0;
+      }
+      localStorage.setItem("friends_queues", JSON.stringify(state.queues));
+      renderQueuesTab();
+
+      const url = getActiveUrl();
+      if (url) {
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "completeQueueItem", year: state.year, id: q.id, enteredTime: q.enteredTime, waitMinutes: q.waitMinutes, completed: q.completed })
+        }).catch(() => {});
+      }
+    }
+
+    function renderQueuesTab() {
+      const waiting = state.queues.filter(q => !q.completed && (state.queueFilter === "all" || q.category === state.queueFilter));
+      const allWaitingCount = state.queues.filter(q => !q.completed).length;
+
+      const bQueue = document.getElementById("badgeQueueCount");
+      bQueue.textContent = allWaitingCount;
+      bQueue.classList.toggle("hidden", allWaitingCount === 0);
+
+      const nowHHMM = new Date().toTimeString().slice(0, 5);
+      const activeContainer = document.getElementById("activeQueueContainer");
+      if (waiting.length === 0) {
+        activeContainer.innerHTML = `<div class="p-3.5 rounded-xl bg-[#07192b] border border-[#1b3a5c] text-xs text-emerald-400 font-bold">אין כרגע ממתינים בתור ✓</div>`;
+      } else {
+        activeContainer.innerHTML = waiting.map((q, idx) => {
+          const liveWait = calcMinutesBetween(q.startTime, nowHHMM);
+          return `
+            <div class="p-3.5 rounded-xl bg-[#07192b] border border-[#f05323]/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-3">
+                <span class="w-7 h-7 rounded-full btn-friends flex items-center justify-center font-extrabold text-sm">${idx + 1}</span>
+                <div>
+                  <span class="px-2 py-0.5 rounded bg-slate-800 text-amber-300 font-extrabold ml-2">${q.category === 'סנוקר' ? '🎱 סנוקר' : '🎮 סוני'}</span>
+                  <strong class="text-white text-sm">${q.customerName}</strong>
+                  <span class="text-slate-300 mr-2">${q.partyOrNote || ''}</span>
+                  <div class="text-[11px] text-slate-400 mt-0.5">נרשם בשעה <strong>${q.startTime}</strong> | ממתין <strong class="text-amber-300">${liveWait} דקות</strong></div>
+                </div>
+              </div>
+              <label class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600/20 border border-emerald-500/50 text-emerald-300 font-extrabold cursor-pointer">
+                <input type="checkbox" onchange="toggleQueueCompleted('${q.id}', this.checked)" class="w-4 h-4 accent-emerald-500" />
+                <span>נכנס לשחק (V)</span>
+              </label>
+            </div>
+          `;
+        }).join("");
+      }
+
+      const historyRows = state.queues.filter(q => state.queueFilter === "all" || q.category === state.queueFilter);
+      document.getElementById("queueHistoryTableBody").innerHTML = historyRows.map(q => `
+        <tr class="${q.completed ? 'opacity-80' : 'bg-[#07192b]'}">
+          <td class="py-2 px-2 font-bold">${q.date} <span class="text-slate-400 text-[11px]">${q.dayOfWeek || ''}</span></td>
+          <td class="py-2 px-2 font-bold ${q.category==='סנוקר'?'text-emerald-400':'text-sky-400'}">${q.category}</td>
+          <td class="py-2 px-2 font-bold text-white">${q.customerName}</td>
           <td class="py-2 px-2">${q.startTime}</td>
           <td class="py-2 px-2 text-emerald-400 font-bold">${q.enteredTime || '-'}</td>
-          <td class="py-2 px-2 font-extrabold text-amber-300">${q.completed ? q.waitMinutes + ' דק׳' : 'ממתין כעת'}</td>
+          <td class="py-2 px-2 font-extrabold text-amber-300">${q.completed ? q.waitMinutes + ' דקות' : 'ממתין'}</td>
           <td class="py-2 px-2 text-center">
             <input type="checkbox" ${q.completed ? 'checked' : ''} onchange="toggleQueueCompleted('${q.id}', this.checked)" class="w-4 h-4 accent-emerald-500 cursor-pointer" />
           </td>
@@ -150,35 +1182,247 @@
       `).join("");
     }
 
-    // =========================================================================
-    // GENERAL MESSAGE MODAL TO MANAGERS
-<!-- ... existing code ... -->
+    function openMessageModal() {
+      document.getElementById("messageModal").classList.remove("hidden");
+    }
+    function closeMessageModal() {
+      document.getElementById("messageModal").classList.add("hidden");
+    }
     async function sendGeneralMessage(alsoWhatsApp) {
       const reporter = document.getElementById("msgModalSeller").value;
       const issueType = document.getElementById("msgModalTopic").value;
       const description = document.getElementById("msgModalText").value.trim();
-      if (!description) return showToast("כתוב את ההודעה או השאלה", true);
+      if (!description) return showToast("כתוב את ההודעה", true);
 
       const newMsg = {
-<!-- ... existing code ... -->
-      const url = localStorage.getItem("friends_gas_url");
+        id: "F" + Date.now(),
+        timestamp: new Date().toLocaleString("he-IL"),
+        unit: "הודעה למנהל",
+        issueType: issueType,
+        description: description,
+        reporter: reporter,
+        status: "פתוח"
+      };
+      state.faults.unshift(newMsg);
+      localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+      document.getElementById("msgModalText").value = "";
+      closeMessageModal();
+      renderAll();
+      showToast("ההודעה נשלחה למנהלים ✓");
+
+      if (alsoWhatsApp) {
+        sendWhatsAppMessage(`💬 *Friends — הודעה ממוכר*\n• מאת: ${reporter}\n• נושא: ${issueType}\n• הודעה: ${description}`);
+      }
+
+      const url = getActiveUrl();
       if (url) {
-        await fetch(url, { method: "POST", body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg }) });
-      } else if (!alsoWhatsApp) {
-        showToast("ההודעה נשלחה למנהלים ✓");
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "addFault", year: state.year, ...newMsg })
+        }).catch(() => {});
       }
     }
 
-    // =========================================================================
-    // 24 SCREENS TAB + 4 SNOOKER TABLES TAB
-<!-- ... existing code ... -->
+    function isSnookerFault(f) {
+      return f.unit && (f.unit.indexOf("סנוקר") !== -1 || f.unit.indexOf("כללי") !== -1 || f.unit.indexOf("הודעה") !== -1);
+    }
+
+    function renderScreensAndSnookerTabs() {
+      const openFaults = state.faults.filter(f => f.status !== "תוקן");
+      const openScreenFaults = openFaults.filter(f => !isSnookerFault(f));
+      const openSnookerFaults = openFaults.filter(f => isSnookerFault(f));
+
+      const bScreens = document.getElementById("badgeScreensCount");
+      bScreens.textContent = openScreenFaults.length;
+      bScreens.classList.toggle("hidden", openScreenFaults.length === 0);
+
+      const bSnooker = document.getElementById("badgeSnookerCount");
+      bSnooker.textContent = openSnookerFaults.length;
+      bSnooker.classList.toggle("hidden", openSnookerFaults.length === 0);
+
+      const grid = document.getElementById("screensGrid");
+      let sHtml = "";
+      for (let i = 1; i <= 24; i++) {
+        const unitName = "מסך " + i;
+        const unitFaults = openScreenFaults.filter(f => f.unit === unitName);
+        const hasFault = unitFaults.length > 0;
+        sHtml += `<button type="button" onclick="selectScreenUnit('${unitName}')" class="p-2.5 rounded-xl border text-center transition ${
+          hasFault
+            ? 'bg-rose-500/20 border-rose-500 text-rose-200'
+            : 'bg-[#07192b] border-[#1b3a5c] hover:border-[#f05323] text-slate-200'
+        }">
+          <div class="text-xs font-extrabold">📺 ${unitName}</div>
+          <div class="text-[10px] mt-0.5 ${hasFault ? 'text-rose-300 font-bold' : 'text-emerald-400'}">
+            ${hasFault ? '⚠️ תקלה' : '✓ תקין'}
+          </div>
+        </button>`;
+      }
+      grid.innerHTML = sHtml;
+
+      document.getElementById("screenFaultsListContainer").innerHTML = openScreenFaults.length === 0
+        ? `<div class="p-3 rounded-xl bg-[#07192b] text-xs text-emerald-400">כל 24 המסכים תקינים ✓</div>`
+        : openScreenFaults.map(renderFaultCardHtml).join("");
+
+      const snookerGrid = document.getElementById("snookerGrid");
+      let snkHtml = "";
+      for (let t = 1; t <= 4; t++) {
+        const tableName = "שולחן סנוקר " + t;
+        const tFaults = openSnookerFaults.filter(f => f.unit === tableName);
+        const hasFault = tFaults.length > 0;
+        snkHtml += `<button type="button" onclick="selectSnookerUnit('${tableName}')" class="p-4 rounded-2xl border text-center transition ${
+          hasFault
+            ? 'bg-rose-500/20 border-rose-500 text-rose-200'
+            : 'bg-emerald-950/30 border-emerald-500/40 hover:border-[#f05323] text-slate-100'
+        }">
+          <div class="text-2xl mb-1">🎱</div>
+          <div class="text-sm font-extrabold">${tableName}</div>
+          <div class="text-xs mt-1 ${hasFault ? 'text-rose-300 font-bold' : 'text-emerald-400'}">
+            ${hasFault ? '⚠️ תקלה' : '✓ תקין'}
+          </div>
+        </button>`;
+      }
+      snookerGrid.innerHTML = snkHtml;
+
+      document.getElementById("snookerFaultsListContainer").innerHTML = openSnookerFaults.length === 0
+        ? `<div class="p-3 rounded-xl bg-[#07192b] text-xs text-emerald-400">כל 4 שולחנות הסנוקר תקינים ✓</div>`
+        : openSnookerFaults.map(renderFaultCardHtml).join("");
+    }
+
+    function renderFaultCardHtml(f) {
+      return `
+        <div class="p-3 rounded-xl bg-[#07192b] border border-rose-500/40 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div>
+            <span class="font-extrabold text-rose-400">${f.unit} — ${f.issueType}</span>
+            <span class="text-slate-200 mr-2 font-medium">${f.description || ''}</span>
+            <div class="text-slate-400 text-[11px] mt-0.5">
+              דווח ע"י: <strong>${f.reporter || '-'}</strong> | ${f.timestamp || 'היום'}
+            </div>
+          </div>
+          <button type="button" onclick="markFaultResolved('${f.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 font-bold">סמן שתוקן ✓</button>
+        </div>
+      `;
+    }
+
+    function selectScreenUnit(unitName) {
+      document.getElementById("faultScreenUnitSelect").value = unitName;
+      document.getElementById("faultScreenDescInput").focus();
+    }
+
+    function selectSnookerUnit(tableName) {
+      document.getElementById("faultSnookerUnitSelect").value = tableName;
+      document.getElementById("faultSnookerDescInput").focus();
+    }
+
+    async function submitFault(kind) {
+      const isScreen = kind === "screen";
+      const unit = document.getElementById(isScreen ? "faultScreenUnitSelect" : "faultSnookerUnitSelect").value;
+      const issueType = document.getElementById(isScreen ? "faultScreenTypeSelect" : "faultSnookerTypeSelect").value;
+      const reporter = document.getElementById(isScreen ? "faultScreenReporterSelect" : "faultSnookerReporterSelect").value;
       const descEl = document.getElementById(isScreen ? "faultScreenDescInput" : "faultSnookerDescInput");
       const description = descEl.value.trim();
-      if (!description) return showToast("כתוב בקצרה מה התקלה", true);
+      if (!description) return showToast("כתוב מה התקלה", true);
 
       const photoB64 = isScreen ? state.faultScreenPhotoBase64 : state.faultSnookerPhotoBase64;
-<!-- ... existing code ... -->
-    async function changePinPrompt() {
+      const newFault = {
+        id: "F" + Date.now(),
+        timestamp: new Date().toLocaleString("he-IL"),
+        unit, issueType, description, reporter,
+        photoUrl: "",
+        status: "פתוח"
+      };
+      state.faults.unshift(newFault);
+      localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+      descEl.value = "";
+      if (isScreen) {
+        state.faultScreenPhotoBase64 = "";
+        document.getElementById("faultScreenFileBadge").textContent = "";
+      } else {
+        state.faultSnookerPhotoBase64 = "";
+        document.getElementById("faultSnookerFileBadge").textContent = "";
+      }
+      renderAll();
+      showToast("הדיווח נשלח ✓");
+
+      const url = getActiveUrl();
+      if (url) {
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "addFault", year: state.year, ...newFault, photoBase64: photoB64 })
+        }).catch(() => {});
+      }
+    }
+
+    async function markFaultResolved(id) {
+      const f = state.faults.find(x => x.id === id);
+      if (f) f.status = "תוקן";
+      localStorage.setItem("friends_faults", JSON.stringify(state.faults));
+      renderAll();
+      const url = getActiveUrl();
+      if (url) {
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "resolveFault", year: state.year, id, status: "תוקן" })
+        }).catch(() => {});
+      }
+    }
+
+    function renderGuides() {
+      const container = document.getElementById("guidesContainer");
+      container.innerHTML = state.guides.map(g => `
+        <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2">
+          <span class="px-2 py-0.5 rounded bg-[#f05323]/20 text-[#ff764d] text-[11px] font-bold">${g.category}</span>
+          <h3 class="text-sm font-extrabold text-white">${g.title}</h3>
+          <p class="text-xs text-slate-300 whitespace-pre-line leading-relaxed">${g.steps}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderManagerSection() {
+      if (state.mode !== "manager") return;
+      const openFaults = state.faults.filter(f => f.status !== "תוקן");
+      document.getElementById("managerFaultsCount").textContent = openFaults.length + " פתוחות";
+      document.getElementById("managerFaultsList").innerHTML = openFaults.length === 0
+        ? `<div class="text-emerald-400 font-bold">אין תקלות פתוחות ✓</div>`
+        : openFaults.map(renderFaultCardHtml).join("");
+
+      const tbody = document.getElementById("managerTableBody");
+      tbody.innerHTML = state.dailyRows.map(r => {
+        const diff = r.envelopeActual === "" ? "" : (Number(r.envelopeActual) - (Number(r.receiptCash)||0));
+        return `<tr>
+          <td class="py-2 px-2 font-bold">${r.date}</td>
+          <td class="py-2 px-2">${r.sellerName || '-'}</td>
+          <td class="py-2 px-2 text-emerald-400 font-bold">${r.receiptCash ? r.receiptCash + ' ₪' : '-'}</td>
+          <td class="py-2 px-2 text-sky-400 font-bold">${r.receiptCredit ? r.receiptCredit + ' ₪' : '-'}</td>
+          <td class="py-2 px-2 text-amber-300 font-bold">${r.envelopeActual !== "" ? r.envelopeActual + ' ₪' : '-'}</td>
+          <td class="py-2 px-2 font-bold ${diff===0?'text-emerald-400':'text-rose-400'}">${diff === "" ? '-' : diff + ' ₪'}</td>
+          <td class="py-2 px-2 space-x-1 space-x-reverse">
+            ${r.receiptPhotoUrl ? `<a href="${r.receiptPhotoUrl}" target="_blank" class="text-emerald-300 underline">Z</a>` : '-'}
+            ${r.envelopePhotoUrl ? `<a href="${r.envelopePhotoUrl}" target="_blank" class="text-sky-300 underline">מעטפה</a>` : ''}
+          </td>
+          <td class="py-2 px-2 text-center">
+            <input type="checkbox" ${r.approved ? 'checked' : ''} onchange="toggleApproved(${r.rowNumber}, this.checked)" class="w-4 h-4 accent-emerald-500 cursor-pointer" />
+          </td>
+        </tr>`;
+      }).join("");
+    }
+
+    async function toggleApproved(rowNumber, checked) {
+      const r = state.dailyRows.find(x => x.rowNumber === rowNumber);
+      if (r) r.approved = checked;
+      const url = getActiveUrl();
+      if (url) {
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "toggleCashApproved", year: state.year, monthTab: state.activeTab, rowNumber, approved: checked })
+        }).catch(() => {});
+      }
+    }
+
+    function changePinPrompt() {
       pinModalAction = "change";
       document.getElementById("pinModalTitle").textContent = "🔑 החלפת קוד מנהל";
       document.getElementById("pinModalInput").value = "";
