@@ -77,7 +77,7 @@
             <span class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-[#f05323]/20 text-[#ff764d] border border-[#f05323]/40">🎱 סנוקר &amp; סוני 🎮</span>
             <span class="text-xs text-sky-400 ps-symbols hidden sm:inline">△ ○ × □</span>
           </div>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.5)</p>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5">סגירת קופה, תורים לסוני ולסנוקר, 24 מסכים ו-4 שולחנות (v5.6)</p>
         </div>
       </div>
 
@@ -255,8 +255,8 @@
             הפרש מעטפה: <strong id="lblEnvelopeDiff" class="text-sm font-extrabold text-slate-400">טרם הוזן</strong>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="openEodChecklistModal(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
-            <button type="button" onclick="openEodChecklistModal(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
+            <button type="button" onclick="submitSellerReport(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
+            <button type="button" onclick="submitSellerReport(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
           </div>
         </div>
       </div>
@@ -737,9 +737,14 @@
           if (data.notifySettings && data.notifySettings.ownerPhone && !state.notifyPhone) {
             state.notifyPhone = data.notifySettings.ownerPhone;
           }
+          document.getElementById("statusSubtitle").textContent = "✓ מסונכרן עם גיליון " + state.activeTab + " (" + state.dailyRows.length + " ימים)";
           renderAll();
+        } else {
+          document.getElementById("statusSubtitle").textContent = "⚠️ שגיאת טעינה מהגיליון — בדוק פריסת Apps Script";
         }
-      } catch (e) {}
+      } catch (e) {
+        document.getElementById("statusSubtitle").textContent = "⚠️ אין חיבור לגיליון (מצב מקומי) — בדוק פריסת Apps Script";
+      }
     }
 
     function buildDemoDaysIfEmpty() {
@@ -1025,10 +1030,30 @@
 
     function fileToBase64(file) {
       return new Promise((res, rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result);
-        r.onerror = rej;
-        r.readAsDataURL(file);
+        if (file && file.type && file.type.startsWith("image/")) {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const maxDim = 1100;
+            const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+            res(canvas.toDataURL("image/jpeg", 0.72));
+          };
+          img.onerror = () => {
+            const r = new FileReader();
+            r.onload = () => res(r.result);
+            r.onerror = rej;
+            r.readAsDataURL(file);
+          };
+          img.src = URL.createObjectURL(file);
+        } else {
+          const r = new FileReader();
+          r.onload = () => res(r.result);
+          r.onerror = rej;
+          r.readAsDataURL(file);
+        }
       });
     }
 
@@ -1115,7 +1140,7 @@
 
       if (sendWhatsApp) {
         const diff = (Number(r.envelopeActual)||0) - r.receiptCash;
-        sendWhatsAppMessage(`🧾 *Friends — דיווח סגירת קופה*\n• תאריך: ${r.date}\n• מוכר: ${sellerName}\n• מזומן בדוח Z: ${r.receiptCash} ₪\n• אשראי בדוח Z: ${r.receiptCredit} ₪\n• במעטפה בפועל: ${r.envelopeActual} ₪ (הפרש: ${diff} ₪)\n✓ בוצעו כל 6 משימות סוף היום`);
+        sendWhatsAppMessage(`🧾 *Friends — דיווח סגירת קופה*\n• תאריך: ${r.date}\n• מוכר: ${sellerName}\n• מזומן בדוח Z: ${r.receiptCash} ₪\n• אשראי בדוח Z: ${r.receiptCredit} ₪\n• במעטפה בפועל: ${r.envelopeActual} ₪ (הפרש: ${diff} ₪)`);
       }
 
       const payload = {
