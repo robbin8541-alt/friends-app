@@ -830,8 +830,7 @@
                 <th style="padding:6px;">מס׳</th>
                 <th style="padding:6px;">שם מלא</th>
                 <th style="padding:6px;">מספר זהות</th>
-                <th style="padding:6px;">מאמת מנחם</th>
-                <th style="padding:6px;">מאמת יהודה</th>
+                <th style="padding:6px;">אישור עמידה בתנאים (12.5 ש״ש)</th>
                 <th style="padding:6px;">סכום בש״ח</th>
               </tr>
             </thead>
@@ -841,13 +840,12 @@
                   <td style="padding:6px; text-align:center;">${i + 1}</td>
                   <td style="padding:6px;">${s.name}</td>
                   <td style="padding:6px; text-align:center;">${s.tz}</td>
-                  <td style="padding:6px; text-align:center; font-weight:bold;">${s.verifiedMenachem ? 'V' : '-'}</td>
-                  <td style="padding:6px; text-align:center; font-weight:bold;">${s.verifiedGura ? 'V' : '-'}</td>
+                  <td style="padding:6px; text-align:center;">עומד בתנאי הזכאות (V)</td>
                   <td style="padding:6px; text-align:center; font-weight:bold;">${s.amount.toLocaleString()} ₪</td>
                 </tr>
-              `).join('') : '<tr><td colspan="6" style="padding:10px; text-align:center;">לא הוזנו מלגאים לחודש זה</td></tr>'}
+              `).join('') : '<tr><td colspan="5" style="padding:10px; text-align:center;">לא הוזנו מלגאים לחודש זה</td></tr>'}
               <tr style="background:#f8fafc; font-weight:bold;">
-                <td colspan="5" style="padding:6px; text-align:left;">סה״כ לתשלום:</td>
+                <td colspan="4" style="padding:6px; text-align:left;">סה״כ לתשלום:</td>
                 <td style="padding:6px; text-align:center;">${total.toLocaleString()} ₪</td>
               </tr>
             </tbody>
