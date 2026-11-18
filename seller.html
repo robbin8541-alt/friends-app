@@ -555,7 +555,7 @@
     }
     #protocolModal:not(.hidden) > div,
     #messageModal:not(.hidden) > div,
-    #eodModal:not(.hidden) > div {
+    #eodModal:not(.hidden) > div, #pinModal:not(.hidden) > div, #mgrSettingsModal:not(.hidden) > div {
       animation: modalPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
     }
     #ownerToast:not(.hidden) {
@@ -1184,6 +1184,51 @@
   </div>
 
 
+  
+  <!-- Custom Hidden PIN Modal for Manager Mode -->
+  <div id="pinModal" class="fixed inset-0 z-[998] bg-black/80 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="pinModalTitle">
+    <div class="card w-full max-w-sm p-5 space-y-4 border-orange-500/40">
+      <div class="flex items-center justify-between">
+        <h3 id="pinModalTitle" class="text-base font-black text-white">כניסה למצב מנהל</h3>
+        <button type="button" onclick="closePinModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1" aria-label="סגור">✕</button>
+      </div>
+      <p class="text-xs text-slate-400">הזן קוד מנהל אישי (הספרות מוסתרות לפרטיות ליד מוכרים):</p>
+      <input id="pinModalInput" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="••••" class="input-dark text-center text-xl font-black tracking-[0.4em]" onkeydown="if(event.key==='Enter') submitPinModal()" />
+      <div id="pinModalError" class="hidden text-xs font-bold text-rose-400 text-center">קוד מנהל שגוי, נסה שוב</div>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" onclick="closePinModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">ביטול</button>
+        <button type="button" onclick="submitPinModal()" class="px-4 py-2 rounded-xl btn-friends text-xs font-black">אשר וכנס</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Manager Settings Modal (PIN & Web App URL) -->
+  <div id="mgrSettingsModal" class="fixed inset-0 z-[998] bg-black/80 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="mgrSettingsTitle">
+    <div class="card w-full max-w-md p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="mgrSettingsTitle" class="text-base font-black text-white">הגדרות מנהל</h3>
+        <button type="button" onclick="closeMgrSettingsModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1" aria-label="סגור">✕</button>
+      </div>
+      <div id="mgrSettingsPinPane" class="space-y-2.5 hidden">
+        <label class="block text-xs font-bold text-slate-300">קוד מנהל נוכחי</label>
+        <input id="mgrOldPinInput" type="password" inputmode="numeric" placeholder="••••" class="input-dark text-center tracking-[0.35em] font-bold" />
+        <label class="block text-xs font-bold text-slate-300">קוד מנהל חדש</label>
+        <input id="mgrNewPinInput" type="password" inputmode="numeric" placeholder="למשל 482910" class="input-dark text-center tracking-[0.35em] font-bold" />
+      </div>
+      <div id="mgrSettingsUrlPane" class="space-y-2.5 hidden">
+        <label class="block text-xs font-bold text-slate-300">קישור Web App של Apps Script (.../exec)</label>
+        <input id="mgrGasUrlInput" type="url" dir="ltr" placeholder="https://script.google.com/macros/s/.../exec" class="input-dark text-xs font-mono" />
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" onclick="closeMgrSettingsModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">ביטול</button>
+        <button type="button" onclick="submitMgrSettingsModal()" class="px-4 py-2 rounded-xl btn-friends text-xs font-black">שמור שינויים</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sleek Floating Toast Notification for Seller -->
+  <div id="sellerToast" role="status" aria-live="polite" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border backdrop-blur-md"></div>
+
   <!-- End-of-Day Tasks Popup Modal -->
   <div id="eodModal" class="fixed inset-0 z-[999] bg-black/85 hidden flex items-center justify-center p-4">
     <div class="card p-5 max-w-md w-full space-y-4 border-[#f05323]">
@@ -1456,19 +1501,14 @@
 
     function setMode(mode) {
       if (mode === "manager") {
-        const pin = prompt("הזן קוד מנהל:", "");
-        if (pin === null) return;
-        if (pin.trim() !== state.managerPin && pin.trim() !== "1111") {
-          alert("קוד מנהל שגוי!");
-          return;
-        }
+        openPinModal();
+        return;
       }
       state.mode = mode;
-      document.getElementById("btnModeSeller").className = mode === "seller" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
-      document.getElementById("btnModeManager").className = mode === "manager" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
-      document.getElementById("panelManagerOnly").classList.toggle("hidden", mode !== "manager");
+      document.getElementById("btnModeSeller").className = "px-3 py-1.5 rounded-lg btn-friends";
+      document.getElementById("btnModeManager").className = "px-3 py-1.5 rounded-lg text-slate-300";
+      document.getElementById("panelManagerOnly").classList.add("hidden");
       renderAll();
-      if (mode === "manager") { document.getElementById("panelManagerOnly").scrollIntoView({ behavior: "smooth" }); }
     }
 
     // =========================================================================
@@ -1893,7 +1933,7 @@
       let sellerName = document.getElementById("sellerNameSelect").value;
       if (sellerName === "__custom__") {
         sellerName = document.getElementById("customSellerInput").value.trim();
-        if (!sellerName) return alert("הקלד שם מוכר");
+        if (!sellerName) return showSellerToast("הקלד שם מוכר", "error");
         if (!state.sellers.includes(sellerName)) {
           state.sellers.push(sellerName);
           safeSet("friends_sellers", JSON.stringify(state.sellers));
@@ -1969,7 +2009,7 @@
       const customerName = document.getElementById("qCustomerName").value.trim();
       const partyOrNote = document.getElementById("qPartyNote").value.trim();
       const seller = document.getElementById("qSellerSelect").value;
-      if (!customerName) return alert("הזן את שם הלקוח הממתין בתור");
+      if (!customerName) return showSellerToast("הזן את שם הלקוח הממתין בתור", "error");
 
       const now = new Date();
       const dateStr = now.toLocaleDateString("he-IL");
@@ -2102,7 +2142,7 @@
       const target = document.getElementById("msgModalTarget").value;
       const issueType = document.getElementById("msgModalTopic").value;
       const description = document.getElementById("msgModalText").value.trim();
-      if (!description) return alert("כתוב את ההודעה או השאלה");
+      if (!description) return showSellerToast("כתוב את ההודעה או השאלה", "error");
 
       const targetLabel = target === "manager" ? "הודעה פרטית למנהל" : (target === "owner" ? "הודעה לקבוצת הבעלים (מנחם ויהודה)" : "הודעה לקבוצה המשותפת");
       const newMsg = {
@@ -2124,7 +2164,7 @@
       if (alsoWhatsApp) {
         const waText = `💬 *Friends — ${targetLabel}*\n• מאת: ${reporter}\n• נושא: ${issueType}\n• הודעה: ${description}`;
         if (target === "manager") {
-          if (!state.managerPhone) alert("הזן למעלה את הנייד הפרטי של המנהל, או בחר אותו בווצאפ שייפתח.");
+          if (!state.managerPhone) showSellerToast("בחר את המנהל בווצאפ שייפתח", "error");
           sendWhatsAppMessage(waText, state.managerPhone);
         } else if (target === "owner") {
           // קבוצת הבעלים של מנחם ויהודה:
@@ -2139,7 +2179,7 @@
       if (url) {
         await sendToGas({ action: "addFault", year: state.year, ...newMsg });
       } else if (!alsoWhatsApp) {
-        alert("ההודעה נשלחה!");
+        showSellerToast("ההודעה נשלחה בהצלחה");
       }
     }
 
@@ -2244,7 +2284,7 @@
       const reporter = document.getElementById(isScreen ? "faultScreenReporterSelect" : "faultSnookerReporterSelect").value;
       const descEl = document.getElementById(isScreen ? "faultScreenDescInput" : "faultSnookerDescInput");
       const description = descEl.value.trim();
-      if (!description) return alert("כתוב בקצרה מה התקלה");
+      if (!description) return showSellerToast("כתוב בקצרה מה התקלה", "error");
 
       const photoB64 = isScreen ? state.faultScreenPhotoBase64 : state.faultSnookerPhotoBase64;
       const newFault = {
@@ -2380,27 +2420,22 @@
 
     
     function changeGasUrlPrompt() {
-      const current = safeGet("friends_gas_url") || SCRIPT_URL;
-      const entered = prompt("הדבק כתובת Web App (.../exec) של ה-Apps Script:", current);
-      if (entered && entered.trim().startsWith("https://")) {
-        safeSet("friends_gas_url", entered.trim());
-        fetchFromGas();
-      }
+      _mgrSettingsMode = "url";
+      document.getElementById("mgrSettingsTitle").textContent = "עדכון קישור גוגל שיטס (Web App)";
+      document.getElementById("mgrSettingsPinPane").classList.add("hidden");
+      document.getElementById("mgrSettingsUrlPane").classList.remove("hidden");
+      document.getElementById("mgrGasUrlInput").value = safeGet("friends_gas_url") || SCRIPT_URL;
+      document.getElementById("mgrSettingsModal").classList.remove("hidden");
     }
 
-    async function changePinPrompt() {
-      const oldPin = prompt("הזן קוד מנהל נוכחי:", "");
-      if (oldPin === null) return;
-      if (oldPin.trim() !== state.managerPin && oldPin.trim() !== "1111") return alert("קוד נוכחי שגוי");
-      const newPin = prompt("הזן קוד מנהל חדש:", "");
-      if (!newPin) return;
-      state.managerPin = newPin.trim();
-      safeSet("friends_manager_pin", state.managerPin);
-      const url = safeGet("friends_gas_url", '');
-      if (url) {
-        await sendToGas({ action: "changeManagerPin", oldPin, newPin: state.managerPin });
-      }
-      alert("קוד המנהל הוחלף בהצלחה!");
+    function changePinPrompt() {
+      _mgrSettingsMode = "pin";
+      document.getElementById("mgrSettingsTitle").textContent = "החלפת קוד מנהל";
+      document.getElementById("mgrSettingsUrlPane").classList.add("hidden");
+      document.getElementById("mgrSettingsPinPane").classList.remove("hidden");
+      document.getElementById("mgrOldPinInput").value = "";
+      document.getElementById("mgrNewPinInput").value = "";
+      document.getElementById("mgrSettingsModal").classList.remove("hidden");
     }
 
     function onMonthChange() {
@@ -2516,6 +2551,100 @@
         out += '</tr>';
       }
       return out;
+    }
+
+
+
+    // --- Sleek Toast & Custom Modals (Zero native alert/prompt) ---
+    let _sellerToastTimer = null;
+    function showSellerToast(msg, type) {
+      const el = document.getElementById("sellerToast");
+      if (!el) return;
+      el.textContent = msg;
+      const isErr = type === "error";
+      el.className = "fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border backdrop-blur-md " +
+        (isErr
+          ? "bg-rose-600/95 text-white border-rose-400/50"
+          : "bg-emerald-600/95 text-white border-emerald-400/50");
+      clearTimeout(_sellerToastTimer);
+      _sellerToastTimer = setTimeout(() => el.classList.add("hidden"), 3200);
+    }
+
+    function openPinModal() {
+      const m = document.getElementById("pinModal");
+      const inp = document.getElementById("pinModalInput");
+      const err = document.getElementById("pinModalError");
+      if (err) err.classList.add("hidden");
+      if (inp) { inp.value = ""; }
+      if (m) m.classList.remove("hidden");
+      setTimeout(() => inp && inp.focus(), 60);
+    }
+
+    function closePinModal() {
+      const m = document.getElementById("pinModal");
+      if (m) m.classList.add("hidden");
+    }
+
+    function enterManagerModeConfirmed() {
+      state.mode = "manager";
+      document.getElementById("btnModeSeller").className = "px-3 py-1.5 rounded-lg text-slate-300";
+      document.getElementById("btnModeManager").className = "px-3 py-1.5 rounded-lg btn-friends";
+      document.getElementById("panelManagerOnly").classList.remove("hidden");
+      renderAll();
+      document.getElementById("panelManagerOnly").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function submitPinModal() {
+      const inp = document.getElementById("pinModalInput");
+      const err = document.getElementById("pinModalError");
+      const pin = (inp ? inp.value : "").trim();
+      if (pin !== state.managerPin && pin !== "1111") {
+        if (err) err.classList.remove("hidden");
+        if (inp) { inp.value = ""; inp.focus(); }
+        return;
+      }
+      closePinModal();
+      enterManagerModeConfirmed();
+      showSellerToast("נכנסת למצב מנהל");
+    }
+
+    let _mgrSettingsMode = "pin";
+    function closeMgrSettingsModal() {
+      const m = document.getElementById("mgrSettingsModal");
+      if (m) m.classList.add("hidden");
+    }
+
+    async function submitMgrSettingsModal() {
+      if (_mgrSettingsMode === "url") {
+        const entered = (document.getElementById("mgrGasUrlInput")?.value || "").trim();
+        if (!entered.startsWith("https://")) {
+          showSellerToast("הדבק כתובת תקינה שמתחילה ב-https://", "error");
+          return;
+        }
+        safeSet("friends_gas_url", entered);
+        closeMgrSettingsModal();
+        showSellerToast("קישור השיטס עודכן — מסנכרן...");
+        fetchFromGas();
+      } else {
+        const oldPin = (document.getElementById("mgrOldPinInput")?.value || "").trim();
+        const newPin = (document.getElementById("mgrNewPinInput")?.value || "").trim();
+        if (oldPin !== state.managerPin && oldPin !== "1111") {
+          showSellerToast("קוד נוכחי שגוי", "error");
+          return;
+        }
+        if (newPin.length < 4) {
+          showSellerToast("הזן קוד חדש בן 4 ספרות לפחות", "error");
+          return;
+        }
+        state.managerPin = newPin;
+        safeSet("friends_manager_pin", state.managerPin);
+        const url = safeGet("friends_gas_url", "");
+        if (url) {
+          await sendToGas({ action: "changeManagerPin", oldPin, newPin: state.managerPin });
+        }
+        closeMgrSettingsModal();
+        showSellerToast("קוד המנהל הוחלף בהצלחה");
+      }
     }
 
 </script>
