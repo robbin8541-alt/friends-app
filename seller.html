@@ -254,7 +254,7 @@
           </div>
         </div>
 
-        <!-- Submit Bar -->
+        <!-- Submit Bar (Opens Mandatory End-of-Day Tasks Popup) -->
         <div class="p-3.5 rounded-xl bg-[#07192b] border border-[#1b3a5c] flex flex-wrap items-center justify-between gap-3">
           <div class="text-xs text-slate-300">
             סה"כ יומי בקבלה: <strong id="lblTotalDaily" class="text-white text-sm">0 ₪</strong>
@@ -263,8 +263,8 @@
             הפרש מעטפה: <strong id="lblEnvelopeDiff" class="text-sm font-extrabold text-slate-400">טרם הוזן</strong>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="submitSellerReport(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
-            <button onclick="submitSellerReport(true)" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
+            <button type="button" onclick="openEodChecklistModal(false)" id="btnSubmitSeller" class="px-5 py-2.5 rounded-xl btn-friends font-extrabold text-sm shadow-lg">שמור דיווח סוף יום ✓</button>
+            <button type="button" onclick="openEodChecklistModal(true)" id="btnSubmitSellerWa" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg">📲 שמור ושלח לקבוצת הווצאפ</button>
           </div>
         </div>
       </div>
@@ -569,8 +569,46 @@
     </div>
   </div>
 
+
+  <!-- End-of-Day Tasks Popup Modal -->
+  <div id="eodModal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-4">
+    <div class="card p-5 max-w-md w-full space-y-4 border-[#f05323]">
+      <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
+        <h3 class="text-base font-extrabold text-amber-300">✅ משימות סוף יום לפני סגירת קופה</h3>
+        <button type="button" onclick="closeEodModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <p class="text-xs text-slate-300">סמן V על כל המשימות שבוצעו כדי לאשר ולשלוח את סגירת הקופה:</p>
+      <div class="space-y-2 text-xs">
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
+          <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
+          <span>❄️ כיבוי מזגנים בכל המתחם</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
+          <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
+          <span>🎮 כיבוי 24 מסכים וקונסולות הסוני + טעינת שלטים</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
+          <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
+          <span>🎱 איסוף כדורים ומקלות ב-4 שולחנות הסנוקר + כיבוי תאורה</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
+          <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
+          <span>🧹 ניקיון דלפק, פינוי אשפה וסידור שתייה</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c] cursor-pointer">
+          <input type="checkbox" class="eod-chk w-4 h-4 accent-emerald-500" onchange="checkEodTasks()" />
+          <span>🔒 בדיקת נעילת דלתות וכיבוי אורות ראשיים</span>
+        </label>
+      </div>
+      <div class="flex justify-end gap-2 pt-2 border-t border-[#1b3a5c]">
+        <button type="button" onclick="closeEodModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">חזור</button>
+        <button type="button" id="btnConfirmEod" onclick="confirmAndSubmitEod()" disabled class="px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold opacity-40 cursor-not-allowed">🔒 סמן את כל ה-V לאישור סגירה</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ"ש"];
+    const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ\"ש"];
     let state = {
       mode: "seller",
       year: "2026",
@@ -761,6 +799,7 @@
       document.getElementById("btnModeManager").className = mode === "manager" ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300";
       document.getElementById("panelManagerOnly").classList.toggle("hidden", mode !== "manager");
       renderAll();
+      if (mode === "manager") { document.getElementById("panelManagerOnly").scrollIntoView({ behavior: "smooth" }); }
     }
 
     // =========================================================================
@@ -972,6 +1011,41 @@
       });
     }
 
+    async 
+    let pendingWhatsAppSend = false;
+
+    function openEodChecklistModal(withWhatsApp) {
+      pendingWhatsAppSend = withWhatsApp;
+      document.querySelectorAll(".eod-chk").forEach(c => c.checked = false);
+      checkEodTasks();
+      document.getElementById("eodModal").classList.remove("hidden");
+    }
+
+    function closeEodModal() {
+      document.getElementById("eodModal").classList.add("hidden");
+    }
+
+    function checkEodTasks() {
+      const chks = [...document.querySelectorAll(".eod-chk")];
+      const allDone = chks.length > 0 && chks.every(c => c.checked);
+      const btn = document.getElementById("btnConfirmEod");
+      btn.disabled = !allDone;
+      if (allDone) {
+        btn.classList.remove("opacity-40", "cursor-not-allowed");
+        btn.textContent = pendingWhatsAppSend ? "📲 אשר ושלח לקבוצת הווצאפ ✓" : "✓ אשר ושמור סגירת קופה";
+      } else {
+        btn.classList.add("opacity-40", "cursor-not-allowed");
+        btn.textContent = "🔒 סמן את כל ה-V לאישור סגירה";
+      }
+      return allDone;
+    }
+
+    function confirmAndSubmitEod() {
+      if (!checkEodTasks()) return;
+      closeEodModal();
+      submitSellerReport(pendingWhatsAppSend);
+    }
+
     async function submitSellerReport(sendWhatsApp) {
       const idx = Number(document.getElementById("sellerDaySelect").value || 0);
       const r = state.dailyRows[idx];
@@ -1167,7 +1241,7 @@
           <td class="py-2 px-2 font-bold text-white">${q.customerName} <span class="text-slate-400 font-normal">${q.partyOrNote ? '('+q.partyOrNote+')' : ''}</span></td>
           <td class="py-2 px-2">${q.startTime}</td>
           <td class="py-2 px-2 text-emerald-400 font-bold">${q.enteredTime || '-'}</td>
-          <td class="py-2 px-2 font-extrabold text-amber-300">${q.completed ? q.waitMinutes + ' דק'' : 'ממתין כעת'}</td>
+          <td class="py-2 px-2 font-extrabold text-amber-300">${q.completed ? q.waitMinutes + ' דק׳' : 'ממתין כעת'}</td>
           <td class="py-2 px-2 text-center">
             <input type="checkbox" ${q.completed ? 'checked' : ''} onchange="toggleQueueCompleted('${q.id}', this.checked)" class="w-4 h-4 accent-emerald-500 cursor-pointer" />
           </td>
