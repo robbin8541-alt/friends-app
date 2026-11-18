@@ -658,6 +658,15 @@
       showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
     }
 
+    
+    async function closeOwnerTask(id) {
+      const t = managerTasks.find(x => x.id === id);
+      if (t) t.status = 'טופל';
+      renderManagerTasks();
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'completeManagerTask', id, managerNote: 'נסגר ע"י הבעלים' }) });
+      showOwnerToast('המשימה נסגרה והתזכורת נעצרה ✓');
+    }
+
     function renderManagerTasks() {
       const box = document.getElementById('mgrTasksList');
       if (!managerTasks.length) {
@@ -665,13 +674,16 @@
         return;
       }
       box.innerHTML = managerTasks.map(t => `
-        <div class="p-2.5 rounded-xl bg-[#091322] border ${t.status === 'טופל' ? 'border-emerald-500/40' : 'border-orange-500/50'} flex justify-between items-center">
+        <div class="p-2.5 rounded-xl bg-[#091322] border ${t.status === 'טופל' ? 'border-emerald-500/40' : 'border-orange-500/50'} flex flex-wrap justify-between items-center gap-2">
           <div>
             <span class="font-bold ${t.status === 'טופל' ? 'text-emerald-400' : 'text-orange-400'}">[${t.status}]</span>
             <strong class="text-white mr-1">${t.title}</strong>
             <span class="text-slate-400 mr-1">${t.details || ''}</span>
+            <span class="text-[10px] text-slate-500 mr-2">${t.createdAt || ''}</span>
           </div>
-          <span class="text-[10px] text-slate-500">${t.createdAt || ''}</span>
+          <div class="flex items-center gap-2">
+            ${t.status !== 'טופל' ? `<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">סגור משימה (טופל ✓)</button>` : '<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}
+          </div>
         </div>
       `).join('');
     }
