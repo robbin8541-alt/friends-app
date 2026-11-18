@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Friends & שערי עתיד | ניהול בעלים</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Friends" />
+  <meta name="application-name" content="Friends" />
+  <meta name="theme-color" content="#0d1c2e" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <title>Friends | ניהול בעלים</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -26,7 +33,7 @@
 </head>
 <body class="pb-20">
 
-  <!-- Header נקי ללא שורת סקריפט -->
+  <!-- Header עם הלוגו שלך -->
   <header class="bg-[#0d1c2e] border-b border-[#1e3a5f] sticky top-0 z-40 shadow-lg">
     <div class="max-w-3xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
       <div class="flex items-center">
@@ -234,6 +241,12 @@
     let allShifts = [];
     let scholarships = JSON.parse(localStorage.getItem('friends_scholarships') || '[]');
 
+    const HEB_MONTHS = {
+      "ינואר": "01", "פברואר": "02", "מרץ": "03", "אפריל": "04",
+      "מאי": "05", "יוני": "06", "יולי": "07", "אוגוסט": "08",
+      "ספטמבר": "09", "אוקטובר": "10", "נובמבר": "11", "דצמבר": "12"
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('bankDepositDate').valueAsDate = new Date();
       document.getElementById('expDate').valueAsDate = new Date();
@@ -259,19 +272,33 @@
 
     function formatCleanDate(raw) {
       if (!raw) return '';
-      const d = new Date(raw);
+      const s = String(raw).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        const [y, m, d] = s.split('-');
+        return `${d}/${m}/${y}`;
+      }
+      if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(s)) {
+        return s.replace(/[.-]/g, '/');
+      }
+      const d = new Date(s);
       if (!isNaN(d.getTime())) {
         return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
       }
-      return String(raw).split(' ')[0];
+      return s;
     }
 
-    function getMonthNumber(raw) {
-      if (!raw) return '';
-      const d = new Date(raw);
-      if (!isNaN(d.getTime())) return String(d.getMonth() + 1).padStart(2, '0');
-      const m = String(raw).match(/[-/](\d{2})[-/]/);
-      return m ? m[1] : '';
+    function extractMonth(raw, sheetName) {
+      const s = String(raw || '').trim();
+      let m = s.match(/^\d{4}-(\d{2})-\d{2}/);
+      if (m) return m[1];
+      m = s.match(/^\d{1,2}[./-](\d{1,2})[./-]\d{2,4}/);
+      if (m) return m[1].padStart(2, '0');
+      if (sheetName) {
+        for (const [heb, num] of Object.entries(HEB_MONTHS)) {
+          if (String(sheetName).includes(heb)) return num;
+        }
+      }
+      return '';
     }
 
     async function refreshOwnerData() {
@@ -288,28 +315,25 @@
           const c5 = r.col5 !== undefined ? r.col5 : r.envelope;
 
           const isNumericCol2 = !isNaN(parseFloat(c2)) && isFinite(c2);
+          let envelope = 0, credit = 0;
+
           if (isNumericCol2) {
-            const envelope = parseFloat(c2) || 0;
-            const credit = parseFloat(c3) || 0;
-            return {
-              date: formatCleanDate(r.date),
-              monthNum: getMonthNumber(r.date),
-              envelope: envelope,
-              credit: credit,
-              total: envelope + credit
-            };
+            envelope = parseFloat(c2) || 0;
+            credit = parseFloat(c3) || 0;
           } else {
-            const credit = parseFloat(c4) || 0;
-            const envelope = parseFloat(c5) || parseFloat(c3) || 0;
-            return {
-              date: formatCleanDate(r.date),
-              monthNum: getMonthNumber(r.date),
-              envelope: envelope,
-              credit: credit,
-              total: envelope + credit
-            };
+            credit = parseFloat(c4) || 0;
+            envelope = (c5 !== undefined && c5 !== "" && !isNaN(parseFloat(c5))) ? parseFloat(c5) : (parseFloat(c3) || 0);
           }
-        });
+
+          return {
+            date: formatCleanDate(r.date),
+            monthNum: extractMonth(r.date, r.sheetName),
+            envelope: envelope,
+            credit: credit,
+            total: envelope + credit
+          };
+        }).filter(r => r.envelope > 0 || r.credit > 0 || r.date);
+
         renderIncomeTable();
       } catch (e) {
         renderIncomeTable();
@@ -496,14 +520,14 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:26px; padding-top:12px; border-top:1px solid #cbd5e1;">
             <div style="text-align:center;">
               <div style="font-weight:bold; font-size:13px; margin-bottom:4px;">יהודה צבי גורא (ת.ז. 214085623)</div>
-              <img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px; margin:0 auto; object-fit:contain; filter: contrast(1.4) brightness(1.1); mix-blend-mode: multiply;" />
+              <img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" />
             </div>
             <div style="text-align:center;">
-              <img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:68px; margin:0 auto; object-fit:contain; filter: grayscale(100%) contrast(2.6) brightness(1.55); mix-blend-mode: multiply;" />'" style="height:68px; margin:0 auto; object-fit:contain; filter: grayscale(100%) contrast(2.6) brightness(1.55); mix-blend-mode: multiply;" />
+              <img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:68px; margin:0 auto; object-fit:contain; filter:grayscale(100%) contrast(2.4) brightness(1.45); mix-blend-mode:multiply;" />
             </div>
             <div style="text-align:center;">
               <div style="font-weight:bold; font-size:13px; margin-bottom:4px;">מנחם רובינשטיין (ת.ז. 324982743)</div>
-              <img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px; margin:0 auto; object-fit:contain; filter: contrast(1.4) brightness(1.1); mix-blend-mode: multiply;" />
+              <img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" />
             </div>
           </div>
         </div>
