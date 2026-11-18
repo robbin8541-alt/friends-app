@@ -61,12 +61,12 @@
 
   <main class="max-w-3xl mx-auto p-3 space-y-4">
 
-    <!-- לשונית 1: מעטפה + אשראי + סה"כ יומי (מעטפה + אשראי) -->
+    <!-- לשונית 1: מזומן + אשראי + סה"כ יומי -->
     <section id="osec-income" class="owner-section space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
         <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400">✉️ סה״כ במעטפות</div>
-          <div id="kpiEnvelopeTotal" class="text-lg font-black text-emerald-400 mt-0.5">0 ₪</div>
+          <div class="text-[11px] text-slate-400">💵 סה״כ מזומן</div>
+          <div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5">0 ₪</div>
         </div>
         <div class="card p-3 text-center">
           <div class="text-[11px] text-slate-400">💳 סה״כ אשראי</div>
@@ -80,11 +80,11 @@
 
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-base font-black">📊 הכנסות: מעטפה ואשראי</h2>
+          <h2 class="text-base font-black">📊 הכנסות: מזומן ואשראי</h2>
           <div class="flex items-center gap-2">
             <a href="https://docs.google.com/spreadsheets/d/1YaryrZTB648UXiNCy_D3f1EtiunWhvgvDJ-j2s36m5g/edit" target="_blank" class="text-xs text-sky-400 underline">גיליון ↗</a>
             <select id="monthFilter" onchange="renderIncomeTable()" class="input-dark px-3 py-1.5 text-xs font-bold">
-              <option value="ALL" selected>כל החודשים</option>
+              <option value="ALL">כל החודשים</option>
               <option value="01">ינואר</option>
               <option value="02">פברואר</option>
               <option value="03">מרץ</option>
@@ -113,7 +113,7 @@
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
               <tr>
                 <th class="py-2">תאריך</th>
-                <th>✉️ מעטפה</th>
+                <th>💵 מזומן</th>
                 <th>💳 אשראי</th>
                 <th>💰 סה״כ יומי</th>
               </tr>
@@ -169,7 +169,7 @@
               <option value="אוגוסט 2026">אוגוסט 2026</option>
               <option value="ספטמבר 2026">ספטמבר 2026</option>
               <option value="אוקטובר 2026">אוקטובר 2026</option>
-              <option value="נובמבר 2026" selected>נובמבר 2026</option>
+              <option value="נובמבר 2026">נובמבר 2026</option>
               <option value="דצמבר 2026">דצמבר 2026</option>
             </select>
             <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-2 rounded-xl text-xs shadow">
@@ -245,8 +245,21 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('bankDepositDate').valueAsDate = new Date();
-      document.getElementById('expDate').valueAsDate = new Date();
+      const now = new Date();
+      const currentMonthNum = String(now.getMonth() + 1).padStart(2, '0');
+      const monthNamesHeb = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+      const currentHebMonthYear = `${monthNamesHeb[now.getMonth()]} ${now.getFullYear()}`;
+
+      const mf = document.getElementById('monthFilter');
+      if (mf) mf.value = currentMonthNum;
+
+      const sm = document.getElementById('schMonthSelect');
+      if (sm && [...sm.options].some(o => o.value === currentHebMonthYear)) {
+        sm.value = currentHebMonthYear;
+      }
+
+      document.getElementById('bankDepositDate').valueAsDate = now;
+      document.getElementById('expDate').valueAsDate = now;
       renderScholarships();
       refreshOwnerData();
     });
@@ -321,30 +334,27 @@
           const c5 = r.col5 !== undefined ? r.col5 : r.envelope;
 
           const isNumericCol2 = !isNaN(parseFloat(c2)) && isFinite(c2);
-          let envelope = 0, credit = 0;
+          let cash = 0, credit = 0;
 
           if (isNumericCol2) {
-            // בעמודה 2 מופיע האשראי ובעמודה 3 המזומן/מעטפה (תיקון ההחלפה ביניהם)
-            credit = parseFloat(c2) || 0;
-            envelope = parseFloat(c3) || 0;
+            cash = parseFloat(c2) || 0;
+            credit = parseFloat(c3) || 0;
           } else {
-            // מבנה אפליקציית המוכרים: עמודה 4 אשראי, עמודה 5 מעטפה (מחליפה את מזומן קבלה)
+            cash = (c5 !== undefined && c5 !== "" && !isNaN(parseFloat(c5))) ? parseFloat(c5) : (parseFloat(c3) || 0);
             credit = parseFloat(c4) || 0;
-            envelope = (c5 !== undefined && c5 !== "" && !isNaN(parseFloat(c5))) ? parseFloat(c5) : (parseFloat(c3) || 0);
           }
 
           return {
             date: info.display,
             monthNum: info.month,
             yearNum: info.year,
-            envelope: envelope,
+            cash: cash,
             credit: credit,
-            total: envelope + credit
+            total: cash + credit
           };
         }).filter(r => {
-          // סינון קשיח לשנה שנבחרה (מונע ערבוב של נובמבר-דצמבר 2025 בתוך 2026)
           if (r.yearNum && r.yearNum !== selectedYear) return false;
-          return r.envelope > 0 || r.credit > 0;
+          return r.cash > 0 || r.credit > 0;
         });
 
         renderIncomeTable();
@@ -357,14 +367,14 @@
       const m = document.getElementById('monthFilter').value;
       const filtered = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
 
-      let envSum = 0, credSum = 0, totSum = 0;
+      let cashSum = 0, credSum = 0, totSum = 0;
       filtered.forEach(r => {
-        envSum += r.envelope;
+        cashSum += r.cash;
         credSum += r.credit;
         totSum += r.total;
       });
 
-      document.getElementById('kpiEnvelopeTotal').textContent = Math.round(envSum).toLocaleString() + ' ₪';
+      document.getElementById('kpiCashTotal').textContent = Math.round(cashSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCreditTotal').textContent = Math.round(credSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCombinedTotal').textContent = Math.round(totSum).toLocaleString() + ' ₪';
 
@@ -376,7 +386,7 @@
       tbody.innerHTML = filtered.map(r => `
         <tr>
           <td class="py-2 font-bold text-slate-200">${r.date}</td>
-          <td class="text-emerald-400 font-bold">${r.envelope.toLocaleString()} ₪</td>
+          <td class="text-emerald-400 font-bold">${r.cash.toLocaleString()} ₪</td>
           <td class="text-sky-400 font-bold">${r.credit.toLocaleString()} ₪</td>
           <td class="text-orange-400 font-black">${r.total.toLocaleString()} ₪</td>
         </tr>
@@ -391,7 +401,6 @@
       if (!amount) return;
 
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveBankDeposit', date, amount }) });
-      // ניקוי השדות לפעם הבאה
       amtInput.value = '';
       dateInput.valueAsDate = new Date();
       showOwnerToast('הפקדת הבנק נרשמה והשדה נוקה ✓');
@@ -410,7 +419,6 @@
       if (!amount) return;
 
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveExpense', date, category, amount, note }) });
-      // ניקוי השדות לפעם הבאה
       amtInput.value = '';
       noteInput.value = '';
       dateInput.valueAsDate = new Date();
@@ -434,7 +442,6 @@
       });
       localStorage.setItem('friends_scholarships', JSON.stringify(scholarships));
 
-      // ניקוי השדות לפעם הבאה
       nameInput.value = '';
       tzInput.value = '';
       renderScholarships();
@@ -579,7 +586,6 @@
       if (!title || !steps) return;
 
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveGuide', title, steps }) });
-      // ניקוי השדות לפעם הבאה
       titleInput.value = '';
       stepsInput.value = '';
       showOwnerToast('המדריך פורסם והשדות נוקו ✓');
