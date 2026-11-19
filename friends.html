@@ -7,7 +7,8 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Friends" />
   <meta name="application-name" content="Friends" />
-        <meta name="color-scheme" content="light dark" />
+        <meta name="text-scale" content="scale" />
+  <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#0d1c2e" />
   <script>
     (function () {
@@ -697,6 +698,87 @@
         margin-right: 244px !important;
         margin-left: auto !important;
         max-width: min(1080px, calc(100% - 244px)) !important;
+      }
+    }
+
+  
+    /* === OKLCH COLOR TOKENS, FLUID TYPOGRAPHY, HIGH CONTRAST & FROSTED GLASS HEADER === */
+    @supports (color: oklch(0% 0 0)) {
+      :root {
+        --brand-orange-light: oklch(61% 0.20 40);
+        --brand-orange-dark: oklch(68% 0.19 42);
+        --brand-accent: light-dark(var(--brand-orange-light), var(--brand-orange-dark));
+        --surface-canvas-light: oklch(96.8% 0.007 248);
+        --surface-canvas-dark: oklch(21% 0.042 248);
+        --surface-card-light: oklch(100% 0 0);
+        --surface-card-dark: oklch(26.5% 0.048 248);
+        --border-subtle: light-dark(oklch(86% 0.015 250), oklch(34% 0.055 248));
+        --text-primary: light-dark(oklch(20% 0.035 258), oklch(98% 0.004 248));
+        --text-secondary: light-dark(oklch(37% 0.035 255), oklch(84% 0.018 250));
+        --text-muted: light-dark(oklch(52% 0.03 255), oklch(70% 0.025 250));
+      }
+    }
+
+    /* Branded text selection */
+    ::selection {
+      background: color-mix(in oklch, var(--brand-accent) 28%, transparent);
+      color: var(--text-primary);
+    }
+
+    /* Fluid typography with clamp() */
+    h1 {
+      font-size: clamp(1.1rem, 0.95rem + 0.65vw, 1.45rem);
+    }
+    h2 {
+      font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem);
+    }
+    h3 {
+      font-size: clamp(0.9rem, 0.85rem + 0.22vw, 1.04rem);
+    }
+    #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #qSonyTotal, #qSnookerTotal, #qAvgWait {
+      font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.45rem);
+    }
+
+    /* Subtle frosted-glass top header + full-width edge-to-edge alignment */
+    header {
+      background: light-dark(rgba(255, 255, 255, 0.76), rgba(13, 28, 46, 0.76)) !important;
+      backdrop-filter: blur(18px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+      border-bottom: 1px solid light-dark(rgba(15, 23, 42, 0.09), rgba(255, 255, 255, 0.09)) !important;
+      box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.35) !important;
+    }
+    :root[data-theme="dark"] header {
+      background: rgba(13, 28, 46, 0.76) !important;
+      border-bottom-color: rgba(255, 255, 255, 0.09) !important;
+    }
+    :root[data-theme="light"] header {
+      background: rgba(255, 255, 255, 0.78) !important;
+      border-bottom-color: rgba(15, 23, 42, 0.09) !important;
+    }
+
+    /* Push logo cleanly to right edge and action buttons cleanly to left edge */
+    header > div:first-child {
+      max-width: none !important;
+      width: 100% !important;
+      padding-inline: clamp(0.75rem, 1.5vw, 1.5rem) !important;
+    }
+
+    /* High-contrast accessibility preference */
+    @media (prefers-contrast: more) {
+      :root {
+        --border-subtle: light-dark(#0f172a, #e2e8f0);
+        --border-input: light-dark(#0f172a, #e2e8f0);
+      }
+      .card, .input-dark, .btn-secondary, .theme-toggle-btn, button {
+        border-width: 1.5px !important;
+      }
+      button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+        outline-width: 3px !important;
+        outline-offset: 2px !important;
+      }
+      header {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
       }
     }
 
