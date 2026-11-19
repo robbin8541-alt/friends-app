@@ -720,6 +720,47 @@
       background-color: light-dark(#e2e8f0, rgba(148, 163, 184, 0.28)) !important;
       color: light-dark(#0f172a, #ffffff) !important;
     }
+  
+    /* === DESKTOP RIGHT SIDEBAR NAVIGATION (>= 1024px ONLY; Tablet & Mobile stay top horizontal) === */
+    @media (min-width: 1024px) {
+      #sellerSidebarNav {
+        position: fixed !important;
+        top: 84px;
+        right: 0;
+        bottom: 0;
+        width: 252px;
+        box-sizing: border-box;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 0.5rem !important;
+        padding: 1.15rem 0.9rem !important;
+        background: var(--bg-header);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-left: 1px solid var(--border-subtle);
+        overflow-y: auto;
+        z-index: 25;
+      }
+      #sellerSidebarNav > button {
+        width: 100%;
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-start !important;
+        gap: 0.45rem;
+        text-align: right;
+        padding: 0.75rem 0.95rem !important;
+        font-size: 0.85rem !important;
+        border-radius: 12px !important;
+      }
+      main {
+        margin-right: 252px !important;
+        margin-left: auto !important;
+        max-width: min(1100px, calc(100% - 252px)) !important;
+      }
+    }
+
   </style>
 </head>
 <body class="min-h-screen pb-24">
@@ -764,7 +805,7 @@
 
 
     <!-- 5 Main Navigation Tabs -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-2.5">
+    <div id="sellerSidebarNav" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-2.5">
       <button onclick="showSellerTab('closing')" id="tabBtnClosing" class="py-2.5 px-3 rounded-xl btn-friends font-extrabold text-xs sm:text-sm shadow"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>  סגירת קופה (Z ומעטפה)</button>
       <button onclick="showSellerTab('queues')" id="tabBtnQueues" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>  תורים (סוני / סנוקר) <span id="badgeQueueCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-[#f05323] text-white text-[10px]">0</span></button>
       <button onclick="showSellerTab('screens')" id="tabBtnScreens" class="py-2.5 px-3 rounded-xl bg-[#0c2238] text-slate-200 font-extrabold text-xs sm:text-sm border border-[#1b3a5c]"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>  24 מסכים ושלטים <span id="badgeScreensCount" class="hidden mr-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span></button>
