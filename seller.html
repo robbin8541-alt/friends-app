@@ -670,6 +670,56 @@
       animation: spinRing 0.8s linear infinite;
     }
 
+  
+    /* === STANDARD HIGH-CONTRAST MODAL BUTTONS (Light & Dark) === */
+    .btn-secondary {
+      background-color: light-dark(#f1f5f9, #1e293b) !important;
+      color: light-dark(#0f172a, #f8fafc) !important;
+      border: 1px solid light-dark(#cbd5e1, #475569) !important;
+      border-radius: 12px !important;
+      padding: 0.5rem 1rem !important;
+      font-size: 0.8rem !important;
+      font-weight: 700 !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background-color: light-dark(#e2e8f0, #334155) !important;
+      border-color: light-dark(#94a3b8, #64748b) !important;
+    }
+    :root[data-theme="dark"] .btn-secondary {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #475569 !important;
+    }
+    :root[data-theme="light"] .btn-secondary {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    .btn-modal-close {
+      width: 32px;
+      height: 32px;
+      min-height: 32px !important;
+      border-radius: 999px !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important;
+      color: light-dark(#334155, #e2e8f0) !important;
+      border: 1px solid light-dark(#e2e8f0, transparent) !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-modal-close:hover {
+      background-color: light-dark(#e2e8f0, rgba(148, 163, 184, 0.28)) !important;
+      color: light-dark(#0f172a, #ffffff) !important;
+    }
   </style>
 </head>
 <body class="min-h-screen pb-24">
@@ -1147,7 +1197,7 @@
     <div class="card p-5 max-w-md w-full space-y-3 border-[#f05323]">
       <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
         <h3 class="text-base font-extrabold text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>  שליחת הודעה / שאלה למנהלים</h3>
-        <button onclick="closeMessageModal()" class="text-slate-400 hover:text-white text-sm"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> </button>
+        <button onclick="closeMessageModal()" class="btn-modal-close"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> </button>
       </div>
       <p class="text-xs text-slate-300">בחר למי לשלוח את ההודעה — למנהל בפרטי, לבעלים בפרטי, או לשניהם בקבוצה המשותפת:</p>
       <div class="grid grid-cols-2 gap-2">
@@ -1190,13 +1240,13 @@
     <div class="card w-full max-w-sm p-5 space-y-4 border-orange-500/40">
       <div class="flex items-center justify-between">
         <h3 id="pinModalTitle" class="text-base font-black text-white">כניסה למצב מנהל</h3>
-        <button type="button" onclick="closePinModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1" aria-label="סגור">✕</button>
+        <button type="button" onclick="closePinModal()" class="btn-modal-close" aria-label="סגור">✕</button>
       </div>
       <p class="text-xs text-slate-400">הזן קוד מנהל אישי (הספרות מוסתרות לפרטיות ליד מוכרים):</p>
       <input id="pinModalInput" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="••••" class="input-dark text-center text-xl font-black tracking-[0.4em]" onkeydown="if(event.key==='Enter') submitPinModal()" />
       <div id="pinModalError" class="hidden text-xs font-bold text-rose-400 text-center">קוד מנהל שגוי, נסה שוב</div>
       <div class="flex items-center justify-end gap-2 pt-1">
-        <button type="button" onclick="closePinModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">ביטול</button>
+        <button type="button" onclick="closePinModal()" class="btn-secondary">ביטול</button>
         <button type="button" onclick="submitPinModal()" class="px-4 py-2 rounded-xl btn-friends text-xs font-black">אשר וכנס</button>
       </div>
     </div>
@@ -1207,7 +1257,7 @@
     <div class="card w-full max-w-md p-5 space-y-4">
       <div class="flex items-center justify-between">
         <h3 id="mgrSettingsTitle" class="text-base font-black text-white">הגדרות מנהל</h3>
-        <button type="button" onclick="closeMgrSettingsModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1" aria-label="סגור">✕</button>
+        <button type="button" onclick="closeMgrSettingsModal()" class="btn-modal-close" aria-label="סגור">✕</button>
       </div>
       <div id="mgrSettingsPinPane" class="space-y-2.5 hidden">
         <label class="block text-xs font-bold text-slate-300">קוד מנהל נוכחי</label>
@@ -1220,7 +1270,7 @@
         <input id="mgrGasUrlInput" type="url" dir="ltr" placeholder="https://script.google.com/macros/s/.../exec" class="input-dark text-xs font-mono" />
       </div>
       <div class="flex items-center justify-end gap-2 pt-1">
-        <button type="button" onclick="closeMgrSettingsModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">ביטול</button>
+        <button type="button" onclick="closeMgrSettingsModal()" class="btn-secondary">ביטול</button>
         <button type="button" onclick="submitMgrSettingsModal()" class="px-4 py-2 rounded-xl btn-friends text-xs font-black">שמור שינויים</button>
       </div>
     </div>
@@ -1234,7 +1284,7 @@
     <div class="card p-5 max-w-md w-full space-y-4 border-[#f05323]">
       <div class="flex items-center justify-between border-b border-[#1b3a5c] pb-2">
         <h3 class="text-base font-extrabold text-amber-300"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>  משימות סוף יום לפני סגירת קופה</h3>
-        <button type="button" onclick="closeEodModal()" class="text-slate-400 hover:text-white text-sm"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> </button>
+        <button type="button" onclick="closeEodModal()" class="btn-modal-close"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> </button>
       </div>
       <p class="text-xs text-slate-300">סמן V על כל המשימות שבוצעו כדי לאשר ולשלוח את סגירת הקופה:</p>
       <div class="space-y-2 text-xs">
@@ -1264,7 +1314,7 @@
         </label>
       </div>
       <div class="flex justify-end gap-2 pt-2 border-t border-[#1b3a5c]">
-        <button type="button" onclick="closeEodModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">חזור</button>
+        <button type="button" onclick="closeEodModal()" class="btn-secondary">חזור</button>
         <button type="button" id="btnConfirmEod" onclick="confirmAndSubmitEod()" disabled class="px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold opacity-40 cursor-not-allowed"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>  סמן את כל ה-V לאישור סגירה</button>
       </div>
     </div>
