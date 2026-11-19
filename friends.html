@@ -609,6 +609,56 @@
       animation: spinRing 0.8s linear infinite;
     }
 
+  
+    /* === STANDARD HIGH-CONTRAST MODAL BUTTONS (Light & Dark) === */
+    .btn-secondary {
+      background-color: light-dark(#f1f5f9, #1e293b) !important;
+      color: light-dark(#0f172a, #f8fafc) !important;
+      border: 1px solid light-dark(#cbd5e1, #475569) !important;
+      border-radius: 12px !important;
+      padding: 0.5rem 1rem !important;
+      font-size: 0.8rem !important;
+      font-weight: 700 !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background-color: light-dark(#e2e8f0, #334155) !important;
+      border-color: light-dark(#94a3b8, #64748b) !important;
+    }
+    :root[data-theme="dark"] .btn-secondary {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #475569 !important;
+    }
+    :root[data-theme="light"] .btn-secondary {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    .btn-modal-close {
+      width: 32px;
+      height: 32px;
+      min-height: 32px !important;
+      border-radius: 999px !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important;
+      color: light-dark(#334155, #e2e8f0) !important;
+      border: 1px solid light-dark(#e2e8f0, transparent) !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-modal-close:hover {
+      background-color: light-dark(#e2e8f0, rgba(148, 163, 184, 0.28)) !important;
+      color: light-dark(#0f172a, #ffffff) !important;
+    }
   </style>
 </head>
 <body class="pb-20">
@@ -919,7 +969,7 @@
       <div class="flex gap-2">
         <label class="flex items-center gap-1.5 text-xs font-bold text-slate-200"><span>תאריך אישור:</span><input type="date" id="protocolDateInput" onchange="renderAppendixSheet(this.value)" class="input-dark px-2 py-1 text-xs !min-h-[34px]" /></label>
         <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-1.5 rounded-lg text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect width="12" height="8" x="6" y="14"/></svg>  שמור כ-PDF / הדפס</button>
-        <button type="button" onclick="closeAppendixModal()" class="bg-slate-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>  סגור</button>
+        <button type="button" onclick="closeAppendixModal()" class="btn-secondary"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>  סגור</button>
       </div>
     </div>
     <div id="protocolPrintSheet" class="bg-white text-black w-full max-w-2xl p-6 rounded-xl shadow-2xl"></div>
@@ -931,11 +981,11 @@
     <div class="card w-full max-w-sm p-5 space-y-4 border-rose-500/40">
       <div class="flex items-center justify-between">
         <h3 id="confirmDeleteTitle" class="text-base font-black text-white">אישור מחיקה</h3>
-        <button type="button" onclick="closeConfirmDeleteModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1" aria-label="סגור">✕</button>
+        <button type="button" onclick="closeConfirmDeleteModal()" class="btn-modal-close" aria-label="סגור">✕</button>
       </div>
       <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה מהרשימה החודשית?</p>
       <div class="flex items-center justify-end gap-2 pt-1">
-        <button type="button" onclick="closeConfirmDeleteModal()" class="px-3.5 py-2 rounded-xl bg-slate-700 text-white text-xs font-bold">ביטול</button>
+        <button type="button" onclick="closeConfirmDeleteModal()" class="btn-secondary">ביטול</button>
         <button type="button" onclick="confirmDeleteScholarshipNow()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black">מחק לצמיתות</button>
       </div>
     </div>
