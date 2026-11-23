@@ -37,8 +37,8 @@
     .card { background: #13253e; border: 1px solid #1e3a5f; border-radius: 16px; }
     .input-dark { background: #091322; border: 1px solid #26466d; color: #fff; border-radius: 10px; }
     .input-dark:focus { outline: none; border-color: #f97316; }
-    .owner-tab { transition: all 0.2s; border-bottom: 3px solid transparent; color: #94a3b8; }
-    .owner-tab.active { border-bottom-color: #f97316; color: #ffffff; font-weight: 800; background: rgba(249, 115, 22, 0.14); }
+    .owner-tab { transition: all 0.2s; color: #94a3b8; }
+    .owner-tab.active { color: #ffffff; font-weight: 800; background: rgba(249, 115, 22, 0.14); box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @media print {
@@ -50,18 +50,10 @@
     }
     :root {
       color-scheme: light dark;
-      --bg-canvas: light-dark(#f1f5f9, #0b192c);
-      --bg-header: light-dark(rgba(255, 255, 255, 0.94), #0d1c2e);
       --bg-nav: light-dark(#ffffff, #0b192c);
-      --bg-card: light-dark(#ffffff, #13253e);
-      --bg-card-subtle: light-dark(#f8fafc, #091322);
-      --bg-input: light-dark(#f8fafc, #091322);
       --border-subtle: light-dark(#cbd5e1, #1e3a5f);
-      --border-input: light-dark(#cbd5e1, #26466d);
-      --text-primary: light-dark(#0f172a, #f8fafc);
-      --text-secondary: light-dark(#334155, #cbd5e1);
-      --text-muted: light-dark(#64748b, #94a3b8);
       --brand-accent: light-dark(#ea580c, #f97316);
+      --text-primary: light-dark(#0f172a, #f8fafc);
       --sb-track: light-dark(#e2e8f0, #091322);
       --sb-thumb: light-dark(#94a3b8, #2b4d77);
       --radius-card: 16px;
@@ -71,51 +63,29 @@
     }
     @supports (color: oklch(0% 0 0)) {
       :root {
-        --brand-orange-light: oklch(61% 0.20 40);
-        --brand-orange-dark: oklch(68% 0.19 42);
-        --brand-accent: light-dark(var(--brand-orange-light), var(--brand-orange-dark));
+        --brand-accent: light-dark(oklch(61% 0.20 40), oklch(68% 0.19 42));
         --border-subtle: light-dark(oklch(86% 0.015 250), oklch(34% 0.055 248));
         --text-primary: light-dark(oklch(20% 0.035 258), oklch(98% 0.004 248));
-        --text-secondary: light-dark(oklch(37% 0.035 255), oklch(84% 0.018 250));
-        --text-muted: light-dark(oklch(52% 0.03 255), oklch(70% 0.025 250));
       }
     }
-    :root:has(> head > meta[name="color-scheme"][content="dark"]), :root[data-theme="dark"] { color-scheme: dark; }
-    :root:has(> head > meta[name="color-scheme"][content="light"]), :root[data-theme="light"] { color-scheme: light; }
-    html {
-      accent-color: var(--brand-accent);
-      scrollbar-gutter: stable;
-      scrollbar-color: var(--sb-thumb) var(--sb-track);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      scroll-behavior: smooth;
-    }
+    :root[data-theme="dark"] { color-scheme: dark; }
+    :root[data-theme="light"] { color-scheme: light; }
+    html { accent-color: var(--brand-accent); scrollbar-gutter: stable; scrollbar-color: var(--sb-thumb) var(--sb-track); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
     body {
-      min-height: 100dvh;
-      overflow-x: clip;
-      line-height: 1.5;
+      min-height: 100dvh; overflow-x: clip; line-height: 1.5;
       padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
-      background-color: light-dark(#f1f5f9, #0b192c) !important;
-      color: light-dark(#0f172a, #f8fafc) !important;
+      background-color: light-dark(#f1f5f9, #0b192c) !important; color: light-dark(#0f172a, #f8fafc) !important;
     }
     :root[data-theme="dark"] body { background-color: #0b192c !important; color: #f8fafc !important; }
-    :root[data-theme="light"] body { background-color: #f1f5f9 !important; background-image: none !important; color: #0f172a !important; }
+    :root[data-theme="light"] body { background-color: #f1f5f9 !important; color: #0f172a !important; }
     ::selection { background: color-mix(in oklch, var(--brand-accent) 28%, transparent); color: var(--text-primary); }
-    h1, h2, h3, h4 { text-wrap: balance; }
-    p { text-wrap: pretty; }
-    h1 { font-size: clamp(1.1rem, 0.95rem + 0.65vw, 1.45rem); }
+    h1, h2, h3 { text-wrap: balance; }
     h2 { font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem); }
-    h3 { font-size: clamp(0.9rem, 0.85rem + 0.22vw, 1.04rem); }
-    #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #qSonyTotal, #qSnookerTotal, #qAvgWait {
-      font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.45rem);
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.02em;
-    }
-    button, a, select, input, textarea, [role="button"] { touch-action: manipulation; }
-    button { transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease; }
+    .kpi-val { font-size: clamp(1rem, 0.88rem + 0.6vw, 1.35rem); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+    button, a, select, input, textarea { touch-action: manipulation; }
+    button { transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease; }
     button:active:not(:disabled) { transform: scale(0.98); }
-    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+    button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
     .icon-svg { width: 1.05em; height: 1.05em; display: inline-block; vertical-align: -0.18em; flex-shrink: 0; margin-inline-end: 0.25rem; }
     .theme-toggle-btn {
       display: inline-flex; align-items: center; gap: 0.35rem; min-height: 36px; padding: 0.35rem 0.65rem;
@@ -123,47 +93,36 @@
       border: 1px solid light-dark(#cbd5e1, #26466d); background: light-dark(#f8fafc, #091322);
       color: light-dark(#0f172a, #f8fafc); cursor: pointer;
     }
-    .theme-toggle-btn .icon-svg { margin-inline-end: 0; }
-    .theme-toggle-btn:hover { border-color: var(--brand-accent); }
     header {
       background: light-dark(rgba(255, 255, 255, 0.76), rgba(13, 28, 46, 0.76)) !important;
-      backdrop-filter: blur(18px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+      backdrop-filter: blur(18px) saturate(180%) !important; -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
       border-bottom: 1px solid light-dark(rgba(15, 23, 42, 0.09), rgba(255, 255, 255, 0.09)) !important;
-      box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.35) !important;
     }
-    :root[data-theme="dark"] header { background: rgba(13, 28, 46, 0.76) !important; border-bottom-color: rgba(255, 255, 255, 0.09) !important; }
-    :root[data-theme="light"] header { background: rgba(255, 255, 255, 0.78) !important; border-bottom-color: rgba(15, 23, 42, 0.09) !important; }
+    :root[data-theme="dark"] header { background: rgba(13, 28, 46, 0.76) !important; }
+    :root[data-theme="light"] header { background: rgba(255, 255, 255, 0.78) !important; }
     header > div:first-child { max-width: none !important; width: 100% !important; padding-inline: clamp(0.75rem, 1.5vw, 1.5rem) !important; }
-    .card { border-radius: var(--radius-card) !important; box-shadow: var(--shadow-card-dark) !important; transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+    .card { border-radius: var(--radius-card) !important; box-shadow: var(--shadow-card-dark) !important; }
     :root[data-theme="light"] .card { box-shadow: var(--shadow-card-light) !important; }
-    .input-dark, input[type="text"], input[type="number"], input[type="date"], input[type="tel"], input[type="email"], input[type="url"], select, textarea {
-      border-radius: var(--radius-control) !important; min-height: 40px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .input-dark:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22) !important; }
+    .input-dark, select, textarea { border-radius: var(--radius-control) !important; min-height: 40px; }
     #ownerSidebarNav { scroll-snap-type: x proximity; gap: 0.25rem; padding: 0.35rem 0.5rem; }
-    .owner-tab { scroll-snap-align: start; border-radius: 10px !important; border-bottom: none !important; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; font-weight: 600; }
-    .owner-tab.active { border-bottom: none !important; box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35); }
+    .owner-tab { scroll-snap-align: start; border-radius: 10px !important; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; font-weight: 600; }
     table { border-collapse: collapse; }
-    thead th { font-weight: 700; padding-top: 0.65rem; padding-bottom: 0.65rem; white-space: nowrap; }
+    thead th { font-weight: 700; padding: 0.65rem 0.35rem; white-space: nowrap; }
     tbody tr:hover { background-color: rgba(148, 163, 184, 0.07); }
-    tbody td { padding-top: 0.6rem; padding-bottom: 0.6rem; }
-    #protocolModal, #confirmDeleteModal, #dirManageModal { overscroll-behavior: contain; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    tbody td { padding: 0.6rem 0.35rem; }
+    #protocolModal, #confirmDeleteModal, #dirManageModal { overscroll-behavior: contain; backdrop-filter: blur(6px); }
     #protocolModal, #protocolPrintSheet { color-scheme: light; }
     .btn-secondary {
       background-color: light-dark(#f1f5f9, #1e293b) !important; color: light-dark(#0f172a, #f8fafc) !important;
       border: 1px solid light-dark(#cbd5e1, #475569) !important; border-radius: 12px !important;
       padding: 0.5rem 1rem !important; font-size: 0.8rem !important; font-weight: 700 !important;
-      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .btn-secondary:hover { background-color: light-dark(#e2e8f0, #334155) !important; }
     :root[data-theme="dark"] .btn-secondary { background-color: #1e293b !important; color: #f8fafc !important; border-color: #475569 !important; }
     :root[data-theme="light"] .btn-secondary { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
     .btn-modal-close {
-      width: 32px; height: 32px; min-height: 32px !important; border-radius: 999px !important;
-      display: inline-flex; align-items: center; justify-content: center;
-      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important;
-      color: light-dark(#334155, #e2e8f0) !important; border: 1px solid light-dark(#e2e8f0, transparent) !important;
+      width: 32px; height: 32px; border-radius: 999px !important; display: inline-flex; align-items: center; justify-content: center;
+      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important; color: light-dark(#334155, #e2e8f0) !important;
       font-size: 0.85rem; font-weight: 700; cursor: pointer;
     }
     :root[data-theme="light"] {
@@ -176,13 +135,14 @@
       & .bg-\[\#091322\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] { background-color: #f8fafc !important; }
       & .bg-\[\#13253e\] { background-color: #ffffff !important; }
       & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
-      & h1, & h2, & h3, & h4 { color: #0f172a !important; }
-      & .text-white:not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-rose-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 { color: #0f172a !important; }
+      & h1, & h2, & h3 { color: #0f172a !important; }
+      & .text-white:not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-rose-']):not([class*='bg-amber-']), & .text-slate-100, & .text-slate-200 { color: #0f172a !important; }
       & .text-slate-300 { color: #334155 !important; }
       & .text-slate-400 { color: #475569 !important; }
       & .text-sky-400 { color: #0369a1 !important; }
       & .text-emerald-400 { color: #047857 !important; }
       & .text-orange-400 { color: #c2410c !important; }
+      & .text-amber-400 { color: #b45309 !important; }
     }
     @media (min-width: 1024px) {
       #ownerSidebarNav {
@@ -194,25 +154,23 @@
         box-shadow: -4px 0 20px -10px rgba(0, 0, 0, 0.25); overflow-y: auto !important; z-index: 35;
       }
       #ownerSidebarNav .owner-tab { flex: 0 0 auto !important; width: 100%; justify-content: flex-start !important; text-align: right; padding: 0.72rem 0.95rem !important; font-size: 0.85rem !important; border-radius: 12px !important; }
-      main { margin-right: 244px !important; margin-left: auto !important; max-width: min(1080px, calc(100% - 244px)) !important; padding-inline: 1.5rem !important; padding-top: 1.5rem !important; }
+      main { margin-right: 244px !important; margin-left: auto !important; max-width: min(1120px, calc(100% - 244px)) !important; padding-inline: 1.5rem !important; padding-top: 1.5rem !important; }
       .card { padding: 1.5rem !important; }
     }
     @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes modalPopIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     @keyframes topBarSweep { 0% { transform: translateX(100%); } 100% { transform: translateX(-260%); } }
     @keyframes spinRing { to { transform: rotate(360deg); } }
     @keyframes shimmerWave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     section:not(.hidden) { animation: fadeSlideUp 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-    #protocolModal:not(.hidden) > div, #confirmDeleteModal:not(.hidden) > div, #dirManageModal:not(.hidden) > div { animation: modalPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both; }
     #topLoadingBar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9999; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 220ms ease; background: rgba(249, 115, 22, 0.14); }
     #topLoadingBar.active { opacity: 1; }
     #topLoadingBar::after { content: ""; position: absolute; inset-block: 0; right: 0; width: 42%; border-radius: 999px; background: linear-gradient(90deg, transparent 0%, #f97316 45%, #fb923c 65%, transparent 100%); animation: topBarSweep 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
     #dataLoaderPill {
       position: fixed; top: 12px; left: 50%; transform: translate(-50%, -18px) scale(0.96); z-index: 9998;
       display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.95rem; border-radius: 999px;
-      font-size: 0.75rem; font-weight: 700; pointer-events: none; opacity: 0;
-      backdrop-filter: blur(14px); background: light-dark(rgba(255, 255, 255, 0.92), rgba(15, 31, 53, 0.92));
-      color: light-dark(#0f172a, #f8fafc); border: 1px solid light-dark(rgba(203, 213, 225, 0.9), rgba(249, 115, 22, 0.4));
+      font-size: 0.75rem; font-weight: 700; pointer-events: none; opacity: 0; backdrop-filter: blur(14px);
+      background: light-dark(rgba(255, 255, 255, 0.92), rgba(15, 31, 53, 0.92)); color: light-dark(#0f172a, #f8fafc);
+      border: 1px solid light-dark(rgba(203, 213, 225, 0.9), rgba(249, 115, 22, 0.4));
       box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.35); transition: opacity 200ms ease, transform 220ms ease;
     }
     #dataLoaderPill.active { opacity: 1; transform: translate(-50%, 0) scale(1); }
@@ -221,7 +179,6 @@
     .icon-spinning { animation: spinRing 0.8s linear infinite; }
     @page { size: A4 portrait; margin: 14mm; }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-    @media (prefers-contrast: more) { .card, .input-dark, .btn-secondary, .theme-toggle-btn, button { border-width: 1.5px !important; } }
   </style>
 </head>
 <body class="pb-20">
@@ -259,27 +216,58 @@
   </nav>
 
   <main class="max-w-5xl mx-auto p-3 space-y-4">
-    <!-- 1. הכנסות ובנק -->
+    <!-- 1. הכנסות, מזומן שנשאר להפקיד, רווח נקי וגרפים -->
     <section id="osec-income" class="owner-section space-y-3">
-      <div class="grid grid-cols-3 gap-2.5">
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
         <div class="card p-3 text-center">
           <div class="text-[11px] text-slate-400">סה״כ מזומן</div>
-          <div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5">0 ₪</div>
+          <div id="kpiCashTotal" class="kpi-val font-black text-emerald-400 mt-0.5">0 ₪</div>
         </div>
         <div class="card p-3 text-center">
           <div class="text-[11px] text-slate-400">סה״כ אשראי</div>
-          <div id="kpiCreditTotal" class="text-lg font-black text-sky-400 mt-0.5">0 ₪</div>
+          <div id="kpiCreditTotal" class="kpi-val font-black text-sky-400 mt-0.5">0 ₪</div>
         </div>
         <div class="card p-3 text-center">
           <div class="text-[11px] text-slate-400">סה״כ ביחד</div>
-          <div id="kpiCombinedTotal" class="text-lg font-black text-orange-400 mt-0.5">0 ₪</div>
+          <div id="kpiCombinedTotal" class="kpi-val font-black text-orange-400 mt-0.5">0 ₪</div>
+          <div id="kpiMomBadge" class="text-[10px] font-bold mt-0.5 text-slate-400"></div>
+        </div>
+        <div class="card p-3 text-center border-amber-500/40">
+          <div class="text-[11px] text-slate-400">מזומן שנשאר להפקיד</div>
+          <div id="kpiCashLeftToDeposit" class="kpi-val font-black text-amber-400 mt-0.5">0 ₪</div>
+        </div>
+        <div class="card p-3 text-center col-span-2 sm:col-span-1 border-emerald-500/40">
+          <div class="text-[11px] text-slate-400">רווח נקי (הכנסות − הוצאות)</div>
+          <div id="kpiNetProfit" class="kpi-val font-black text-emerald-400 mt-0.5">0 ₪</div>
+        </div>
+      </div>
+
+      <!-- 2 גרפים: הכנסות + ממוצע לפי יום בשבוע -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div class="card p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black text-white">גרף הכנסות (מזומן מול אשראי)</h3>
+            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+              <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span>מזומן</span>
+              <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-sky-500 inline-block"></span>אשראי</span>
+            </div>
+          </div>
+          <div id="incomeChartBox" class="w-full overflow-x-auto"></div>
+        </div>
+        <div class="card p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black text-white">ממוצע הכנסות לפי יום בשבוע (א׳–מוצ״ש)</h3>
+            <span class="text-[11px] text-slate-400">ימים חזקים / חלשים</span>
+          </div>
+          <div id="weekdayChartBox" class="w-full"></div>
         </div>
       </div>
 
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-base font-black">הכנסות: מזומן ואשראי</h2>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="exportMonthCsv()" class="btn-secondary !py-1.5 !px-3 !text-xs">ייצוא CSV לאקסל ↓</button>
             <a href="https://docs.google.com/spreadsheets/d/1YaryrZTB648UXiNCy_D3f1EtiunWhvgvDJ-j2s36m5g/edit" target="_blank" class="text-xs text-sky-400 underline">גיליון ↗</a>
             <select id="monthFilter" onchange="renderIncomeTable()" class="input-dark px-3 py-1.5 text-xs font-bold">
               <option value="ALL">כל החודשים</option>
@@ -301,7 +289,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr><th class="py-2">תאריך</th><th>מזומן</th><th>אשראי</th><th>סה״כ יומי</th></tr>
+              <tr><th class="py-2">תאריך</th><th>מזומן</th><th>אשראי</th><th>סה״כ יומי</th><th class="text-center">אושר (V)</th></tr>
             </thead>
             <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
@@ -309,10 +297,13 @@
       </div>
     </section>
 
-    <!-- 2. הוצאות -->
+    <!-- 2. הוצאות + היסטוריית הוצאות -->
     <section id="osec-expenses" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white">רישום הוצאות</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-black text-white">רישום הוצאות</h2>
+          <span class="text-xs font-bold text-rose-400">סה״כ הוצאות: <strong id="totalExpensesLbl">0 ₪</strong></span>
+        </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <input id="expDate" type="date" class="input-dark p-2 text-xs" />
           <select id="expCat" class="input-dark p-2 text-xs">
@@ -328,22 +319,32 @@
         </div>
         <button type="button" onclick="saveExpense()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ שמור הוצאה</button>
       </div>
+
+      <div class="card p-4 space-y-2">
+        <h3 class="text-sm font-black text-white">היסטוריית הוצאות שנרשמו</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-right">
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr><th class="py-2">תאריך</th><th>קטגוריה ופירוט</th><th>סוג</th><th>סכום</th></tr>
+            </thead>
+            <tbody id="expensesTableBody" class="divide-y divide-[#1e3a5f]"><tr><td colspan="4" class="py-4 text-center text-slate-400">אין עדיין הוצאות רשומות</td></tr></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <!-- 3. תורים -->
     <section id="osec-queues" class="owner-section hidden space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="text-lg font-black text-sky-400 mt-0.5">0</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסנוקר</div><div id="qSnookerTotal" class="text-lg font-black text-emerald-400 mt-0.5">0</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">ממוצע המתנה</div><div id="qAvgWait" class="text-lg font-black text-orange-400 mt-0.5">0 דק׳</div></div>
+        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="kpi-val font-black text-sky-400 mt-0.5">0</div></div>
+        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסנוקר</div><div id="qSnookerTotal" class="kpi-val font-black text-emerald-400 mt-0.5">0</div></div>
+        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">ממוצע המתנה</div><div id="qAvgWait" class="kpi-val font-black text-orange-400 mt-0.5">0 דק׳</div></div>
       </div>
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">סיכום תורים לפי ימים</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr><th class="py-2">תאריך ויום</th><th>סוני</th><th>סנוקר</th><th>ממוצע המתנה</th><th>מקסימום</th></tr>
-            </thead>
+            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך ויום</th><th>סוני</th><th>סנוקר</th><th>ממוצע המתנה</th><th>מקסימום</th></tr></thead>
             <tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]"><tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr></tbody>
           </table>
         </div>
@@ -352,9 +353,7 @@
         <h3 class="text-sm font-black text-white">פירוט כל הנרשמים בתור</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr><th class="py-2">תאריך</th><th>תחום</th><th>שם</th><th>רישום</th><th>כניסה</th><th>המתנה</th><th>סטטוס</th></tr>
-            </thead>
+            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>תחום</th><th>שם</th><th>רישום</th><th>כניסה</th><th>המתנה</th><th>סטטוס</th></tr></thead>
             <tbody id="qAllTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
         </div>
@@ -379,8 +378,6 @@
             <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-2 rounded-xl text-xs shadow">הצג והפק נספח ב׳ חתום</button>
           </div>
         </div>
-
-        <!-- מאגר אברכים קבוע + כפתור ניהול (הוספה ומחיקה) -->
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-xs font-black text-orange-400">מאגר מקבלי מלגות קבוע (מהשיטס):</span>
@@ -390,25 +387,18 @@
               <button type="button" onclick="addSelectedFromDir()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs">+ הוסף מסומנים לחודש</button>
             </div>
           </div>
-          <div id="schDirectoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto">
-            <div class="text-xs text-slate-400">טוען מאגר מהשיטס...</div>
-          </div>
+          <div id="schDirectoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto"><div class="text-xs text-slate-400">טוען מאגר מהשיטס...</div></div>
         </div>
-
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] grid grid-cols-2 sm:grid-cols-4 gap-2">
           <input id="schName" type="text" placeholder="שם מלא של המלגאי" class="input-dark p-2 text-xs" />
           <input id="schId" type="text" placeholder="מספר ת.ז." class="input-dark p-2 text-xs" />
           <input id="schAmount" type="number" value="2500" class="input-dark p-2 text-xs text-center font-bold" />
           <button type="button" onclick="addScholarshipRow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg text-xs py-2">+ הוסף ידנית</button>
         </div>
-
         <div id="verifierSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs"></div>
-
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr><th class="py-2">#</th><th>שם מלא</th><th>ת.ז.</th><th>סכום</th><th class="text-center">וי (V) מנחם</th><th class="text-center">וי (V) יהודה</th><th class="text-center">מחק</th></tr>
-            </thead>
+            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">#</th><th>שם מלא</th><th>ת.ז.</th><th>סכום</th><th class="text-center">וי (V) מנחם</th><th class="text-center">וי (V) יהודה</th><th class="text-center">מחק</th></tr></thead>
             <tbody id="schTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
         </div>
@@ -419,15 +409,12 @@
     <section id="osec-ops" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h2 class="text-base font-black text-white">שליחת משימה למנהל (תזכורת כל יום עד סימון 'טופל')</h2>
-            <p class="text-xs text-slate-400">כל משימה שתשלח כאן תישלח למנהל ותזכיר לו כל יום אוטומטית עד שיסמן שטופל</p>
-          </div>
+          <h2 class="text-base font-black text-white">שליחת משימה למנהל</h2>
           <button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs">הפעל תזכורת יומית</button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <input id="mgrTaskTitle" type="text" placeholder="נושא (למשל: לתקן שלט / נורה בשולחן 2)" class="input-dark p-2.5 text-xs" />
-          <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה למנהל..." class="input-dark p-2.5 text-xs" />
+          <input id="mgrTaskTitle" type="text" placeholder="נושא" class="input-dark p-2.5 text-xs" />
+          <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה..." class="input-dark p-2.5 text-xs" />
           <div class="flex gap-1.5">
             <button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח משימה</button>
             <button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח לווצאפ</button>
@@ -435,8 +422,6 @@
         </div>
         <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
-
-      <!-- פרטי מנהל + הגדרות קבלת מיילים לבעלים -->
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">פרטי מנהל נוכחי והגדרות קבלת מיילים לבעלים</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -444,7 +429,7 @@
           <input id="managerPhoneInput" type="tel" placeholder="נייד מנהל לווצאפ (97250...)" class="input-dark p-2 text-xs font-bold" />
           <input id="managerEmailInput" type="email" placeholder="מייל מנהל לתזכורות" class="input-dark p-2 text-xs" />
           <input id="chatWebhookInput" type="url" dir="ltr" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs sm:col-span-2" />
-          <input id="ownerEmailsInput" type="text" dir="ltr" placeholder="מיילים לקבלת דוחות סוף יום (אפשר כמה, מופרדים בפסיק)" class="input-dark p-2 text-xs sm:col-span-2" />
+          <input id="ownerEmailsInput" type="text" dir="ltr" placeholder="מיילים לקבלת דוחות סוף יום (מופרדים בפסיק)" class="input-dark p-2 text-xs sm:col-span-2" />
           <label class="flex items-center gap-2 text-xs font-bold text-slate-200 sm:col-span-2 cursor-pointer p-2 rounded-xl bg-[#091322] border border-[#26466d]">
             <input id="ownerEmailNotifyChk" type="checkbox" checked class="w-4 h-4 accent-orange-600" />
             <span>קבל דוחות סוף יום והתראות למיילים הרשומים למעלה</span>
@@ -452,7 +437,6 @@
           <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs sm:col-span-2">שמור הגדרות ומיילים ✓</button>
         </div>
       </div>
-
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">הוספת מדריך "איך מסדרים" למוכרים</h2>
         <input id="newGuideTitle" type="text" placeholder="כותרת התקלה" class="input-dark w-full p-2.5 text-xs" />
@@ -462,51 +446,43 @@
     </section>
   </main>
 
-  <!-- מודאל ניהול מאגר שמות (הוספה ומחיקה) -->
+  <!-- מודאל ניהול מאגר שמות -->
   <div id="dirManageModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="card w-full max-w-lg p-5 space-y-4 max-h-[88vh] flex flex-col">
       <div class="flex items-center justify-between border-b border-[#1e3a5f] pb-2">
         <h3 class="text-base font-black text-white">ניהול מאגר שמות קבוע (הוספה ומחיקה)</h3>
-        <button type="button" onclick="closeDirManageModal()" class="btn-modal-close" aria-label="סגור">✕</button>
+        <button type="button" onclick="closeDirManageModal()" class="btn-modal-close">✕</button>
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <input id="dirNewName" type="text" placeholder="שם מלא" class="input-dark p-2 text-xs" />
         <input id="dirNewId" type="text" placeholder="ת.ז." class="input-dark p-2 text-xs" />
-        <input id="dirNewAmount" type="number" value="2500" placeholder="סכום" class="input-dark p-2 text-xs text-center font-bold" />
-        <button type="button" onclick="addPersonToDirectory()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs px-2 py-2">+ הוסף למאגר</button>
+        <input id="dirNewAmount" type="number" value="2500" class="input-dark p-2 text-xs text-center font-bold" />
+        <button type="button" onclick="addPersonToDirectory()" class="bg-emerald-600 text-white font-bold rounded-xl text-xs px-2 py-2">+ הוסף למאגר</button>
       </div>
-      <div id="dirManageRows" class="space-y-2 overflow-y-auto flex-1 text-xs pr-1"></div>
-      <div class="flex justify-end pt-2 border-t border-[#1e3a5f]">
-        <button type="button" onclick="closeDirManageModal()" class="btn-secondary">סגור</button>
-      </div>
+      <div id="dirManageRows" class="space-y-2 overflow-y-auto flex-1 text-xs"></div>
+      <div class="flex justify-end pt-2 border-t border-[#1e3a5f]"><button type="button" onclick="closeDirManageModal()" class="btn-secondary">סגור</button></div>
     </div>
   </div>
 
-  <!-- מודאל נספח ב' חתום -->
+  <!-- מודאל נספח ב' -->
   <div id="protocolModal" class="hidden fixed inset-0 bg-black/85 z-50 overflow-y-auto p-3 flex flex-col items-center">
     <div class="no-print w-full max-w-2xl flex flex-wrap items-center justify-between gap-2 bg-[#13253e] p-3 rounded-xl mb-3 border border-orange-500">
       <span class="text-xs font-bold text-white">נספח ב׳ מוכן לשמירה כ-PDF / הדפסה:</span>
       <div class="flex flex-wrap items-center gap-2">
         <label class="flex items-center gap-1.5 text-xs font-bold text-slate-200"><span>תאריך אישור:</span><input type="date" id="protocolDateInput" onchange="renderAppendixSheet(this.value)" class="input-dark px-2 py-1 text-xs !min-h-[34px]" /></label>
-        <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-1.5 rounded-lg text-xs">שמור כ-PDF / הדפס</button>
+        <button type="button" onclick="window.print()" class="bg-emerald-600 text-white font-black px-3 py-1.5 rounded-lg text-xs">שמור כ-PDF / הדפס</button>
         <button type="button" onclick="closeAppendixModal()" class="btn-secondary">סגור</button>
       </div>
     </div>
     <div id="protocolPrintSheet" class="bg-white text-black w-full max-w-2xl p-6 rounded-xl shadow-2xl"></div>
   </div>
 
-  <!-- מודאל אישור מחיקת מלגאי -->
+  <!-- מודאל אישור מחיקה -->
   <div id="confirmDeleteModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="card w-full max-w-sm p-5 space-y-4 border-rose-500/40">
-      <div class="flex items-center justify-between">
-        <h3 class="text-base font-black text-white">אישור מחיקה</h3>
-        <button type="button" onclick="closeConfirmDeleteModal()" class="btn-modal-close" aria-label="סגור">✕</button>
-      </div>
-      <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה מהרשימה החודשית?</p>
-      <div class="flex items-center justify-end gap-2 pt-1">
-        <button type="button" onclick="closeConfirmDeleteModal()" class="btn-secondary">ביטול</button>
-        <button type="button" onclick="confirmDeleteScholarshipNow()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black">מחק לצמיתות</button>
-      </div>
+      <div class="flex items-center justify-between"><h3 class="text-base font-black text-white">אישור מחיקה</h3><button type="button" onclick="closeConfirmDeleteModal()" class="btn-modal-close">✕</button></div>
+      <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה?</p>
+      <div class="flex items-center justify-end gap-2"><button type="button" onclick="closeConfirmDeleteModal()" class="btn-secondary">ביטול</button><button type="button" onclick="confirmDeleteScholarshipNow()" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-black">מחק לצמיתות</button></div>
     </div>
   </div>
 
@@ -514,33 +490,24 @@
 
   <script>
     const _memStore = {};
-    function safeGet(k, defVal = null) {
-      try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; }
-    }
-    function safeSet(k, v) {
-      try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); }
-    }
+    function safeGet(k, defVal = null) { try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; } }
+    function safeSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); } }
     const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let SCRIPT_URL = safeGet("friends_gas_url") || DEFAULT_SCRIPT_URL;
-    let allShifts = [];
-    let allQueues = [];
-    let managerTasks = [];
-    let schDirectory = [];
-    // לא טוענים מלגות דמה ישנות מהדפדפן — מסתנכרן תמיד ישירות מגוגל שיטס האמיתי
-    let scholarships = [];
+    let allShifts = [], allDeposits = [], allExpenses = [], allQueues = [], managerTasks = [], schDirectory = [], scholarships = [];
     try { window.localStorage.removeItem('friends_scholarships'); } catch (e) {}
 
     const HEB_MONTHS = { "ינואר":"01","פברואר":"02","מרץ":"03","אפריל":"04","מאי":"05","יוני":"06","יולי":"07","אוגוסט":"08","ספטמבר":"09","אוקטובר":"10","נובמבר":"11","דצמבר":"12" };
+    const MONTH_NAMES = ["","ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+    const WEEKDAYS_HEB = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","מוצ״ש"];
 
     document.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
-      const currentMonthNum = String(now.getMonth() + 1).padStart(2, '0');
-      const monthNamesHeb = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
-      const currentHebMonthYear = `${monthNamesHeb[now.getMonth()]} ${now.getFullYear()}`;
       const mf = document.getElementById('monthFilter');
-      if (mf) mf.value = currentMonthNum;
+      if (mf) mf.value = String(now.getMonth() + 1).padStart(2, '0');
+      const curHeb = `${MONTH_NAMES[now.getMonth() + 1]} ${now.getFullYear()}`;
       const sm = document.getElementById('schMonthSelect');
-      if (sm && [...sm.options].some(o => o.value === currentHebMonthYear)) sm.value = currentHebMonthYear;
+      if (sm && [...sm.options].some(o => o.value === curHeb)) sm.value = curHeb;
 
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
@@ -555,40 +522,28 @@
       refreshOwnerData();
     });
 
-    function showOwnerToast(msg) {
-      const t = document.getElementById('ownerToast');
-      t.textContent = msg;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 3000);
-    }
-
+    function showOwnerToast(msg) { const t = document.getElementById('ownerToast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 3000); }
     function openOwnerTab(tabName) {
-      document.querySelectorAll('.owner-section').forEach(sec => sec.classList.add('hidden'));
-      document.querySelectorAll('.owner-tab').forEach(btn => btn.classList.remove('active'));
-      const sec = document.getElementById('osec-' + tabName);
-      const btn = document.getElementById('otab-' + tabName);
-      if (sec) sec.classList.remove('hidden');
-      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.owner-section').forEach(s => s.classList.add('hidden'));
+      document.querySelectorAll('.owner-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('osec-' + tabName)?.classList.remove('hidden');
+      document.getElementById('otab-' + tabName)?.classList.add('active');
     }
 
     function parseDateInfo(raw, sheetName) {
       const s = String(raw || '').trim();
-      let day = '', month = '', year = '';
+      let day = '', month = '', year = '', dateObj = null;
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-        const parts = s.substring(0, 10).split('-'); year = parts[0]; month = parts[1]; day = parts[2];
+        const p = s.substring(0,10).split('-'); year = p[0]; month = p[1]; day = p[2];
+        dateObj = new Date(Number(year), Number(month)-1, Number(day));
       } else if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}/.test(s)) {
-        const parts = s.split(/[./-]/);
-        day = parts[0].padStart(2, '0'); month = parts[1].padStart(2, '0');
-        year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
-      } else {
-        const d = new Date(s);
-        if (!isNaN(d.getTime())) {
-          day = String(d.getDate()).padStart(2, '0'); month = String(d.getMonth() + 1).padStart(2, '0'); year = String(d.getFullYear());
-        }
+        const p = s.split(/[./-]/); day = p[0].padStart(2,'0'); month = p[1].padStart(2,'0');
+        year = p[2].length === 2 ? '20'+p[2] : p[2];
+        dateObj = new Date(Number(year), Number(month)-1, Number(day));
       }
-      if (!month && sheetName) { for (const [heb, num] of Object.entries(HEB_MONTHS)) { if (String(sheetName).includes(heb)) { month = num; break; } } }
-      if (!year && sheetName) { const ym = String(sheetName).match(/20\d{2}/); if (ym) year = ym[0]; else if (String(sheetName).includes('25')) year = '2025'; }
-      return { display: (day && month && year) ? `${day}/${month}/${year}` : s, month, year };
+      if (!month && sheetName) { for (const [h,n] of Object.entries(HEB_MONTHS)) { if (String(sheetName).includes(h)) { month = n; break; } } }
+      if (!year && sheetName) { const ym = String(sheetName).match(/20\d{2}/); if (ym) year = ym[0]; }
+      return { display: (day && month && year) ? `${day}/${month}/${year}` : s, day, month, year, dayOfWeek: dateObj && !isNaN(dateObj) ? dateObj.getDay() : -1 };
     }
 
     async function sendToGas(payload) {
@@ -605,7 +560,7 @@
       const selectedYear = document.getElementById('yearSelect').value;
       setDataLoading(true, 'מסנכרן נתונים מגוגל שיטס...');
       const tb = document.getElementById('incomeTableBody');
-      if (tb && !allShifts.length) tb.innerHTML = buildSkeletonRows(4, 4);
+      if (tb && !allShifts.length) tb.innerHTML = buildSkeletonRows(5, 4);
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getOwnerData&year=${selectedYear}`);
         const data = await res.json();
@@ -613,10 +568,19 @@
 
         allShifts = rawRows.map(r => {
           const info = parseDateInfo(r.date, r.sheetName);
-          const cash = parseFloat(r.cash) || 0;
-          const credit = parseFloat(r.credit) || 0;
-          return { date: info.display, monthNum: info.month, yearNum: info.year, cash, credit, total: cash + credit };
+          const cash = parseFloat(r.cash) || 0, credit = parseFloat(r.credit) || 0;
+          return { date: info.display, dayNum: info.day, monthNum: info.month, yearNum: info.year, dayOfWeek: info.dayOfWeek, cash, credit, total: cash + credit, approved: Boolean(r.approved) };
         }).filter(r => (!r.yearNum || r.yearNum === selectedYear) && (r.cash > 0 || r.credit > 0));
+
+        allDeposits = (data.bankDeposits || []).map(d => {
+          const info = parseDateInfo(d.date, '');
+          return { date: info.display || d.date, monthNum: info.month, amount: parseFloat(d.amount) || 0, note: d.note || '' };
+        });
+
+        allExpenses = (data.expenses || []).map(e => {
+          const info = parseDateInfo(e.date, '');
+          return { date: info.display || e.date, monthNum: info.month, type: e.type || '', category: e.category || '', amount: parseFloat(e.amount) || 0 };
+        });
 
         if (data.queues) { allQueues = data.queues; renderQueuesTab(); }
         if (data.managerTasks) { managerTasks = data.managerTasks; renderManagerTasks(); }
@@ -626,26 +590,18 @@
           if (data.notifySettings.ownerEmails !== undefined) { safeSet('friends_owner_emails', data.notifySettings.ownerEmails); document.getElementById('ownerEmailsInput').value = data.notifySettings.ownerEmails; }
           if (data.notifySettings.emailNotify !== undefined) { safeSet('friends_owner_email_notify', String(data.notifySettings.emailNotify)); document.getElementById('ownerEmailNotifyChk').checked = Boolean(data.notifySettings.emailNotify); }
         }
-        if (Array.isArray(data.directory)) {
-          schDirectory = data.directory;
-          renderDirectoryList();
-          renderDirManageRows();
-        }
+        if (Array.isArray(data.directory)) { schDirectory = data.directory; renderDirectoryList(); renderDirManageRows(); }
         if (Array.isArray(data.scholarships)) {
           scholarships = data.scholarships.map(s => ({
-            id: s.rowNumber || Date.now() + Math.random(),
-            rowNumber: s.rowNumber,
-            month: s.month,
-            name: s.fullName,
-            tz: s.idNumber,
-            amount: Number(s.amount) || 2500,
-            verifiedMenachem: (s.received && s.verifier === 'מנחם רובינשטיין'),
-            verifiedGura: (s.received && s.verifier === 'יהודה גורא')
+            id: s.rowNumber || Date.now()+Math.random(), rowNumber: s.rowNumber, month: s.month, name: s.fullName, tz: s.idNumber,
+            amount: Number(s.amount)||2500, verifiedMenachem: (s.received && s.verifier==='מנחם רובינשטיין'), verifiedGura: (s.received && s.verifier==='יהודה גורא')
           }));
           renderScholarships();
         }
+        renderExpensesTable();
         renderIncomeTable();
       } catch (e) {
+        renderExpensesTable();
         renderIncomeTable();
       } finally {
         setDataLoading(false);
@@ -655,416 +611,313 @@
     function renderIncomeTable() {
       const m = document.getElementById('monthFilter').value;
       const filtered = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
-      let cashSum = 0, credSum = 0, totSum = 0;
-      filtered.forEach(r => { cashSum += r.cash; credSum += r.credit; totSum += r.total; });
+      const filteredDeps = allDeposits.filter(d => m === 'ALL' || !d.monthNum || d.monthNum === m);
+      const filteredExps = allExpenses.filter(e => m === 'ALL' || !e.monthNum || e.monthNum === m);
+
+      const cashSum = filtered.reduce((a,r) => a + r.cash, 0);
+      const credSum = filtered.reduce((a,r) => a + r.credit, 0);
+      const totSum = cashSum + credSum;
+      const depSum = filteredDeps.reduce((a,d) => a + d.amount, 0);
+      const expSum = filteredExps.reduce((a,e) => a + e.amount, 0);
+      const cashLeft = Math.max(0, Math.round(cashSum - depSum));
+      const netProfit = Math.round(totSum - expSum);
+
       document.getElementById('kpiCashTotal').textContent = Math.round(cashSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCreditTotal').textContent = Math.round(credSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCombinedTotal').textContent = Math.round(totSum).toLocaleString() + ' ₪';
+      document.getElementById('kpiCashLeftToDeposit').textContent = cashLeft.toLocaleString() + ' ₪';
+      const netEl = document.getElementById('kpiNetProfit');
+      netEl.textContent = netProfit.toLocaleString() + ' ₪';
+      netEl.className = 'kpi-val font-black mt-0.5 ' + (netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400');
+
+      // השוואה לחודש קודם באחוזים
+      const momEl = document.getElementById('kpiMomBadge');
+      if (m !== 'ALL' && Number(m) > 1) {
+        const prevM = String(Number(m) - 1).padStart(2, '0');
+        const prevTot = allShifts.filter(r => r.monthNum === prevM).reduce((a,r) => a + r.total, 0);
+        if (prevTot > 0 && totSum > 0) {
+          const pct = Math.round(((totSum - prevTot) / prevTot) * 100);
+          momEl.textContent = `${pct >= 0 ? '+' : ''}${pct}% מול ${MONTH_NAMES[Number(prevM)]}`;
+          momEl.className = 'text-[10px] font-bold mt-0.5 ' + (pct >= 0 ? 'text-emerald-400' : 'text-rose-400');
+        } else { momEl.textContent = ''; }
+      } else { momEl.textContent = ''; }
+
+      renderIncomeChart(filtered, m);
+      renderWeekdayChart(filtered);
+
       const tbody = document.getElementById('incomeTableBody');
-      if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-400">אין נתונים להצגה בחודש זה</td></tr>';
-        return;
-      }
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים להצגה בחודש זה</td></tr>'; return; }
       tbody.innerHTML = filtered.map(r => `
         <tr>
           <td class="py-2 font-bold text-slate-200">${r.date}</td>
           <td class="text-emerald-400 font-bold">${r.cash.toLocaleString()} ₪</td>
           <td class="text-sky-400 font-bold">${r.credit.toLocaleString()} ₪</td>
           <td class="text-orange-400 font-black">${r.total.toLocaleString()} ₪</td>
+          <td class="text-center">${r.approved ? '<span class="px-2 py-0.5 rounded-full bg-emerald-600/20 text-emerald-400 font-bold text-[11px]">✓ אושר</span>' : '<span class="px-2 py-0.5 rounded-full bg-slate-700/40 text-slate-400 font-bold text-[11px]">ממתין</span>'}</td>
         </tr>
       `).join('');
     }
 
+    function renderIncomeChart(rows, monthFilter) {
+      const box = document.getElementById('incomeChartBox');
+      if (!rows.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-8 text-center">אין נתונים לגרף</div>'; return; }
+      let items = [];
+      if (monthFilter === 'ALL') {
+        const byM = {};
+        rows.forEach(r => { if (!byM[r.monthNum]) byM[r.monthNum] = { label: MONTH_NAMES[Number(r.monthNum)]?.slice(0,4) || r.monthNum, cash: 0, credit: 0 }; byM[r.monthNum].cash += r.cash; byM[r.monthNum].credit += r.credit; });
+        items = Object.keys(byM).sort().map(k => byM[k]);
+      } else {
+        items = rows.map(r => ({ label: r.dayNum || r.date.slice(0,2), cash: r.cash, credit: r.credit }));
+      }
+      const maxVal = Math.max(1, ...items.map(x => x.cash + x.credit));
+      const barW = Math.max(14, Math.min(28, Math.floor(420 / Math.max(items.length, 1)) - 4));
+      const w = Math.max(320, items.length * (barW + 6) + 20), h = 140, padB = 22;
+      const bars = items.map((it, i) => {
+        const x = 10 + i * (barW + 6);
+        const hCash = Math.round((it.cash / maxVal) * (h - padB - 10));
+        const hCred = Math.round((it.credit / maxVal) * (h - padB - 10));
+        const yCash = h - padB - hCash;
+        const yCred = yCash - hCred;
+        return `<g><title>${it.label}: מזומן ${Math.round(it.cash).toLocaleString()} ₪ | אשראי ${Math.round(it.credit).toLocaleString()} ₪</title>
+          <rect x="${x}" y="${yCred}" width="${barW}" height="${hCred}" rx="3" fill="#38bdf8" />
+          <rect x="${x}" y="${yCash}" width="${barW}" height="${hCash}" rx="3" fill="#10b981" />
+          <text x="${x + barW/2}" y="${h - 6}" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.65">${it.label}</text></g>`;
+      }).join('');
+      box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" class="w-full h-36" style="min-width:${Math.min(w,460)}px">${bars}</svg>`;
+    }
+
+    function renderWeekdayChart(rows) {
+      const box = document.getElementById('weekdayChartBox');
+      const sums = Array(7).fill(0), cnts = Array(7).fill(0);
+      rows.forEach(r => { if (r.dayOfWeek >= 0 && r.dayOfWeek <= 6) { sums[r.dayOfWeek] += r.total; cnts[r.dayOfWeek]++; } });
+      const avgs = sums.map((s, i) => cnts[i] ? Math.round(s / cnts[i]) : 0);
+      const maxA = Math.max(1, ...avgs);
+      if (avgs.every(a => a === 0)) { box.innerHTML = '<div class="text-xs text-slate-400 py-8 text-center">אין מספיק נתונים</div>'; return; }
+      box.innerHTML = `<div class="space-y-1.5">${avgs.map((avg, i) => `
+        <div class="flex items-center gap-2 text-xs">
+          <span class="w-10 text-slate-400 font-bold text-right">${WEEKDAYS_HEB[i]}</span>
+          <div class="flex-1 h-4 rounded-full bg-[#091322] overflow-hidden border border-[#1e3a5f]">
+            <div class="h-full rounded-full bg-gradient-to-l from-orange-500 to-amber-400" style="width:${Math.round((avg/maxA)*100)}%"></div>
+          </div>
+          <span class="w-16 text-left font-bold text-slate-200 tabular-nums">${avg.toLocaleString()} ₪</span>
+        </div>`).join('')}</div>`;
+    }
+
+    function renderExpensesTable() {
+      const totalExp = allExpenses.reduce((a, e) => a + e.amount, 0);
+      const lbl = document.getElementById('totalExpensesLbl');
+      if (lbl) lbl.textContent = Math.round(totalExp).toLocaleString() + ' ₪';
+      const tbody = document.getElementById('expensesTableBody');
+      if (!tbody) return;
+      if (!allExpenses.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-400">אין עדיין הוצאות רשומות</td></tr>'; return; }
+      tbody.innerHTML = allExpenses.map(e => `<tr><td class="py-2 font-bold">${e.date}</td><td>${e.category}</td><td class="text-slate-400">${e.type || '-'}</td><td class="text-rose-400 font-bold">${e.amount.toLocaleString()} ₪</td></tr>`).join('');
+    }
+
+    function exportMonthCsv() {
+      const m = document.getElementById('monthFilter').value;
+      const rows = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
+      const exps = allExpenses.filter(e => m === 'ALL' || !e.monthNum || e.monthNum === m);
+      let csv = "\uFEFFסוג,תאריך,מזומן / פירוט,אשראי,סה״כ,אושר\n";
+      rows.forEach(r => { csv += `הכנסה,${r.date},${r.cash},${r.credit},${r.total},${r.approved ? 'כן' : 'לא'}\n`; });
+      exps.forEach(e => { csv += `הוצאה,${e.date},"${String(e.category).replace(/"/g,'""')}",,${-e.amount},\n`; });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `friends_report_${document.getElementById('yearSelect').value}_${m}.csv`;
+      a.click();
+      showOwnerToast('קובץ CSV ירד למחשב ✓');
+    }
+
     function renderQueuesTab() {
-      const sonyQ = allQueues.filter(q => q.category === 'סוני');
-      const snookerQ = allQueues.filter(q => q.category === 'סנוקר');
-      const completed = allQueues.filter(q => q.completed && q.waitMinutes > 0);
-      const avg = completed.length ? Math.round(completed.reduce((a, b) => a + Number(b.waitMinutes || 0), 0) / completed.length) : 0;
+      const sonyQ = allQueues.filter(q => q.category==='סוני'), snookerQ = allQueues.filter(q => q.category==='סנוקר');
+      const comp = allQueues.filter(q => q.completed && q.waitMinutes > 0);
+      const avg = comp.length ? Math.round(comp.reduce((a,b) => a + Number(b.waitMinutes||0), 0) / comp.length) : 0;
       document.getElementById('qSonyTotal').textContent = sonyQ.length;
       document.getElementById('qSnookerTotal').textContent = snookerQ.length;
       document.getElementById('qAvgWait').textContent = avg + " דק׳";
       const byDay = {};
       allQueues.forEach(q => {
-        const key = `${q.date || ''} (${q.dayOfWeek || ''})`;
-        if (!byDay[key]) byDay[key] = { sony: 0, snooker: 0, waits: [] };
-        if (q.category === 'סנוקר') byDay[key].snooker++; else byDay[key].sony++;
-        if (q.completed && q.waitMinutes > 0) byDay[key].waits.push(Number(q.waitMinutes));
+        const k = `${q.date||''} (${q.dayOfWeek||''})`;
+        if (!byDay[k]) byDay[k] = { sony:0, snooker:0, waits:[] };
+        if (q.category==='סנוקר') byDay[k].snooker++; else byDay[k].sony++;
+        if (q.completed && q.waitMinutes > 0) byDay[k].waits.push(Number(q.waitMinutes));
       });
-      const dBody = document.getElementById('qDailyTableBody');
       const keys = Object.keys(byDay);
-      dBody.innerHTML = !keys.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>' : keys.map(k => {
-        const d = byDay[k];
-        const dAvg = d.waits.length ? Math.round(d.waits.reduce((a, b) => a + b, 0) / d.waits.length) : 0;
-        const dMax = d.waits.length ? Math.max(...d.waits) : 0;
-        return `<tr><td class="py-2 font-bold text-slate-200">${k}</td><td class="text-sky-400 font-bold">${d.sony}</td><td class="text-emerald-400 font-bold">${d.snooker}</td><td class="text-orange-400 font-bold">${dAvg} דק׳</td><td class="text-rose-400 font-bold">${dMax} דק׳</td></tr>`;
+      document.getElementById('qDailyTableBody').innerHTML = !keys.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>' : keys.map(k => {
+        const d = byDay[k], da = d.waits.length ? Math.round(d.waits.reduce((a,b)=>a+b,0)/d.waits.length) : 0, dm = d.waits.length ? Math.max(...d.waits) : 0;
+        return `<tr><td class="py-2 font-bold">${k}</td><td class="text-sky-400 font-bold">${d.sony}</td><td class="text-emerald-400 font-bold">${d.snooker}</td><td class="text-orange-400 font-bold">${da} דק׳</td><td class="text-rose-400 font-bold">${dm} דק׳</td></tr>`;
       }).join('');
-      document.getElementById('qAllTableBody').innerHTML = allQueues.map(q => `
-        <tr><td class="py-2 font-bold">${q.date}</td><td class="${q.category === 'סנוקר' ? 'text-emerald-400' : 'text-sky-400'} font-bold">${q.category}</td><td>${q.customerName}</td><td>${q.startTime}</td><td>${q.enteredTime || '-'}</td><td class="text-orange-400 font-bold">${q.completed ? q.waitMinutes + " דק׳" : 'ממתין'}</td><td>${q.completed ? '✓ נכנס' : 'ממתין'}</td></tr>
-      `).join('');
+      document.getElementById('qAllTableBody').innerHTML = allQueues.map(q => `<tr><td class="py-2 font-bold">${q.date}</td><td class="font-bold">${q.category}</td><td>${q.customerName}</td><td>${q.startTime}</td><td>${q.enteredTime||'-'}</td><td class="text-orange-400">${q.completed?q.waitMinutes+" דק׳":'ממתין'}</td><td>${q.completed?'✓ נכנס':'ממתין'}</td></tr>`).join('');
     }
 
     function renderDirectoryList() {
       const box = document.getElementById('schDirectoryList');
-      if (!schDirectory.length) {
-        box.innerHTML = '<div class="text-xs text-slate-400">המאגר ריק כרגע — לחץ על "נהל מאגר שמות" כדי להוסיף שמות.</div>';
-        return;
-      }
-      box.innerHTML = schDirectory.map((d, idx) => `
-        <label class="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] cursor-pointer text-xs">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" class="dir-chk w-4 h-4 accent-orange-600" data-idx="${idx}" ${d.active ? 'checked' : ''} />
-            <div><div class="font-bold text-white">${d.fullName}</div><div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber || '-'}</div></div>
-          </div>
-          <span class="text-emerald-400 font-bold">${Number(d.defaultAmount || 2500).toLocaleString()} ₪</span>
-        </label>
-      `).join('');
+      if (!schDirectory.length) { box.innerHTML = '<div class="text-xs text-slate-400">המאגר ריק כרגע — לחץ על "נהל מאגר שמות".</div>'; return; }
+      box.innerHTML = schDirectory.map((d, i) => `<label class="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] cursor-pointer text-xs"><div class="flex items-center gap-2"><input type="checkbox" class="dir-chk w-4 h-4 accent-orange-600" data-idx="${i}" ${d.active?'checked':''} /><div><div class="font-bold text-white">${d.fullName}</div><div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber||'-'}</div></div></div><span class="text-emerald-400 font-bold">${Number(d.defaultAmount||2500).toLocaleString()} ₪</span></label>`).join('');
     }
-
-    function openDirManageModal() {
-      renderDirManageRows();
-      document.getElementById('dirManageModal').classList.remove('hidden');
-    }
-    function closeDirManageModal() {
-      document.getElementById('dirManageModal').classList.add('hidden');
-    }
+    function openDirManageModal() { renderDirManageRows(); document.getElementById('dirManageModal').classList.remove('hidden'); }
+    function closeDirManageModal() { document.getElementById('dirManageModal').classList.add('hidden'); }
     function renderDirManageRows() {
-      const box = document.getElementById('dirManageRows');
-      if (!box) return;
-      if (!schDirectory.length) {
-        box.innerHTML = '<div class="text-center text-slate-400 py-4">אין שמות במאגר הקבוע</div>';
-        return;
-      }
-      box.innerHTML = schDirectory.map((d, idx) => `
-        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#091322] border border-[#26466d]">
-          <div>
-            <div class="font-bold text-white">${d.fullName}</div>
-            <div class="text-[11px] text-slate-400">ת.ז. ${d.idNumber || '-'} | סכום: ${Number(d.defaultAmount || 2500).toLocaleString()} ₪</div>
-          </div>
-          <button type="button" onclick="deletePersonFromDirectory(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-[11px]">מחק ✕</button>
-        </div>
-      `).join('');
+      const box = document.getElementById('dirManageRows'); if (!box) return;
+      box.innerHTML = !schDirectory.length ? '<div class="text-center text-slate-400 py-4">אין שמות במאגר</div>' : schDirectory.map((d, i) => `<div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#091322] border border-[#26466d]"><div><div class="font-bold text-white">${d.fullName}</div><div class="text-[11px] text-slate-400">ת.ז. ${d.idNumber||'-'} | ${Number(d.defaultAmount||2500).toLocaleString()} ₪</div></div><button type="button" onclick="deletePersonFromDirectory(${i})" class="px-2.5 py-1 rounded-lg bg-rose-600/20 text-rose-300 font-bold text-[11px]">מחק ✕</button></div>`).join('');
     }
     async function addPersonToDirectory() {
-      const fullName = document.getElementById('dirNewName').value.trim();
-      const idNumber = document.getElementById('dirNewId').value.trim();
-      const defaultAmount = parseFloat(document.getElementById('dirNewAmount').value) || 2500;
-      if (!fullName) return showOwnerToast('הזן שם מלא');
-      document.getElementById('dirNewName').value = '';
-      document.getElementById('dirNewId').value = '';
-      await sendToGas({ action: 'addToDirectory', fullName, idNumber, defaultAmount, defaultVerifier: 'מנחם רובינשטיין' });
-      showOwnerToast('נוסף למאגר הקבוע בשיטס ✓');
-      refreshOwnerData();
+      const fullName = document.getElementById('dirNewName').value.trim(); if (!fullName) return showOwnerToast('הזן שם מלא');
+      const idNumber = document.getElementById('dirNewId').value.trim(), defaultAmount = parseFloat(document.getElementById('dirNewAmount').value)||2500;
+      document.getElementById('dirNewName').value = ''; document.getElementById('dirNewId').value = '';
+      await sendToGas({ action:'addToDirectory', fullName, idNumber, defaultAmount, defaultVerifier:'מנחם רובינשטיין' });
+      showOwnerToast('נוסף למאגר הקבוע ✓'); refreshOwnerData();
     }
     async function deletePersonFromDirectory(idx) {
-      const d = schDirectory[idx];
-      if (!d) return;
-      schDirectory.splice(idx, 1);
-      renderDirectoryList();
-      renderDirManageRows();
-      if (d.rowNumber) {
-        await sendToGas({ action: 'deleteFromDirectory', rowNumber: d.rowNumber });
-      }
-      showOwnerToast('הוסר מהמאגר הקבוע בשיטס ✓');
-      refreshOwnerData();
+      const d = schDirectory[idx]; if (!d) return;
+      schDirectory.splice(idx, 1); renderDirectoryList(); renderDirManageRows();
+      if (d.rowNumber) await sendToGas({ action:'deleteFromDirectory', rowNumber: d.rowNumber });
+      showOwnerToast('הוסר מהמאגר ✓'); refreshOwnerData();
     }
-
     function toggleAllDir(val) { document.querySelectorAll('.dir-chk').forEach(cb => cb.checked = val); }
-
     async function addSelectedFromDir() {
       const month = document.getElementById('schMonthSelect').value;
       const checked = [...document.querySelectorAll('.dir-chk:checked')];
-      if (!checked.length) return showOwnerToast('סמן לפחות אברך אחד מהמאגר');
-      const itemsToSave = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({
-        fullName: d.fullName, idNumber: d.idNumber, phoneOrNote: d.phoneOrNote, amount: d.defaultAmount, verifier: d.defaultVerifier
-      }));
-      await sendToGas({ action: 'addMonthFromDirectory', month, items: itemsToSave });
-      showOwnerToast(`נוספו ${itemsToSave.length} מלגאים לחודש ונשמרו בשיטס ✓`);
-      refreshOwnerData();
+      if (!checked.length) return showOwnerToast('סמן לפחות אברך אחד');
+      const items = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({ fullName:d.fullName, idNumber:d.idNumber, phoneOrNote:d.phoneOrNote, amount:d.defaultAmount, verifier:d.defaultVerifier }));
+      await sendToGas({ action:'addMonthFromDirectory', month, items });
+      showOwnerToast(`נוספו ${items.length} מלגאים ✓`); refreshOwnerData();
     }
-
-    async function sendManagerTask(alsoWhatsApp) {
-      const title = document.getElementById('mgrTaskTitle').value.trim();
-      const details = document.getElementById('mgrTaskDetails').value.trim();
+    async function sendManagerTask(alsoWa) {
+      const title = document.getElementById('mgrTaskTitle').value.trim(), details = document.getElementById('mgrTaskDetails').value.trim();
       if (!title) return;
-      managerTasks.unshift({ id: 'T' + Date.now(), createdAt: new Date().toLocaleString('he-IL'), title, details, status: 'פתוח' });
-      document.getElementById('mgrTaskTitle').value = '';
-      document.getElementById('mgrTaskDetails').value = '';
-      renderManagerTasks();
-      if (alsoWhatsApp) {
-        const msg = `📌 *Friends — משימה למנהל מבעל המקום*\n• נושא: ${title}\n• פירוט: ${details || '-'}\nיש לסמן 'טופל' באפליקציה בסיום.`;
-        let mPhone = (document.getElementById('managerPhoneInput')?.value || safeGet('friends_manager_phone', '972503265609')).replace(/[^0-9]/g, '');
-        if (mPhone.startsWith('0')) mPhone = '972' + mPhone.slice(1);
-        window.open(`https://wa.me/${mPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+      managerTasks.unshift({ id:'T'+Date.now(), createdAt:new Date().toLocaleString('he-IL'), title, details, status:'פתוח' });
+      document.getElementById('mgrTaskTitle').value = ''; document.getElementById('mgrTaskDetails').value = ''; renderManagerTasks();
+      if (alsoWa) {
+        let p = (document.getElementById('managerPhoneInput')?.value || '972503265609').replace(/[^0-9]/g,'');
+        if (p.startsWith('0')) p = '972' + p.slice(1);
+        window.open(`https://wa.me/${p}?text=${encodeURIComponent(`📌 *Friends — משימה למנהל*\n• נושא: ${title}\n• פירוט: ${details||'-'}`)}`, '_blank');
       }
-      await sendToGas({ action: 'addManagerTask', title, details });
-      showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
+      await sendToGas({ action:'addManagerTask', title, details }); showOwnerToast('המשימה נשלחה ✓');
     }
-
-    async function closeOwnerTask(id) {
-      const t = managerTasks.find(x => x.id === id);
-      if (t) t.status = 'טופל';
-      renderManagerTasks();
-      await sendToGas({ action: 'completeManagerTask', id, managerNote: 'נסגר ע"י הבעלים' });
-      showOwnerToast('המשימה נסגרה והתזכורת נעצרה ✓');
-    }
-
+    async function closeOwnerTask(id) { const t = managerTasks.find(x=>x.id===id); if (t) t.status='טופל'; renderManagerTasks(); await sendToGas({ action:'completeManagerTask', id, managerNote:'נסגר ע"י הבעלים' }); showOwnerToast('המשימה נסגרה ✓'); }
     function renderManagerTasks() {
       const box = document.getElementById('mgrTasksList');
-      if (!managerTasks.length) { box.innerHTML = '<div class="text-slate-400">אין משימות פתוחות למנהל.</div>'; return; }
-      box.innerHTML = managerTasks.map(t => `
-        <div class="p-2.5 rounded-xl bg-[#091322] border ${t.status === 'טופל' ? 'border-emerald-500/40' : 'border-orange-500/50'} flex flex-wrap justify-between items-center gap-2">
-          <div><span class="font-bold ${t.status === 'טופל' ? 'text-emerald-400' : 'text-orange-400'}">[${t.status}]</span> <strong class="text-white mr-1">${t.title}</strong> <span class="text-slate-400 mr-1">${t.details || ''}</span></div>
-          <div>${t.status !== 'טופל' ? `<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">סגור משימה (טופל ✓)</button>` : '<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}</div>
-        </div>
-      `).join('');
+      box.innerHTML = !managerTasks.length ? '<div class="text-slate-400">אין משימות פתוחות.</div>' : managerTasks.map(t => `<div class="p-2.5 rounded-xl bg-[#091322] border ${t.status==='טופל'?'border-emerald-500/40':'border-orange-500/50'} flex justify-between items-center gap-2"><div><strong class="text-white">${t.title}</strong> <span class="text-slate-400">${t.details||''}</span></div>${t.status!=='טופל'?`<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">טופל ✓</button>`:'<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}</div>`).join('');
     }
-
-    async function setupDailyTrigger() { await sendToGas({ action: 'setupDailyTrigger' }); showOwnerToast('תזכורת יומית למנהל הופעלה ✓'); }
-
+    async function setupDailyTrigger() { await sendToGas({ action:'setupDailyTrigger' }); showOwnerToast('תזכורת יומית הופעלה ✓'); }
     async function saveNotifySettings() {
-      const newGasUrl = document.getElementById('gasUrlOwnerInput').value.trim();
-      if (newGasUrl) { SCRIPT_URL = newGasUrl; safeSet('friends_gas_url', newGasUrl); }
+      const u = document.getElementById('gasUrlOwnerInput').value.trim(); if (u) { SCRIPT_URL = u; safeSet('friends_gas_url', u); }
       const chatWebhookUrl = document.getElementById('chatWebhookInput').value.trim();
       const managerEmail = document.getElementById('managerEmailInput').value.trim();
-      let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g, '');
+      let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g,'');
       if (managerPhone.startsWith('0')) managerPhone = '972' + managerPhone.slice(1);
       const ownerEmails = document.getElementById('ownerEmailsInput').value.trim() || 'robbin8541@gmail.com';
       const emailNotify = document.getElementById('ownerEmailNotifyChk').checked;
-
-      safeSet('friends_chat_webhook', chatWebhookUrl);
-      safeSet('friends_manager_email', managerEmail);
-      safeSet('friends_manager_phone', managerPhone);
-      safeSet('friends_owner_emails', ownerEmails);
-      safeSet('friends_owner_email_notify', String(emailNotify));
-
-      await sendToGas({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, ownerEmails, emailNotify });
-      showOwnerToast('הגדרות המנהל והמיילים נשמרו ✓');
+      safeSet('friends_chat_webhook', chatWebhookUrl); safeSet('friends_manager_email', managerEmail); safeSet('friends_manager_phone', managerPhone); safeSet('friends_owner_emails', ownerEmails); safeSet('friends_owner_email_notify', String(emailNotify));
+      await sendToGas({ action:'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, ownerEmails, emailNotify });
+      showOwnerToast('ההגדרות והמיילים נשמרו ✓');
     }
-
     async function saveBankDeposit() {
-      const dateInput = document.getElementById('bankDepositDate');
-      const amtInput = document.getElementById('bankDepositAmount');
-      const amount = parseFloat(amtInput.value) || 0;
+      const d = document.getElementById('bankDepositDate'), a = document.getElementById('bankDepositAmount'), amount = parseFloat(a.value)||0;
       if (!amount) return;
-      await sendToGas({ action: 'saveBankDeposit', date: dateInput.value, amount });
-      amtInput.value = ''; dateInput.valueAsDate = new Date();
-      showOwnerToast('הפקדת הבנק נרשמה והשדה נוקה ✓');
+      allDeposits.push({ date: d.value, monthNum: d.value.slice(5,7), amount, note: '' });
+      renderIncomeTable();
+      await sendToGas({ action:'saveBankDeposit', date: d.value, amount });
+      a.value = ''; d.valueAsDate = new Date(); showOwnerToast('הפקדת הבנק נרשמה ✓');
     }
-
     async function saveExpense() {
-      const dateInput = document.getElementById('expDate');
-      const catInput = document.getElementById('expCat');
-      const amtInput = document.getElementById('expAmount');
-      const noteInput = document.getElementById('expNote');
-      const amount = parseFloat(amtInput.value) || 0;
-      if (!amount) return;
-      await sendToGas({ action: 'saveExpense', date: dateInput.value, category: catInput.value, amount, note: noteInput.value.trim() });
-      amtInput.value = ''; noteInput.value = ''; dateInput.valueAsDate = new Date();
-      showOwnerToast('ההוצאה נשמרה והשדות נוקו ✓');
+      const d = document.getElementById('expDate'), c = document.getElementById('expCat'), a = document.getElementById('expAmount'), n = document.getElementById('expNote');
+      const amount = parseFloat(a.value)||0; if (!amount) return;
+      allExpenses.push({ date: d.value, monthNum: d.value.slice(5,7), category: c.value + (n.value.trim() ? ' - ' + n.value.trim() : ''), type: 'הוצאה', amount });
+      renderExpensesTable(); renderIncomeTable();
+      await sendToGas({ action:'saveExpense', date: d.value, category: c.value, amount, note: n.value.trim() });
+      a.value = ''; n.value = ''; d.valueAsDate = new Date(); showOwnerToast('ההוצאה נשמרה ✓');
     }
-
     async function addScholarshipRow() {
-      const month = document.getElementById('schMonthSelect').value;
-      const nameInput = document.getElementById('schName');
-      const tzInput = document.getElementById('schId');
-      const amtInput = document.getElementById('schAmount');
-      const name = nameInput.value.trim();
-      const tz = tzInput.value.trim();
-      const amount = parseFloat(amtInput.value) || 2500;
-      if (!name) return;
-      nameInput.value = ''; tzInput.value = '';
-      await sendToGas({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount });
-      showOwnerToast('המלגאי נוסף ונשמר בשיטס ✓');
-      refreshOwnerData();
+      const month = document.getElementById('schMonthSelect').value, n = document.getElementById('schName'), t = document.getElementById('schId'), a = document.getElementById('schAmount');
+      if (!n.value.trim()) return;
+      await sendToGas({ action:'addScholarship', month, fullName:n.value.trim(), idNumber:t.value.trim(), amount:parseFloat(a.value)||2500 });
+      n.value = ''; t.value = ''; showOwnerToast('המלגאי נוסף ✓'); refreshOwnerData();
     }
-
     function toggleVerifier(id, field) {
-      const item = scholarships.find(s => s.id === id);
-      if (item) {
-        item[field] = !item[field];
-        renderScholarships();
-        if (item.rowNumber) {
-          const isChecked = item.verifiedMenachem || item.verifiedGura;
-          const verifier = item.verifiedMenachem ? 'מנחם רובינשטיין' : (item.verifiedGura ? 'יהודה גורא' : '');
-          sendToGas({ action: 'toggleScholarshipVerified', rowNumber: item.rowNumber, received: isChecked, verifier }).catch(()=>{});
-        }
-      }
+      const item = scholarships.find(s => s.id === id); if (!item) return;
+      item[field] = !item[field]; renderScholarships();
+      if (item.rowNumber) sendToGas({ action:'toggleScholarshipVerified', rowNumber:item.rowNumber, received:item.verifiedMenachem||item.verifiedGura, verifier:item.verifiedMenachem?'מנחם רובינשטיין':(item.verifiedGura?'יהודה גורא':'') }).catch(()=>{});
     }
-
     let _pendingDeleteScholarshipId = null;
-    function deleteScholarship(id) {
-      const item = scholarships.find(s => s.id === id);
-      _pendingDeleteScholarshipId = id;
-      const msgEl = document.getElementById('confirmDeleteMsg');
-      if (msgEl) msgEl.textContent = item ? `האם למחוק את ${item.name} (${item.amount.toLocaleString()} ₪) מרשימת המלגות של החודש?` : 'האם למחוק את המלגאי?';
-      document.getElementById('confirmDeleteModal').classList.remove('hidden');
-    }
+    function deleteScholarship(id) { _pendingDeleteScholarshipId = id; const item = scholarships.find(s=>s.id===id); document.getElementById('confirmDeleteMsg').textContent = item ? `למחוק את ${item.name}?` : 'למחוק?'; document.getElementById('confirmDeleteModal').classList.remove('hidden'); }
     function closeConfirmDeleteModal() { _pendingDeleteScholarshipId = null; document.getElementById('confirmDeleteModal').classList.add('hidden'); }
     async function confirmDeleteScholarshipNow() {
-      if (_pendingDeleteScholarshipId === null) return;
-      const id = _pendingDeleteScholarshipId;
-      closeConfirmDeleteModal();
-      const item = scholarships.find(s => s.id === id);
-      scholarships = scholarships.filter(s => s.id !== id);
-      renderScholarships();
-      if (item && item.rowNumber) await sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber });
-      showOwnerToast('המלגאי הוסר מהרשימה ✓');
-      refreshOwnerData();
+      const id = _pendingDeleteScholarshipId; closeConfirmDeleteModal(); if (id === null) return;
+      const item = scholarships.find(s => s.id === id); scholarships = scholarships.filter(s => s.id !== id); renderScholarships();
+      if (item && item.rowNumber) await sendToGas({ action:'deleteScholarship', rowNumber:item.rowNumber });
+      showOwnerToast('המלגאי הוסר ✓'); refreshOwnerData();
     }
-
     function renderScholarships() {
-      const month = document.getElementById('schMonthSelect').value;
-      const list = scholarships.filter(s => s.month === month);
-      const menachemList = list.filter(s => s.verifiedMenachem);
-      const guraList = list.filter(s => s.verifiedGura);
-      const menachemSum = menachemList.reduce((a, b) => a + b.amount, 0);
-      const guraSum = guraList.reduce((a, b) => a + b.amount, 0);
-      const totalSum = list.reduce((a, b) => a + b.amount, 0);
-
+      const month = document.getElementById('schMonthSelect').value, list = scholarships.filter(s => s.month === month);
+      const mList = list.filter(s=>s.verifiedMenachem), gList = list.filter(s=>s.verifiedGura);
       document.getElementById('verifierSummary').innerHTML = `
-        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]"><div class="text-slate-400">סה״כ מלגות לחודש (${list.length}):</div><div class="font-black text-white text-base mt-0.5">${totalSum.toLocaleString()} ₪</div></div>
-        <div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40"><div class="text-slate-400">מנחם רובינשטיין וידא (${menachemList.length}):</div><div class="font-black text-emerald-400 text-base mt-0.5">${menachemSum.toLocaleString()} ₪</div></div>
-        <div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40"><div class="text-slate-400">יהודה צבי גורא וידא (${guraList.length}):</div><div class="font-black text-sky-400 text-base mt-0.5">${guraSum.toLocaleString()} ₪</div></div>
-      `;
-      const tbody = document.getElementById('schTableBody');
-      if (!list.length) { tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400">טרם הוזנו מלגות לחודש זה</td></tr>'; return; }
-      tbody.innerHTML = list.map((s, idx) => `
-        <tr>
-          <td class="py-2">${idx + 1}</td>
-          <td class="font-bold">${s.name}</td>
-          <td>${s.tz}</td>
-          <td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td>
-          <td class="text-center"><input type="checkbox" ${s.verifiedMenachem ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedMenachem')" class="w-4 h-4 accent-orange-600 cursor-pointer" /></td>
-          <td class="text-center"><input type="checkbox" ${s.verifiedGura ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedGura')" class="w-4 h-4 accent-orange-600 cursor-pointer" /></td>
-          <td class="text-center"><button type="button" onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button></td>
-        </tr>
-      `).join('');
+        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]"><div class="text-slate-400">סה״כ (${list.length}):</div><div class="font-black text-white">${list.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</div></div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40"><div class="text-slate-400">מנחם (${mList.length}):</div><div class="font-black text-emerald-400">${mList.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</div></div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40"><div class="text-slate-400">יהודה (${gList.length}):</div><div class="font-black text-sky-400">${gList.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</div></div>`;
+      document.getElementById('schTableBody').innerHTML = !list.length ? '<tr><td colspan="7" class="py-4 text-center text-slate-400">טרם הוזנו מלגות לחודש זה</td></tr>' : list.map((s,i) => `<tr><td class="py-2">${i+1}</td><td class="font-bold">${s.name}</td><td>${s.tz}</td><td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td><td class="text-center"><input type="checkbox" ${s.verifiedMenachem?'checked':''} onchange="toggleVerifier(${s.id},'verifiedMenachem')" class="w-4 h-4 accent-orange-600" /></td><td class="text-center"><input type="checkbox" ${s.verifiedGura?'checked':''} onchange="toggleVerifier(${s.id},'verifiedGura')" class="w-4 h-4 accent-orange-600" /></td><td class="text-center"><button type="button" onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button></td></tr>`).join('');
     }
-
-    function formatIsraeliDate(dateObj) { return `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()}`; }
+    function formatIsraeliDate(d) { return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
     function toHebrewGematria(num) {
-      let n = parseInt(num, 10); if (!n || n <= 0) return String(num); if (n >= 1000) n = n % 1000;
-      const h = ["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"], t = ["","י","כ","ל","מ","נ","ס","ע","פ","צ"], o = ["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
-      let out = h[Math.floor(n/100)]; const rem = n % 100;
-      out += (rem === 15) ? "טו" : (rem === 16 ? "טז" : t[Math.floor(rem/10)] + o[rem%10]);
-      return out.length === 1 ? out + "׳" : out.slice(0,-1) + "״" + out.slice(-1);
+      let n = parseInt(num,10); if (!n||n<=0) return String(num); if (n>=1000) n%=1000;
+      const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"], t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"], o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
+      let out = h[Math.floor(n/100)], r = n%100; out += r===15?"טו":(r===16?"טז":t[Math.floor(r/10)]+o[r%10]);
+      return out.length===1 ? out+"׳" : out.slice(0,-1)+"״"+out.slice(-1);
     }
-    function formatHebrewDate(dateObj) {
-      try {
-        const parts = new Intl.DateTimeFormat("he-IL-u-ca-hebrew", { day:"numeric", month:"long", year:"numeric" }).formatToParts(dateObj);
-        const d = toHebrewGematria(parts.find(p => p.type==="day")?.value || "");
-        const m = parts.find(p => p.type==="month")?.value || "";
-        const y = toHebrewGematria(parts.find(p => p.type==="year")?.value || "");
-        return `${d} ${m.startsWith("ב") ? m : "ב" + m} ${y}`;
-      } catch (e) { return ""; }
+    function formatHebrewDate(d) {
+      try { const p = new Intl.DateTimeFormat("he-IL-u-ca-hebrew",{day:"numeric",month:"long",year:"numeric"}).formatToParts(d); const m = p.find(x=>x.type==="month")?.value||""; return `${toHebrewGematria(p.find(x=>x.type==="day")?.value||"")} ${m.startsWith("ב")?m:"ב"+m} ${toHebrewGematria(p.find(x=>x.type==="year")?.value||"")}`; } catch(e){return "";}
     }
-
-    function renderAppendixSheet(dateIsoStr) {
-      const month = document.getElementById('schMonthSelect').value;
-      const list = scholarships.filter(s => s.month === month);
-      const total = list.reduce((a, b) => a + b.amount, 0);
-      const now = new Date();
-      const chosenDate = dateIsoStr ? new Date(dateIsoStr + 'T12:00:00') : now;
-      const approvalDateStr = formatIsraeliDate(isNaN(chosenDate.getTime()) ? now : chosenDate);
-      const hebrewDateStr = formatHebrewDate(isNaN(chosenDate.getTime()) ? now : chosenDate);
-      const printDateStr = formatIsraeliDate(now);
-      const printTimeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      const docRef = `SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B`;
-
-      document.getElementById('protocolPrintSheet').innerHTML = `
-        <div dir="rtl" style="font-family: Heebo, Arial, sans-serif; color: #0f172a; line-height: 1.55; background: #ffffff;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; font-size:12px; color:#334155; border-bottom:1.5px solid #0f172a; padding-bottom:8px; margin-bottom:14px;">
-            <div><div style="font-weight:800; color:#0f172a;">בס״ד</div><div>סימוכין: <strong>${docRef}</strong></div></div>
-            <div style="text-align:left;"><div><strong>תאריך אישור וחתימה:</strong> ${approvalDateStr}</div>${hebrewDateStr ? `<div style="color:#475569;">${hebrewDateStr}</div>` : ''}</div>
-          </div>
-          <h1 style="text-align:center; font-size:19px; font-weight:900; margin:6px 0 4px; color:#0f172a;">נספח ב׳: טופס אישור חודשי של מורשי חתימה להעברת מלגות</h1>
-          <div style="text-align:center; font-weight:700; font-size:13px; color:#334155; margin-bottom:16px;">עמותת שערי עתיד (ע״ר) | מס׳ עמותה: 580811925</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; font-size:13px; margin-bottom:14px;">
-            <div><strong>חודש ושנת הזכאות:</strong> ${month}</div>
-            <div><strong>תאריך אישור התשלום:</strong> ${approvalDateStr}</div>
-            <div><strong>סה״כ מלגאים מאושרים:</strong> ${list.length}</div>
-            <div><strong>סה״כ סכום לתשלום:</strong> ${total.toLocaleString()} ש״ח</div>
-          </div>
-          <table style="width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; border:1px solid #94a3b8;">
-            <thead><tr style="background:#f1f5f9;"><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מס׳</th><th style="padding:7px 8px; border:1px solid #cbd5e1; text-align:right;">שם מלא</th><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מספר זהות</th><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">אישור עמידה בתנאים (12.5 ש״ש)</th><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">סכום בש״ח</th></tr></thead>
-            <tbody>
-              ${list.length ? list.map((s, i) => `<tr style="background:${i%2===1?'#f8fafc':'#ffffff'};"><td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${i+1}</td><td style="padding:6px 8px; border:1px solid #cbd5e1; font-weight:600;">${s.name}</td><td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${s.tz}</td><td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">עומד בתנאי הזכאות (V)</td><td style="padding:6px; border:1px solid #cbd5e1; text-align:center; font-weight:700;">${s.amount.toLocaleString()} ₪</td></tr>`).join('') : '<tr><td colspan="5" style="padding:10px; border:1px solid #cbd5e1; text-align:center;">לא הוזנו מלגאים לחודש זה</td></tr>'}
-              <tr style="background:#f1f5f9; font-weight:800;"><td colspan="4" style="padding:7px 8px; border:1px solid #94a3b8; text-align:left;">סה״כ לתשלום:</td><td style="padding:7px 6px; border:1px solid #94a3b8; text-align:center;">${total.toLocaleString()} ₪</td></tr>
-            </tbody>
-          </table>
-          <p style="font-size:13px; margin-top:12px; color:#1e293b;">אנו, מורשי החתימה של עמותת שערי עתיד (ע״ר), מאשרים בזאת כי בדקנו את רשימת המוטבים ואימתנו כי עמדו במכסת שעות הלימוד ובקריטריונים שאושרו בפרוטוקול הוועד מיום 01/06/2026.</p>
-          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px; padding-top:14px; border-top:1px solid #cbd5e1; gap:12px;">
-            <div style="text-align:center; flex:1;"><div style="font-weight:700; font-size:13px;">יהודה צבי גורא</div><div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 214085623</div><img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" /><div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div></div>
-            <div style="text-align:center; flex:0 0 auto; padding-bottom:6px;"><img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:72px; margin:0 auto; object-fit:contain; filter:grayscale(100%) contrast(2.4) brightness(1.45); mix-blend-mode:multiply;" /></div>
-            <div style="text-align:center; flex:1;"><div style="font-weight:700; font-size:13px;">מנחם רובינשטיין</div><div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 324982743</div><img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" /><div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div></div>
-          </div>
-          <div style="margin-top:18px; padding-top:8px; border-top:1px dashed #cbd5e1; display:flex; justify-content:space-between; font-size:11px; color:#64748b;">
-            <span>מסמך ממוחשב — עמותת שערי עתיד (ע״ר 580811925)</span><span>תאריך הדפסה/הפקה: ${printDateStr} בשעה ${printTimeStr}</span>
-          </div>
+    function renderAppendixSheet(iso) {
+      const month = document.getElementById('schMonthSelect').value, list = scholarships.filter(s=>s.month===month), total = list.reduce((a,b)=>a+b.amount,0), now = new Date(), cd = iso ? new Date(iso+'T12:00:00') : now;
+      const ap = formatIsraeliDate(isNaN(cd)?now:cd), heb = formatHebrewDate(isNaN(cd)?now:cd), pr = formatIsraeliDate(now), tm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      document.getElementById('protocolPrintSheet').innerHTML = `<div dir="rtl" style="font-family:Heebo,Arial,sans-serif;color:#0f172a;line-height:1.55;background:#fff;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;border-bottom:1.5px solid #0f172a;padding-bottom:8px;margin-bottom:14px;"><div><strong>בס״ד</strong><div>סימוכין: SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B</div></div><div style="text-align:left;"><div><strong>תאריך אישור וחתימה:</strong> ${ap}</div><div>${heb}</div></div></div>
+        <h1 style="text-align:center;font-size:19px;font-weight:900;margin:6px 0;">נספח ב׳: טופס אישור חודשי של מורשי חתימה להעברת מלגות</h1>
+        <div style="text-align:center;font-weight:700;font-size:13px;margin-bottom:14px;">עמותת שערי עתיד (ע״ר) | מס׳ עמותה: 580811925</div>
+        <table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;border:1px solid #94a3b8;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px;border:1px solid #cbd5e1;">מס׳</th><th style="padding:6px;border:1px solid #cbd5e1;text-align:right;">שם מלא</th><th style="padding:6px;border:1px solid #cbd5e1;">ת.ז.</th><th style="padding:6px;border:1px solid #cbd5e1;">עמידה בתנאים (12.5 ש״ש)</th><th style="padding:6px;border:1px solid #cbd5e1;">סכום</th></tr></thead><tbody>${list.map((s,i)=>`<tr><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">${i+1}</td><td style="padding:6px;border:1px solid #cbd5e1;">${s.name}</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">${s.tz}</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">עומד בתנאי הזכאות (V)</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;font-weight:700;">${s.amount.toLocaleString()} ₪</td></tr>`).join('')}<tr style="background:#f1f5f9;font-weight:800;"><td colspan="4" style="padding:6px;border:1px solid #94a3b8;text-align:left;">סה״כ לתשלום:</td><td style="padding:6px;border:1px solid #94a3b8;text-align:center;">${total.toLocaleString()} ₪</td></tr></tbody></table>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px;padding-top:12px;border-top:1px solid #cbd5e1;gap:12px;">
+          <div style="text-align:center;flex:1;"><div style="font-weight:700;font-size:13px;">יהודה צבי גורא (ת.ז. 214085623)</div><img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px;margin:0 auto;mix-blend-mode:multiply;" /><div style="font-size:11px;border-top:1px solid #cbd5e1;margin-top:4px;">תאריך חתימה: ${ap}</div></div>
+          <div style="text-align:center;"><img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:70px;filter:grayscale(100%) contrast(2.4) brightness(1.45);mix-blend-mode:multiply;" /></div>
+          <div style="text-align:center;flex:1;"><div style="font-weight:700;font-size:13px;">מנחם רובינשטיין (ת.ז. 324982743)</div><img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px;margin:0 auto;mix-blend-mode:multiply;" /><div style="font-size:11px;border-top:1px solid #cbd5e1;margin-top:4px;">תאריך חתימה: ${ap}</div></div>
         </div>
-      `;
+        <div style="margin-top:14px;padding-top:6px;border-top:1px dashed #cbd5e1;display:flex;justify-content:space-between;font-size:11px;color:#64748b;"><span>עמותת שערי עתיד (ע״ר 580811925)</span><span>תאריך הדפסה/הפקה: ${pr} בשעה ${tm}</span></div>
+      </div>`;
     }
-    function openAppendixModal() {
-      const todayIso = new Date().toISOString().split('T')[0];
-      const dateInput = document.getElementById('protocolDateInput');
-      if (dateInput) dateInput.value = todayIso;
-      renderAppendixSheet(todayIso);
-      document.getElementById('protocolModal').classList.remove('hidden');
-    }
+    function openAppendixModal() { const t = new Date().toISOString().split('T')[0]; document.getElementById('protocolDateInput').value = t; renderAppendixSheet(t); document.getElementById('protocolModal').classList.remove('hidden'); }
     function closeAppendixModal() { document.getElementById('protocolModal').classList.add('hidden'); }
+    async function addNewGuide() { const t = document.getElementById('newGuideTitle'), s = document.getElementById('newGuideSteps'); if (!t.value.trim()||!s.value.trim()) return; await sendToGas({ action:'saveGuide', title:t.value.trim(), steps:s.value.trim() }); t.value=''; s.value=''; showOwnerToast('המדריך פורסם ✓'); }
 
-    async function addNewGuide() {
-      const titleInput = document.getElementById('newGuideTitle');
-      const stepsInput = document.getElementById('newGuideSteps');
-      if (!titleInput.value.trim() || !stepsInput.value.trim()) return;
-      await sendToGas({ action: 'saveGuide', title: titleInput.value.trim(), steps: stepsInput.value.trim() });
-      titleInput.value = ''; stepsInput.value = '';
-      showOwnerToast('המדריך פורסם והשדות נוקו ✓');
-    }
-
-    (function initThemeToggle() {
-      var STORAGE_KEY = "friends-color-scheme", memScheme = null;
-      var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-      function getSystemScheme() { return (mql && mql.matches) ? "dark" : "light"; }
-      function getStoredScheme() { try { var v = window.localStorage.getItem(STORAGE_KEY); return (v==="light"||v==="dark") ? v : memScheme; } catch (e) { return memScheme; } }
-      function applyScheme(stored) {
-        var meta = document.querySelector('meta[name="color-scheme"]'), themeMeta = document.querySelector('meta[name="theme-color"]');
-        var resolved = stored || getSystemScheme();
-        if (meta) meta.setAttribute("content", stored || "light dark");
-        document.documentElement.style.colorScheme = stored || "";
-        document.documentElement.dataset.theme = resolved;
-        if (themeMeta) themeMeta.setAttribute("content", resolved === "light" ? "#ffffff" : "#0d1c2e");
-        var btn = document.getElementById("themeToggleBtn");
-        if (btn) {
-          var isDark = resolved === "dark";
-          btn.setAttribute("aria-pressed", String(isDark));
-          btn.innerHTML = isDark ? '☀️ <span class="hidden sm:inline">בהיר</span>' : '🌙 <span class="hidden sm:inline">כהה</span>';
-        }
-      }
-      window.toggleColorScheme = function () {
-        var current = getStoredScheme() || getSystemScheme(), target = current === "dark" ? "light" : "dark", sys = getSystemScheme();
-        memScheme = (target === sys) ? null : target;
-        try { if (target === sys) window.localStorage.removeItem(STORAGE_KEY); else window.localStorage.setItem(STORAGE_KEY, target); } catch (e) {}
-        applyScheme(memScheme);
-      };
-      if (mql && mql.addEventListener) mql.addEventListener("change", () => applyScheme(getStoredScheme()));
-      window.addEventListener("storage", ev => { if (ev.key === STORAGE_KEY) applyScheme(getStoredScheme()); });
-      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => applyScheme(getStoredScheme()));
-      else applyScheme(getStoredScheme());
-    })();
-
-    function setDataLoading(isLoading, label) {
+    function setDataLoading(on, label) {
       const bar = document.getElementById('topLoadingBar'), pill = document.getElementById('dataLoaderPill'), txt = document.getElementById('dataLoaderText');
       if (txt && label) txt.textContent = label;
-      if (bar) bar.classList.toggle('active', !!isLoading);
-      if (pill) pill.classList.toggle('active', !!isLoading);
-      const refreshBtn = document.querySelector('button[onclick="refreshOwnerData()"] svg');
-      if (refreshBtn) refreshBtn.classList.toggle('icon-spinning', !!isLoading);
+      if (bar) bar.classList.toggle('active', !!on);
+      if (pill) pill.classList.toggle('active', !!on);
+      document.querySelector('button[onclick="refreshOwnerData()"] svg')?.classList.toggle('icon-spinning', !!on);
     }
-    function buildSkeletonRows(colCount, rowCount) {
-      const widths = ['w-20', 'w-16', 'w-16', 'w-20'];
-      return Array.from({ length: rowCount }, () => '<tr>' + Array.from({ length: colCount }, (_, c) => `<td class="py-3"><span class="skeleton-bar ${widths[c%widths.length]}"></span></td>`).join('') + '</tr>').join('');
-    }
+    function buildSkeletonRows(c, r) { return Array.from({length:r},()=>'<tr>'+Array.from({length:c},()=>'<td class="py-3"><span class="skeleton-bar w-16"></span></td>').join('')+'</tr>').join(''); }
+    (function initThemeToggle() {
+      var KEY = "friends-color-scheme", mem = null, mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+      const sys = () => (mql && mql.matches) ? "dark" : "light";
+      const stored = () => { try { var v = localStorage.getItem(KEY); return (v==="light"||v==="dark")?v:mem; } catch(e){return mem;} };
+      function apply(s) {
+        var res = s || sys();
+        document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", s || "light dark");
+        document.documentElement.style.colorScheme = s || "";
+        document.documentElement.dataset.theme = res;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", res==="light"?"#ffffff":"#0d1c2e");
+        var b = document.getElementById("themeToggleBtn");
+        if (b) b.innerHTML = res==="dark" ? '☀️ <span class="hidden sm:inline">בהיר</span>' : '🌙 <span class="hidden sm:inline">כהה</span>';
+      }
+      window.toggleColorScheme = function () {
+        var tgt = (stored() || sys()) === "dark" ? "light" : "dark";
+        mem = tgt === sys() ? null : tgt;
+        try { if (mem === null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, tgt); } catch(e){}
+        apply(mem);
+      };
+      if (mql && mql.addEventListener) mql.addEventListener("change", () => apply(stored()));
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => apply(stored())); else apply(stored());
+    })();
   </script>
 </body>
 </html>
