@@ -37,8 +37,8 @@
     .card { background: #13253e; border: 1px solid #1e3a5f; border-radius: 16px; }
     .input-dark { background: #091322; border: 1px solid #26466d; color: #fff; border-radius: 10px; }
     .input-dark:focus { outline: none; border-color: #f97316; }
-    .owner-tab { transition: all 0.2s; color: #94a3b8; }
-    .owner-tab.active { color: #ffffff; font-weight: 800; background: rgba(249, 115, 22, 0.14); box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35); }
+    .owner-tab { transition: all 0.2s; border-bottom: 3px solid transparent; color: #94a3b8; }
+    .owner-tab.active { border-bottom-color: #f97316; color: #ffffff; font-weight: 800; background: rgba(249, 115, 22, 0.14); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @media print {
@@ -48,12 +48,21 @@
       #protocolPrintSheet { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
       .no-print { display: none !important; }
     }
+
     :root {
       color-scheme: light dark;
+      --bg-canvas: light-dark(#f1f5f9, #0b192c);
+      --bg-header: light-dark(rgba(255, 255, 255, 0.94), #0d1c2e);
       --bg-nav: light-dark(#ffffff, #0b192c);
+      --bg-card: light-dark(#ffffff, #13253e);
+      --bg-card-subtle: light-dark(#f8fafc, #091322);
+      --bg-input: light-dark(#f8fafc, #091322);
       --border-subtle: light-dark(#cbd5e1, #1e3a5f);
-      --brand-accent: light-dark(#ea580c, #f97316);
+      --border-input: light-dark(#cbd5e1, #26466d);
       --text-primary: light-dark(#0f172a, #f8fafc);
+      --text-secondary: light-dark(#334155, #cbd5e1);
+      --text-muted: light-dark(#64748b, #94a3b8);
+      --brand-accent: light-dark(#ea580c, #f97316);
       --sb-track: light-dark(#e2e8f0, #091322);
       --sb-thumb: light-dark(#94a3b8, #2b4d77);
       --radius-card: 16px;
@@ -61,124 +70,241 @@
       --shadow-card-dark: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px -12px rgba(0, 0, 0, 0.55);
       --shadow-card-light: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px -12px rgba(15, 23, 42, 0.12);
     }
-    @supports (color: oklch(0% 0 0)) {
-      :root {
-        --brand-accent: light-dark(oklch(61% 0.20 40), oklch(68% 0.19 42));
-        --border-subtle: light-dark(oklch(86% 0.015 250), oklch(34% 0.055 248));
-        --text-primary: light-dark(oklch(20% 0.035 258), oklch(98% 0.004 248));
-      }
-    }
+    :root:has(> head > meta[name="color-scheme"][content="dark"]),
     :root[data-theme="dark"] { color-scheme: dark; }
+    :root:has(> head > meta[name="color-scheme"][content="light"]),
     :root[data-theme="light"] { color-scheme: light; }
-    html { accent-color: var(--brand-accent); scrollbar-gutter: stable; scrollbar-color: var(--sb-thumb) var(--sb-track); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+
+    html {
+      accent-color: var(--brand-accent);
+      scrollbar-gutter: stable;
+      scrollbar-color: var(--sb-thumb) var(--sb-track);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+    }
     body {
-      min-height: 100dvh; overflow-x: clip; line-height: 1.5;
+      min-height: 100dvh;
+      overflow-x: clip;
+      line-height: 1.5;
       padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
-      background-color: light-dark(#f1f5f9, #0b192c) !important; color: light-dark(#0f172a, #f8fafc) !important;
+      background-color: light-dark(#f1f5f9, #0b192c) !important;
+      color: light-dark(#0f172a, #f8fafc) !important;
     }
     :root[data-theme="dark"] body { background-color: #0b192c !important; color: #f8fafc !important; }
-    :root[data-theme="light"] body { background-color: #f1f5f9 !important; color: #0f172a !important; }
-    ::selection { background: color-mix(in oklch, var(--brand-accent) 28%, transparent); color: var(--text-primary); }
-    h1, h2, h3 { text-wrap: balance; }
-    h2 { font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem); }
-    .kpi-val { font-size: clamp(1rem, 0.88rem + 0.6vw, 1.35rem); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
-    button, a, select, input, textarea { touch-action: manipulation; }
-    button { transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease; }
-    button:active:not(:disabled) { transform: scale(0.98); }
-    button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
-    .icon-svg { width: 1.05em; height: 1.05em; display: inline-block; vertical-align: -0.18em; flex-shrink: 0; margin-inline-end: 0.25rem; }
+    :root[data-theme="light"] body { background-color: #f1f5f9 !important; background-image: none !important; color: #0f172a !important; }
+
+    h1, h2, h3, h4 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    button, a, select, input, textarea, [role="button"] { touch-action: manipulation; }
+    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--brand-accent);
+      outline-offset: 2px;
+    }
+    .tabular-nums, #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #kpiCashRemaining, #kpiNetProfit, #kpiForecast, #kpiDailyAvg, #qSonyTotal, #qSnookerTotal, #qAvgWait {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
     .theme-toggle-btn {
-      display: inline-flex; align-items: center; gap: 0.35rem; min-height: 36px; padding: 0.35rem 0.65rem;
-      border-radius: 0.75rem; font-size: 0.75rem; font-weight: 700;
-      border: 1px solid light-dark(#cbd5e1, #26466d); background: light-dark(#f8fafc, #091322);
-      color: light-dark(#0f172a, #f8fafc); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.35rem; min-height: 36px;
+      padding: 0.35rem 0.65rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 700;
+      border: 1px solid light-dark(#cbd5e1, #26466d);
+      background: light-dark(#f8fafc, #091322);
+      color: light-dark(#0f172a, #f8fafc);
+      cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease;
     }
-    header {
-      background: light-dark(rgba(255, 255, 255, 0.76), rgba(13, 28, 46, 0.76)) !important;
-      backdrop-filter: blur(18px) saturate(180%) !important; -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
-      border-bottom: 1px solid light-dark(rgba(15, 23, 42, 0.09), rgba(255, 255, 255, 0.09)) !important;
-    }
-    :root[data-theme="dark"] header { background: rgba(13, 28, 46, 0.76) !important; }
-    :root[data-theme="light"] header { background: rgba(255, 255, 255, 0.78) !important; }
-    header > div:first-child { max-width: none !important; width: 100% !important; padding-inline: clamp(0.75rem, 1.5vw, 1.5rem) !important; }
-    .card { border-radius: var(--radius-card) !important; box-shadow: var(--shadow-card-dark) !important; }
-    :root[data-theme="light"] .card { box-shadow: var(--shadow-card-light) !important; }
-    .input-dark, select, textarea { border-radius: var(--radius-control) !important; min-height: 40px; }
-    #ownerSidebarNav { scroll-snap-type: x proximity; gap: 0.25rem; padding: 0.35rem 0.5rem; }
-    .owner-tab { scroll-snap-align: start; border-radius: 10px !important; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; font-weight: 600; }
-    table { border-collapse: collapse; }
-    thead th { font-weight: 700; padding: 0.65rem 0.35rem; white-space: nowrap; }
-    tbody tr:hover { background-color: rgba(148, 163, 184, 0.07); }
-    tbody td { padding: 0.6rem 0.35rem; }
-    #protocolModal, #confirmDeleteModal, #dirManageModal { overscroll-behavior: contain; backdrop-filter: blur(6px); }
+    .theme-toggle-btn:hover { border-color: var(--brand-accent); }
+    .theme-toggle-btn:active { transform: scale(0.97); }
+    #protocolModal, #confirmDeleteModal, #dirManageModal { overscroll-behavior: contain; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     #protocolModal, #protocolPrintSheet { color-scheme: light; }
-    .btn-secondary {
-      background-color: light-dark(#f1f5f9, #1e293b) !important; color: light-dark(#0f172a, #f8fafc) !important;
-      border: 1px solid light-dark(#cbd5e1, #475569) !important; border-radius: 12px !important;
-      padding: 0.5rem 1rem !important; font-size: 0.8rem !important; font-weight: 700 !important;
-      display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-    }
-    :root[data-theme="dark"] .btn-secondary { background-color: #1e293b !important; color: #f8fafc !important; border-color: #475569 !important; }
-    :root[data-theme="light"] .btn-secondary { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-    .btn-modal-close {
-      width: 32px; height: 32px; border-radius: 999px !important; display: inline-flex; align-items: center; justify-content: center;
-      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important; color: light-dark(#334155, #e2e8f0) !important;
-      font-size: 0.85rem; font-weight: 700; cursor: pointer;
-    }
+
+    :root:has(> head > meta[name="color-scheme"][content="light"]),
     :root[data-theme="light"] {
+      & header { background: rgba(255, 255, 255, 0.94) !important; border-color: #cbd5e1 !important; box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important; }
       & header img[alt="Friends"] { background: #0d1c2e; padding: 4px 10px; border-radius: 12px; }
       & nav { background: #ffffff !important; border-color: #cbd5e1 !important; }
-      & .card { background: #ffffff !important; border-color: #cbd5e1 !important; }
+      & .card { background: #ffffff !important; border-color: #cbd5e1 !important; box-shadow: var(--shadow-card-light) !important; }
       & .input-dark { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+      & .input-dark::placeholder { color: #64748b !important; }
       & .owner-tab { color: #334155 !important; }
       & .owner-tab.active { color: #c2410c !important; background: rgba(249, 115, 22, 0.1) !important; }
       & .bg-\[\#091322\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] { background-color: #f8fafc !important; }
       & .bg-\[\#13253e\] { background-color: #ffffff !important; }
       & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
-      & h1, & h2, & h3 { color: #0f172a !important; }
-      & .text-white:not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-rose-']):not([class*='bg-amber-']), & .text-slate-100, & .text-slate-200 { color: #0f172a !important; }
+      & h1, & h2, & h3, & h4 { color: #0f172a !important; }
+      & .text-white:not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-rose-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 { color: #0f172a !important; }
       & .text-slate-300 { color: #334155 !important; }
       & .text-slate-400 { color: #475569 !important; }
+      & .text-amber-300 { color: #b45309 !important; }
       & .text-sky-400 { color: #0369a1 !important; }
       & .text-emerald-400 { color: #047857 !important; }
       & .text-orange-400 { color: #c2410c !important; }
-      & .text-amber-400 { color: #b45309 !important; }
+      & .text-rose-400 { color: #be123c !important; }
+    }
+    @media (prefers-color-scheme: light) {
+      :root:has(> head > meta[name="color-scheme"][content="light dark"]) {
+        & header { background: rgba(255, 255, 255, 0.94) !important; border-color: #cbd5e1 !important; }
+        & header img[alt="Friends"] { background: #0d1c2e; padding: 4px 10px; border-radius: 12px; }
+        & nav { background: #ffffff !important; border-color: #cbd5e1 !important; }
+        & .card { background: #ffffff !important; border-color: #cbd5e1 !important; box-shadow: var(--shadow-card-light) !important; }
+        & .input-dark { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+        & .owner-tab { color: #334155 !important; }
+        & .owner-tab.active { color: #c2410c !important; background: rgba(249, 115, 22, 0.1) !important; }
+        & .bg-\[\#091322\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] { background-color: #f8fafc !important; }
+        & .bg-\[\#13253e\] { background-color: #ffffff !important; }
+        & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
+        & h1, & h2, & h3, & h4 { color: #0f172a !important; }
+        & .text-white:not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-rose-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 { color: #0f172a !important; }
+        & .text-slate-300 { color: #334155 !important; }
+        & .text-slate-400 { color: #475569 !important; }
+        & .text-sky-400 { color: #0369a1 !important; }
+        & .text-emerald-400 { color: #047857 !important; }
+        & .text-orange-400 { color: #c2410c !important; }
+        & .text-rose-400 { color: #be123c !important; }
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+
+    .icon-svg { width: 1.05em; height: 1.05em; display: inline-block; vertical-align: -0.18em; flex-shrink: 0; margin-inline-end: 0.25rem; }
+    .theme-toggle-btn .icon-svg { margin-inline-end: 0; }
+
+    .card { border-radius: var(--radius-card) !important; box-shadow: var(--shadow-card-dark) !important; transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease; }
+    .input-dark, input[type="text"], input[type="number"], input[type="date"], input[type="tel"], input[type="email"], input[type="url"], select, textarea {
+      border-radius: var(--radius-control) !important; min-height: 40px; transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+    .input-dark:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22) !important; }
+    button { transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease; }
+    button:active:not(:disabled) { transform: scale(0.98); }
+
+    #ownerSidebarNav { scroll-snap-type: x proximity; gap: 0.25rem; padding: 0.35rem 0.5rem; }
+    .owner-tab { scroll-snap-align: start; border-radius: 10px !important; border-bottom: none !important; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; font-weight: 600; }
+    .owner-tab.active { border-bottom: none !important; box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35); }
+
+    table { border-collapse: collapse; }
+    thead th { font-weight: 700; letter-spacing: 0.01em; padding-top: 0.65rem; padding-bottom: 0.65rem; white-space: nowrap; }
+    tbody tr { transition: background-color 0.12s ease; }
+    tbody tr:hover { background-color: rgba(148, 163, 184, 0.07); }
+    tbody td { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+
+    @media (max-width: 639px) {
+      button, select, input { min-height: 42px; }
+      .card { padding: 0.95rem !important; }
+      main { padding-inline: 0.75rem !important; }
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+      main { padding-inline: 1.25rem !important; padding-top: 1.25rem !important; }
+      .card { padding: 1.25rem !important; }
     }
     @media (min-width: 1024px) {
+      main { padding-inline: 1.5rem !important; padding-top: 1.5rem !important; margin-right: 244px !important; margin-left: auto !important; max-width: min(1120px, calc(100% - 244px)) !important; }
+      .card { padding: 1.35rem !important; }
       #ownerSidebarNav {
         position: fixed !important; top: 73px; right: 0; bottom: 0; width: 244px; box-sizing: border-box;
         max-width: 244px !important; margin: 0 !important; display: flex !important; flex-direction: column !important;
         align-items: stretch !important; justify-content: flex-start !important; gap: 0.45rem !important;
-        padding: 1.1rem 0.85rem !important; border-top: none !important;
-        border-left: 1px solid var(--border-subtle) !important; background: var(--bg-nav) !important;
-        box-shadow: -4px 0 20px -10px rgba(0, 0, 0, 0.25); overflow-y: auto !important; z-index: 35;
+        padding: 1.1rem 0.85rem !important; border-top: none !important; border-left: 1px solid var(--border-subtle) !important;
+        background: var(--bg-nav) !important; box-shadow: -4px 0 20px -10px rgba(0, 0, 0, 0.25); overflow-y: auto !important; z-index: 35;
       }
       #ownerSidebarNav .owner-tab { flex: 0 0 auto !important; width: 100%; justify-content: flex-start !important; text-align: right; padding: 0.72rem 0.95rem !important; font-size: 0.85rem !important; border-radius: 12px !important; }
-      main { margin-right: 244px !important; margin-left: auto !important; max-width: min(1120px, calc(100% - 244px)) !important; padding-inline: 1.5rem !important; padding-top: 1.5rem !important; }
-      .card { padding: 1.5rem !important; }
     }
+
+    @page { size: A4 portrait; margin: 14mm; }
+
     @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes modalPopIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     @keyframes topBarSweep { 0% { transform: translateX(100%); } 100% { transform: translateX(-260%); } }
     @keyframes spinRing { to { transform: rotate(360deg); } }
     @keyframes shimmerWave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
     section:not(.hidden) { animation: fadeSlideUp 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    #protocolModal:not(.hidden) > div, #confirmDeleteModal:not(.hidden) > div, #dirManageModal:not(.hidden) > div { animation: modalPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    #ownerToast:not(.hidden) { animation: fadeSlideUp 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    @media (hover: hover) { .card:hover { border-color: color-mix(in srgb, var(--brand-accent) 45%, var(--border-subtle)); } }
+
     #topLoadingBar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9999; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 220ms ease; background: rgba(249, 115, 22, 0.14); }
     #topLoadingBar.active { opacity: 1; }
     #topLoadingBar::after { content: ""; position: absolute; inset-block: 0; right: 0; width: 42%; border-radius: 999px; background: linear-gradient(90deg, transparent 0%, #f97316 45%, #fb923c 65%, transparent 100%); animation: topBarSweep 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+
     #dataLoaderPill {
       position: fixed; top: 12px; left: 50%; transform: translate(-50%, -18px) scale(0.96); z-index: 9998;
       display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.95rem; border-radius: 999px;
-      font-size: 0.75rem; font-weight: 700; pointer-events: none; opacity: 0; backdrop-filter: blur(14px);
-      background: light-dark(rgba(255, 255, 255, 0.92), rgba(15, 31, 53, 0.92)); color: light-dark(#0f172a, #f8fafc);
+      font-size: 0.75rem; font-weight: 700; pointer-events: none; opacity: 0;
+      backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
+      background: light-dark(rgba(255, 255, 255, 0.92), rgba(15, 31, 53, 0.92));
+      color: light-dark(#0f172a, #f8fafc);
       border: 1px solid light-dark(rgba(203, 213, 225, 0.9), rgba(249, 115, 22, 0.4));
-      box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.35); transition: opacity 200ms ease, transform 220ms ease;
+      box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.35);
+      transition: opacity 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     #dataLoaderPill.active { opacity: 1; transform: translate(-50%, 0) scale(1); }
-    .loader-orbital { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(249, 115, 22, 0.22); border-top-color: #f97316; animation: spinRing 0.72s linear infinite; }
+    .loader-orbital { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(249, 115, 22, 0.22); border-top-color: #f97316; border-right-color: #fb923c; animation: spinRing 0.72s linear infinite; flex-shrink: 0; }
     .skeleton-bar { display: inline-block; height: 12px; border-radius: 999px; background: linear-gradient(90deg, light-dark(#e2e8f0, #162b47) 25%, light-dark(#f1f5f9, #24436b) 50%, light-dark(#e2e8f0, #162b47) 75%); background-size: 200% 100%; animation: shimmerWave 1.35s ease-in-out infinite; }
     .icon-spinning { animation: spinRing 0.8s linear infinite; }
-    @page { size: A4 portrait; margin: 14mm; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+    .btn-secondary {
+      background-color: light-dark(#f1f5f9, #1e293b) !important;
+      color: light-dark(#0f172a, #f8fafc) !important;
+      border: 1px solid light-dark(#cbd5e1, #475569) !important;
+      border-radius: 12px !important; padding: 0.5rem 1rem !important; font-size: 0.8rem !important; font-weight: 700 !important;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; cursor: pointer;
+    }
+    .btn-secondary:hover { background-color: light-dark(#e2e8f0, #334155) !important; border-color: light-dark(#94a3b8, #64748b) !important; }
+    :root[data-theme="dark"] .btn-secondary { background-color: #1e293b !important; color: #f8fafc !important; border-color: #475569 !important; }
+    :root[data-theme="light"] .btn-secondary { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+
+    .btn-modal-close {
+      width: 32px; height: 32px; min-height: 32px !important; border-radius: 999px !important;
+      display: inline-flex; align-items: center; justify-content: center;
+      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important;
+      color: light-dark(#334155, #e2e8f0) !important;
+      border: 1px solid light-dark(#e2e8f0, transparent) !important;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    }
+    .btn-modal-close:hover { background-color: light-dark(#e2e8f0, rgba(148, 163, 184, 0.28)) !important; color: light-dark(#0f172a, #ffffff) !important; }
+
+    .seg-btn {
+      padding: 0.35rem 0.75rem; border-radius: 10px; font-size: 0.75rem; font-weight: 700; min-height: 34px !important;
+      border: 1px solid transparent; color: var(--text-muted); background: transparent; cursor: pointer;
+    }
+    .seg-btn.active {
+      background: #ea580c; color: #ffffff !important; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
+    }
+
+    @supports (color: oklch(0% 0 0)) {
+      :root {
+        --brand-orange-light: oklch(61% 0.20 40);
+        --brand-orange-dark: oklch(68% 0.19 42);
+        --brand-accent: light-dark(var(--brand-orange-light), var(--brand-orange-dark));
+        --border-subtle: light-dark(oklch(86% 0.015 250), oklch(34% 0.055 248));
+        --text-primary: light-dark(oklch(20% 0.035 258), oklch(98% 0.004 248));
+        --text-secondary: light-dark(oklch(37% 0.035 255), oklch(84% 0.018 250));
+        --text-muted: light-dark(oklch(52% 0.03 255), oklch(70% 0.025 250));
+      }
+    }
+    ::selection { background: color-mix(in oklch, var(--brand-accent) 28%, transparent); color: var(--text-primary); }
+    h1 { font-size: clamp(1.1rem, 0.95rem + 0.65vw, 1.45rem); }
+    h2 { font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem); }
+    h3 { font-size: clamp(0.9rem, 0.85rem + 0.22vw, 1.04rem); }
+    #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal { font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.45rem); }
+
+    header {
+      background: light-dark(rgba(255, 255, 255, 0.76), rgba(13, 28, 46, 0.76)) !important;
+      backdrop-filter: blur(18px) saturate(180%) !important; -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+      border-bottom: 1px solid light-dark(rgba(15, 23, 42, 0.09), rgba(255, 255, 255, 0.09)) !important;
+      box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.35) !important;
+    }
+    :root[data-theme="dark"] header { background: rgba(13, 28, 46, 0.76) !important; border-bottom-color: rgba(255, 255, 255, 0.09) !important; }
+    :root[data-theme="light"] header { background: rgba(255, 255, 255, 0.78) !important; border-bottom-color: rgba(15, 23, 42, 0.09) !important; }
+    header > div:first-child { max-width: none !important; width: 100% !important; padding-inline: clamp(0.75rem, 1.5vw, 1.5rem) !important; }
+
+    @media (prefers-contrast: more) {
+      :root { --border-subtle: light-dark(#0f172a, #e2e8f0); --border-input: light-dark(#0f172a, #e2e8f0); }
+      .card, .input-dark, .btn-secondary, .theme-toggle-btn, button { border-width: 1.5px !important; }
+      header { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    }
   </style>
 </head>
 <body class="pb-20">
@@ -193,8 +319,9 @@
       <div class="flex items-center">
         <img src="logo.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/logo.png'" alt="Friends" class="h-14 w-auto object-contain" />
       </div>
+
       <div class="flex items-center gap-2">
-        <button type="button" id="themeToggleBtn" onclick="toggleColorScheme()" class="theme-toggle-btn" aria-label="החלף ערכת נושא">בהיר</button>
+        <button type="button" id="themeToggleBtn" onclick="toggleColorScheme()" class="theme-toggle-btn" aria-label="החלף ערכת נושא"></button>
         <select id="yearSelect" onchange="refreshOwnerData()" class="input-dark px-3 py-1.5 text-xs font-bold">
           <option value="2026" selected>2026</option>
           <option value="2027">2027</option>
@@ -208,104 +335,261 @@
   </header>
 
   <nav id="ownerSidebarNav" class="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar border-t border-[#1e3a5f] bg-[#0b192c]">
-    <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-3 px-3 text-xs whitespace-nowrap">הכנסות ובנק</button>
-    <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">הוצאות</button>
-    <button type="button" onclick="openOwnerTab('queues')" id="otab-queues" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">תורים</button>
-    <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">מלגות שערי עתיד</button>
-    <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">תקלות, משימות והתראות</button>
+    <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg> הכנסות יומיות</button>
+    <button type="button" onclick="openOwnerTab('analytics')" id="otab-analytics" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> גרפים והפקדות</button>
+    <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg> הוצאות</button>
+    <button type="button" onclick="openOwnerTab('queues')" id="otab-queues" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> תורים</button>
+    <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg> מלגות שערי עתיד</button>
+    <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> תקלות, משימות והתראות</button>
   </nav>
 
   <main class="max-w-5xl mx-auto p-3 space-y-4">
-    <!-- 1. הכנסות, מזומן שנשאר להפקיד, רווח נקי וגרפים -->
-    <section id="osec-income" class="owner-section space-y-3">
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-        <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400">סה״כ מזומן</div>
-          <div id="kpiCashTotal" class="kpi-val font-black text-emerald-400 mt-0.5">0 ₪</div>
-        </div>
-        <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400">סה״כ אשראי</div>
-          <div id="kpiCreditTotal" class="kpi-val font-black text-sky-400 mt-0.5">0 ₪</div>
-        </div>
-        <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400">סה״כ ביחד</div>
-          <div id="kpiCombinedTotal" class="kpi-val font-black text-orange-400 mt-0.5">0 ₪</div>
-          <div id="kpiMomBadge" class="text-[10px] font-bold mt-0.5 text-slate-400"></div>
-        </div>
-        <div class="card p-3 text-center border-amber-500/40">
-          <div class="text-[11px] text-slate-400">מזומן שנשאר להפקיד</div>
-          <div id="kpiCashLeftToDeposit" class="kpi-val font-black text-amber-400 mt-0.5">0 ₪</div>
-        </div>
-        <div class="card p-3 text-center col-span-2 sm:col-span-1 border-emerald-500/40">
-          <div class="text-[11px] text-slate-400">רווח נקי (הכנסות − הוצאות)</div>
-          <div id="kpiNetProfit" class="kpi-val font-black text-emerald-400 mt-0.5">0 ₪</div>
-        </div>
-      </div>
 
-      <!-- 2 גרפים: הכנסות + ממוצע לפי יום בשבוע -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div class="card p-4 space-y-2">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-black text-white">גרף הכנסות (מזומן מול אשראי)</h3>
-            <div class="flex items-center gap-3 text-[11px] text-slate-400">
-              <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span>מזומן</span>
-              <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-sky-500 inline-block"></span>אשראי</span>
-            </div>
-          </div>
-          <div id="incomeChartBox" class="w-full overflow-x-auto"></div>
+    <!-- 1. הכנסות יומיות (נקי: 3 ריבועים למעלה + טבלה יומית) -->
+    <section id="osec-income" class="owner-section space-y-3">
+      <div class="grid grid-cols-3 gap-2.5">
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg> סה״כ מזומן</div>
+          <div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5">0 ₪</div>
         </div>
-        <div class="card p-4 space-y-2">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-black text-white">ממוצע הכנסות לפי יום בשבוע (א׳–מוצ״ש)</h3>
-            <span class="text-[11px] text-slate-400">ימים חזקים / חלשים</span>
-          </div>
-          <div id="weekdayChartBox" class="w-full"></div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> סה״כ אשראי</div>
+          <div id="kpiCreditTotal" class="text-lg font-black text-sky-400 mt-0.5">0 ₪</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg> סה״כ ביחד</div>
+          <div id="kpiCombinedTotal" class="text-lg font-black text-orange-400 mt-0.5">0 ₪</div>
+          <div id="kpiMomBadge" class="text-[10px] font-bold mt-0.5"></div>
         </div>
       </div>
 
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-base font-black">הכנסות: מזומן ואשראי</h2>
+          <h2 class="text-base font-black"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> פירוט הכנסות יומיות</h2>
           <div class="flex flex-wrap items-center gap-2">
-            <button type="button" onclick="exportMonthCsv()" class="btn-secondary !py-1.5 !px-3 !text-xs">ייצוא CSV לאקסל ↓</button>
             <a href="https://docs.google.com/spreadsheets/d/1YaryrZTB648UXiNCy_D3f1EtiunWhvgvDJ-j2s36m5g/edit" target="_blank" class="text-xs text-sky-400 underline">גיליון ↗</a>
-            <select id="monthFilter" onchange="renderIncomeTable()" class="input-dark px-3 py-1.5 text-xs font-bold">
+            <button type="button" onclick="exportIncomeCSV()" class="btn-secondary !py-1.5 !px-2.5 !text-xs">⬇ ייצוא CSV</button>
+            <select id="monthFilter" onchange="onIncomeMonthChange()" class="input-dark px-3 py-1.5 text-xs font-bold">
               <option value="ALL">כל החודשים</option>
-              <option value="01">ינואר</option><option value="02">פברואר</option><option value="03">מרץ</option>
-              <option value="04">אפריל</option><option value="05">מאי</option><option value="06">יוני</option>
-              <option value="07">יולי</option><option value="08">אוגוסט</option><option value="09">ספטמבר</option>
-              <option value="10">אוקטובר</option><option value="11">נובמבר</option><option value="12">דצמבר</option>
+              <option value="01">ינואר</option>
+              <option value="02">פברואר</option>
+              <option value="03">מרץ</option>
+              <option value="04">אפריל</option>
+              <option value="05">מאי</option>
+              <option value="06">יוני</option>
+              <option value="07">יולי</option>
+              <option value="08">אוגוסט</option>
+              <option value="09">ספטמבר</option>
+              <option value="10">אוקטובר</option>
+              <option value="11">נובמבר</option>
+              <option value="12">דצמבר</option>
             </select>
           </div>
-        </div>
-
-        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] flex flex-wrap items-center gap-2">
-          <span class="text-xs font-bold text-orange-400">הפקדה לבנק:</span>
-          <input id="bankDepositDate" type="date" class="input-dark px-2.5 py-1.5 text-xs" />
-          <input id="bankDepositAmount" type="number" placeholder="סכום שהופקד (₪)" class="input-dark px-2.5 py-1.5 text-xs w-36" />
-          <button type="button" onclick="saveBankDeposit()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs">רשום ✓</button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr><th class="py-2">תאריך</th><th>מזומן</th><th>אשראי</th><th>סה״כ יומי</th><th class="text-center">אושר (V)</th></tr>
+              <tr>
+                <th class="py-2">תאריך</th>
+                <th>מזומן</th>
+                <th>אשראי</th>
+                <th>סה״כ יומי</th>
+                <th class="text-center">אישור מעטפה</th>
+              </tr>
             </thead>
-            <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
+            <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]">
+              <tr><td class="py-3"><span class="skeleton-bar w-20"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td><td class="py-3"><span class="skeleton-bar w-20"></span></td><td class="py-3"><span class="skeleton-bar w-14"></span></td></tr>
+            </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 2. הוצאות + היסטוריית הוצאות -->
+    <!-- 2. טאב חדש: גרפים והפקדות -->
+    <section id="osec-analytics" class="owner-section hidden space-y-4">
+
+      <!-- בורר מהיר: חודש נבחר / סיכום שנתי -->
+      <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
+          <button type="button" id="scopeMonthBtn" onclick="setAnalyticsScope('month')" class="seg-btn active">חודש נבחר</button>
+          <button type="button" id="scopeYearBtn" onclick="setAnalyticsScope('year')" class="seg-btn">סיכום שנתי</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="analyticsMonthSelect" onchange="onAnalyticsMonthChange()" class="input-dark px-3 py-1.5 text-xs font-bold">
+            <option value="01">ינואר</option>
+            <option value="02">פברואר</option>
+            <option value="03">מרץ</option>
+            <option value="04">אפריל</option>
+            <option value="05">מאי</option>
+            <option value="06">יוני</option>
+            <option value="07">יולי</option>
+            <option value="08">אוגוסט</option>
+            <option value="09">ספטמבר</option>
+            <option value="10">אוקטובר</option>
+            <option value="11">נובמבר</option>
+            <option value="12">דצמבר</option>
+          </select>
+          <span id="analyticsScopeLabel" class="text-xs font-bold text-slate-400"></span>
+        </div>
+      </div>
+
+      <!-- כרטיס ראשי: מזומן שנשאר להפקיד + סרגל התקדמות + טופס הפקדה -->
+      <div class="card p-4 space-y-3 border-emerald-500/40">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div class="text-xs font-bold text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg> מזומן שנשאר להפקיד לבנק (מצטבר שנתי)</div>
+            <div id="kpiCashRemaining" class="text-2xl sm:text-3xl font-black text-emerald-400 mt-0.5">0 ₪</div>
+          </div>
+          <div class="flex flex-wrap gap-3 text-xs">
+            <div class="bg-[#091322] px-3 py-2 rounded-xl border border-[#26466d]">
+              <div class="text-[10px] text-slate-400">סה״כ מזומן שנכנס</div>
+              <div id="kpiTotalCashYear" class="font-black text-white tabular-nums">0 ₪</div>
+            </div>
+            <div class="bg-[#091322] px-3 py-2 rounded-xl border border-[#26466d]">
+              <div class="text-[10px] text-slate-400">הופקד לבנק עד כה</div>
+              <div id="kpiTotalDeposited" class="font-black text-sky-400 tabular-nums">0 ₪</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between text-[11px] text-slate-400">
+            <span>התקדמות הפקדות</span>
+            <span id="depositProgressPct" class="font-bold text-emerald-400 tabular-nums">0%</span>
+          </div>
+          <div class="w-full h-2.5 bg-[#091322] rounded-full overflow-hidden border border-[#26466d]">
+            <div id="depositProgressBar" class="h-full bg-gradient-to-l from-emerald-400 to-emerald-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
+          <input id="bankDepositDate" type="date" class="input-dark px-2.5 py-1.5 text-xs" />
+          <input id="bankDepositAmount" type="number" placeholder="סכום שהופקד (₪)" class="input-dark px-2.5 py-1.5 text-xs" />
+          <input id="bankDepositNote" type="text" placeholder="הערה / אסמכתא (אופציונלי)" class="input-dark px-2.5 py-1.5 text-xs" />
+          <button type="button" onclick="saveBankDeposit()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs">+ רשום הפקדה לבנק</button>
+        </div>
+      </div>
+
+      <!-- שורת מדדים חכמים (KPIs) -->
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-2.5">
+        <div class="card p-3">
+          <div class="text-[11px] text-slate-400">רווח נקי ורווחיות</div>
+          <div id="kpiNetProfit" class="text-base sm:text-lg font-black text-emerald-400 mt-0.5">0 ₪</div>
+          <div id="kpiProfitMargin" class="text-[11px] text-slate-400 mt-0.5 tabular-nums">שיעור רווחיות: 0%</div>
+        </div>
+        <div class="card p-3">
+          <div id="kpiForecastLabel" class="text-[11px] text-slate-400">תחזית סוף חודש</div>
+          <div id="kpiForecast" class="text-base sm:text-lg font-black text-orange-400 mt-0.5">0 ₪</div>
+          <div id="kpiForecastSub" class="text-[11px] text-slate-400 mt-0.5">לפי קצב נוכחי</div>
+        </div>
+        <div class="card p-3">
+          <div class="text-[11px] text-slate-400">ממוצע ליום פעיל</div>
+          <div id="kpiDailyAvg" class="text-base sm:text-lg font-black text-sky-400 mt-0.5">0 ₪</div>
+          <div id="kpiDailyAvgDelta" class="text-[11px] mt-0.5 font-bold"></div>
+        </div>
+        <div class="card p-3">
+          <div class="text-[11px] text-slate-400">שיא ושפל</div>
+          <div id="kpiBestDay" class="text-xs font-black text-emerald-400 mt-1">שיא: -</div>
+          <div id="kpiWorstDay" class="text-xs font-bold text-rose-400 mt-0.5">שפל: -</div>
+        </div>
+        <div class="card p-3 col-span-2 lg:col-span-1">
+          <div class="text-[11px] text-slate-400">מעטפות ממתינות ל-✓</div>
+          <div id="kpiPendingApprovals" class="text-base sm:text-lg font-black text-amber-300 mt-0.5 tabular-nums">0</div>
+          <div id="kpiPendingSub" class="text-[11px] text-slate-400 mt-0.5">מתוך 0 משמרות</div>
+        </div>
+      </div>
+
+      <!-- גרף 1 + גרף 2 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <!-- גרף 1: אותם ימים מול חודש קודם (קו מצטבר כפול) -->
+        <div class="card p-4 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-black">אותם ימים מול חודש קודם (מצטבר)</h3>
+              <p id="sameDaysSubtitle" class="text-[11px] text-slate-400">השוואת קצב הצבירה מיום 1 ועד היום</p>
+            </div>
+            <span id="sameDaysDeltaBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d]"></span>
+          </div>
+          <div id="chartSameDays" class="w-full overflow-x-auto"></div>
+        </div>
+
+        <!-- גרף 2: חודש מול חודש לאורך השנה (עם מתג מזומן+אשראי / הכנסות מול הוצאות) -->
+        <div class="card p-4 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-sm font-black">חודש מול חודש לאורך השנה</h3>
+            <div class="flex items-center gap-1 bg-[#091322] p-0.5 rounded-lg border border-[#26466d]">
+              <button type="button" id="momModeMix" onclick="setMomChartMode('mix')" class="seg-btn active !py-1 !px-2 !text-[11px] !min-h-[28px]">מזומן + אשראי</button>
+              <button type="button" id="momModePnl" onclick="setMomChartMode('pnl')" class="seg-btn !py-1 !px-2 !text-[11px] !min-h-[28px]">הכנסות מול הוצאות</button>
+            </div>
+          </div>
+          <div id="chartMonthOverMonth" class="w-full overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <!-- גרף 3 + גרף 4 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <!-- גרף 3: דונאט מזומן מול אשראי -->
+        <div class="card p-4 space-y-2.5">
+          <h3 class="text-sm font-black">חלוקת מזומן מול אשראי</h3>
+          <div id="chartCashCreditDonut" class="w-full"></div>
+        </div>
+
+        <!-- גרף 4: ממוצע הכנסות לפי ימי השבוע -->
+        <div class="card p-4 space-y-2.5">
+          <h3 class="text-sm font-black">ממוצע הכנסות לפי ימי השבוע (א׳–מוצ״ש)</h3>
+          <div id="chartWeekdayAvg" class="w-full overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <!-- גרף 5 + גרף 6 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <!-- גרף 5: מגמת הכנסות יומית (שטח / קו) -->
+        <div class="card p-4 space-y-2.5">
+          <h3 id="dailyTrendTitle" class="text-sm font-black">מגמת הכנסות יומית</h3>
+          <div id="chartDailyTrend" class="w-full overflow-x-auto"></div>
+        </div>
+
+        <!-- גרף 6: התפלגות הוצאות לפי קטגוריה -->
+        <div class="card p-4 space-y-2.5">
+          <h3 class="text-sm font-black">התפלגות הוצאות לפי קטגוריה</h3>
+          <div id="chartExpenseCategories" class="w-full"></div>
+        </div>
+      </div>
+
+      <!-- היסטוריית הפקדות בנק -->
+      <div class="card p-4 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-black">היסטוריית הפקדות לבנק</h3>
+          <span id="depositsCountBadge" class="text-xs font-bold text-slate-400"></span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-right">
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr>
+                <th class="py-2">תאריך</th>
+                <th>סכום שהופקד</th>
+                <th>הערה / אסמכתא</th>
+              </tr>
+            </thead>
+            <tbody id="depositsTableBody" class="divide-y divide-[#1e3a5f]">
+              <tr><td colspan="3" class="py-4 text-center text-slate-400">אין עדיין הפקדות רשומות</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. הוצאות -->
     <section id="osec-expenses" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-black text-white">רישום הוצאות</h2>
-          <span class="text-xs font-bold text-rose-400">סה״כ הוצאות: <strong id="totalExpensesLbl">0 ₪</strong></span>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg> רישום הוצאות</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
           <input id="expDate" type="date" class="input-dark p-2 text-xs" />
+          <select id="expType" class="input-dark p-2 text-xs">
+            <option value="הוצאה משתנה">הוצאה משתנה</option>
+            <option value="הוצאה קבועה">הוצאה קבועה</option>
+          </select>
           <select id="expCat" class="input-dark p-2 text-xs">
             <option value="שכירות וארנונה">שכירות וארנונה</option>
             <option value="חשמל ותקשורת">חשמל ותקשורת</option>
@@ -314,107 +598,185 @@
             <option value="ניקיון ותחזוקה">ניקיון ותחזוקה</option>
             <option value="אחר">אחר</option>
           </select>
+          <select id="expPaymentMethod" class="input-dark p-2 text-xs">
+            <option value="מזומן">מזומן</option>
+            <option value="אשראי">אשראי</option>
+            <option value="העברה בנקאית">העברה בנקאית</option>
+          </select>
           <input id="expAmount" type="number" placeholder="סכום (₪)" class="input-dark p-2 text-xs" />
           <input id="expNote" type="text" placeholder="פירוט הוצאה" class="input-dark p-2 text-xs" />
         </div>
-        <button type="button" onclick="saveExpense()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ שמור הוצאה</button>
+        <button type="button" onclick="saveExpense()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">
+          + שמור הוצאה
+        </button>
       </div>
 
-      <div class="card p-4 space-y-2">
-        <h3 class="text-sm font-black text-white">היסטוריית הוצאות שנרשמו</h3>
+      <div class="card p-4 space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-sm font-black">היסטוריית הוצאות</h3>
+          <span id="expensesTotalBadge" class="text-xs font-black text-rose-400 tabular-nums">סה״כ: 0 ₪</span>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr><th class="py-2">תאריך</th><th>קטגוריה ופירוט</th><th>סוג</th><th>סכום</th></tr>
+              <tr>
+                <th class="py-2">תאריך</th>
+                <th>סוג</th>
+                <th>קטגוריה ופירוט</th>
+                <th>אמצעי תשלום</th>
+                <th>סכום</th>
+              </tr>
             </thead>
-            <tbody id="expensesTableBody" class="divide-y divide-[#1e3a5f]"><tr><td colspan="4" class="py-4 text-center text-slate-400">אין עדיין הוצאות רשומות</td></tr></tbody>
+            <tbody id="expensesTableBody" class="divide-y divide-[#1e3a5f]">
+              <tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין הוצאות רשומות</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 3. תורים -->
+    <!-- 4. תורים וזמני המתנה -->
     <section id="osec-queues" class="owner-section hidden space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="kpi-val font-black text-sky-400 mt-0.5">0</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסנוקר</div><div id="qSnookerTotal" class="kpi-val font-black text-emerald-400 mt-0.5">0</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">ממוצע המתנה</div><div id="qAvgWait" class="kpi-val font-black text-orange-400 mt-0.5">0 דק׳</div></div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg> תורים לסוני</div>
+          <div id="qSonyTotal" class="text-lg font-black text-sky-400 mt-0.5">0</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg> תורים לסנוקר</div>
+          <div id="qSnookerTotal" class="text-lg font-black text-emerald-400 mt-0.5">0</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-[11px] text-slate-400">ממוצע המתנה</div>
+          <div id="qAvgWait" class="text-lg font-black text-orange-400 mt-0.5">0 דק׳</div>
+        </div>
       </div>
+
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">סיכום תורים לפי ימים</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך ויום</th><th>סוני</th><th>סנוקר</th><th>ממוצע המתנה</th><th>מקסימום</th></tr></thead>
-            <tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]"><tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr></tbody>
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr>
+                <th class="py-2">תאריך ויום</th>
+                <th>סוני</th>
+                <th>סנוקר</th>
+                <th>ממוצע המתנה</th>
+                <th>מקסימום</th>
+              </tr>
+            </thead>
+            <tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]">
+              <tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
+
       <div class="card p-4 space-y-2">
         <h3 class="text-sm font-black text-white">פירוט כל הנרשמים בתור</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>תחום</th><th>שם</th><th>רישום</th><th>כניסה</th><th>המתנה</th><th>סטטוס</th></tr></thead>
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr>
+                <th class="py-2">תאריך</th>
+                <th>תחום</th>
+                <th>שם</th>
+                <th>רישום</th>
+                <th>כניסה</th>
+                <th>המתנה</th>
+                <th>סטטוס</th>
+              </tr>
+            </thead>
             <tbody id="qAllTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 4. מלגות שערי עתיד + ניהול מאגר שמות -->
+    <!-- 5. מלגות שערי עתיד + ניהול מאגר שמות -->
     <section id="osec-scholarships" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 class="text-base font-black text-white">מלגות — עמותת שערי עתיד (ע״ר 580811925)</h2>
-            <p class="text-xs text-slate-400">בחר מהמאגר הקבוע או הוסף ידנית, סמן V לכל מורשה חתימה והפק נספח ב׳ חתום</p>
+            <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg> מלגות — עמותת שערי עתיד (ע״ר 580811925)</h2>
+            <p class="text-xs text-slate-400">נטען ישירות מגוגל שיטס — בחר מהמאגר הקבוע או הוסף ידנית והפק נספח ב׳ חתום</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <select id="schMonthSelect" onchange="renderScholarships()" class="input-dark px-2.5 py-1.5 text-xs font-bold">
-              <option value="ינואר 2026">ינואר 2026</option><option value="פברואר 2026">פברואר 2026</option><option value="מרץ 2026">מרץ 2026</option>
-              <option value="אפריל 2026">אפריל 2026</option><option value="מאי 2026">מאי 2026</option><option value="יוני 2026">יוני 2026</option>
-              <option value="יולי 2026">יולי 2026</option><option value="אוגוסט 2026">אוגוסט 2026</option><option value="ספטמבר 2026">ספטמבר 2026</option>
-              <option value="אוקטובר 2026">אוקטובר 2026</option><option value="נובמבר 2026">נובמבר 2026</option><option value="דצמבר 2026">דצמבר 2026</option>
+              <option value="ינואר 2026">ינואר 2026</option>
+              <option value="פברואר 2026">פברואר 2026</option>
+              <option value="מרץ 2026">מרץ 2026</option>
+              <option value="אפריל 2026">אפריל 2026</option>
+              <option value="מאי 2026">מאי 2026</option>
+              <option value="יוני 2026">יוני 2026</option>
+              <option value="יולי 2026">יולי 2026</option>
+              <option value="אוגוסט 2026">אוגוסט 2026</option>
+              <option value="ספטמבר 2026">ספטמבר 2026</option>
+              <option value="אוקטובר 2026">אוקטובר 2026</option>
+              <option value="נובמבר 2026">נובמבר 2026</option>
+              <option value="דצמבר 2026">דצמבר 2026</option>
             </select>
-            <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-2 rounded-xl text-xs shadow">הצג והפק נספח ב׳ חתום</button>
+            <button type="button" onclick="openDirManageModal()" class="btn-secondary !py-1.5 !px-3 !text-xs">ניהול מאגר שמות</button>
+            <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-2 rounded-xl text-xs shadow">
+              הצג והפק נספח ב׳ חתום
+            </button>
           </div>
         </div>
+
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs font-black text-orange-400">מאגר מקבלי מלגות קבוע (מהשיטס):</span>
-            <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="openDirManageModal()" class="text-[11px] bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-1.5 rounded-lg">נהל מאגר שמות (הוספה / מחיקה)</button>
-              <button type="button" onclick="toggleAllDir(true)" class="btn-secondary !py-1 !px-2.5 !text-[11px]">בחר הכל</button>
-              <button type="button" onclick="addSelectedFromDir()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs">+ הוסף מסומנים לחודש</button>
+            <span class="text-xs font-black text-orange-400">מאגר מקבלי מלגות קבוע (בחר את מי שמקבל החודש):</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="toggleAllDir(true)" class="text-[11px] bg-[#13253e] px-2.5 py-1 rounded-lg border border-[#26466d]">בחר הכל</button>
+              <button type="button" onclick="addSelectedFromDir()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1 rounded-lg text-xs">+ הוסף מסומנים לחודש</button>
             </div>
           </div>
-          <div id="schDirectoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto"><div class="text-xs text-slate-400">טוען מאגר מהשיטס...</div></div>
+          <div id="schDirectoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto">
+            <div class="text-xs text-slate-400">טוען מאגר מהשיטס...</div>
+          </div>
         </div>
+
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] grid grid-cols-2 sm:grid-cols-4 gap-2">
           <input id="schName" type="text" placeholder="שם מלא של המלגאי" class="input-dark p-2 text-xs" />
           <input id="schId" type="text" placeholder="מספר ת.ז." class="input-dark p-2 text-xs" />
           <input id="schAmount" type="number" value="2500" class="input-dark p-2 text-xs text-center font-bold" />
           <button type="button" onclick="addScholarshipRow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg text-xs py-2">+ הוסף ידנית</button>
         </div>
+
         <div id="verifierSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs"></div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">#</th><th>שם מלא</th><th>ת.ז.</th><th>סכום</th><th class="text-center">וי (V) מנחם</th><th class="text-center">וי (V) יהודה</th><th class="text-center">מחק</th></tr></thead>
+            <thead class="text-slate-400 border-b border-[#1e3a5f]">
+              <tr>
+                <th class="py-2">#</th>
+                <th>שם מלא</th>
+                <th>ת.ז.</th>
+                <th>סכום</th>
+                <th class="text-center">וי (V) מנחם</th>
+                <th class="text-center">וי (V) יהודה</th>
+                <th class="text-center">מחק</th>
+              </tr>
+            </thead>
             <tbody id="schTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 5. תקלות, משימות והתראות -->
+    <!-- 6. תקלות, משימות למנהל והתראות -->
     <section id="osec-ops" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-base font-black text-white">שליחת משימה למנהל</h2>
+          <div>
+            <h2 class="text-base font-black text-white">שליחת משימה למנהל (תזכורת כל יום עד סימון 'טופל')</h2>
+            <p class="text-xs text-slate-400">כל משימה שתשלח כאן תישלח למנהל ותזכיר לו כל יום אוטומטית עד שיסמן שטופל</p>
+          </div>
           <button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs">הפעל תזכורת יומית</button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <input id="mgrTaskTitle" type="text" placeholder="נושא" class="input-dark p-2.5 text-xs" />
-          <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה..." class="input-dark p-2.5 text-xs" />
+          <input id="mgrTaskTitle" type="text" placeholder="נושא (למשל: לתקן שלט / נורה בשולחן 2)" class="input-dark p-2.5 text-xs" />
+          <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה למנהל..." class="input-dark p-2.5 text-xs" />
           <div class="flex gap-1.5">
             <button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח משימה</button>
             <button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח לווצאפ</button>
@@ -422,67 +784,83 @@
         </div>
         <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
+
+      <!-- הגדרות מייל בעלים, מנהל והתראות -->
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white">פרטי מנהל נוכחי והגדרות קבלת מיילים לבעלים</h2>
+        <h2 class="text-base font-black text-white">הגדרות מייל לבעלים, פרטי מנהל והתראות</h2>
+        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-2.5">
+          <label class="flex items-center gap-2 text-xs font-bold cursor-pointer">
+            <input id="emailNotifyToggle" type="checkbox" checked class="w-4 h-4 accent-orange-600" />
+            <span>קבלת התראות סוף יום ואישורים למייל</span>
+          </label>
+          <input id="ownerEmailsInput" type="text" placeholder="כתובות מייל לקבלת דוחות (ניתן להפריד בפסיק, למשל: a@gmail.com, b@gmail.com)" class="input-dark w-full p-2 text-xs" />
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <input id="gasUrlOwnerInput" type="url" dir="ltr" placeholder="קישור Web App של Apps Script (.../exec)" class="input-dark p-2 text-xs sm:col-span-2" />
+          <input id="gasUrlOwnerInput" type="url" placeholder="קישור Web App של Apps Script (.../exec)" class="input-dark p-2 text-xs sm:col-span-2" />
           <input id="managerPhoneInput" type="tel" placeholder="נייד מנהל לווצאפ (97250...)" class="input-dark p-2 text-xs font-bold" />
           <input id="managerEmailInput" type="email" placeholder="מייל מנהל לתזכורות" class="input-dark p-2 text-xs" />
-          <input id="chatWebhookInput" type="url" dir="ltr" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs sm:col-span-2" />
-          <input id="ownerEmailsInput" type="text" dir="ltr" placeholder="מיילים לקבלת דוחות סוף יום (מופרדים בפסיק)" class="input-dark p-2 text-xs sm:col-span-2" />
-          <label class="flex items-center gap-2 text-xs font-bold text-slate-200 sm:col-span-2 cursor-pointer p-2 rounded-xl bg-[#091322] border border-[#26466d]">
-            <input id="ownerEmailNotifyChk" type="checkbox" checked class="w-4 h-4 accent-orange-600" />
-            <span>קבל דוחות סוף יום והתראות למיילים הרשומים למעלה</span>
-          </label>
-          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs sm:col-span-2">שמור הגדרות ומיילים ✓</button>
+          <input id="chatWebhookInput" type="url" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs" />
+          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות ופרטי מנהל ✓</button>
         </div>
       </div>
+
       <div class="card p-4 space-y-3">
         <h2 class="text-base font-black text-white">הוספת מדריך "איך מסדרים" למוכרים</h2>
         <input id="newGuideTitle" type="text" placeholder="כותרת התקלה" class="input-dark w-full p-2.5 text-xs" />
         <textarea id="newGuideSteps" rows="3" placeholder="שלבי הפתרון למוכר..." class="input-dark w-full p-2.5 text-xs"></textarea>
-        <button type="button" onclick="addNewGuide()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ פרסם מדריך למוכרים</button>
+        <button type="button" onclick="addNewGuide()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">
+          + פרסם מדריך למוכרים
+        </button>
       </div>
     </section>
+
   </main>
 
-  <!-- מודאל ניהול מאגר שמות -->
-  <div id="dirManageModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true">
-    <div class="card w-full max-w-lg p-5 space-y-4 max-h-[88vh] flex flex-col">
-      <div class="flex items-center justify-between border-b border-[#1e3a5f] pb-2">
-        <h3 class="text-base font-black text-white">ניהול מאגר שמות קבוע (הוספה ומחיקה)</h3>
-        <button type="button" onclick="closeDirManageModal()" class="btn-modal-close">✕</button>
-      </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <input id="dirNewName" type="text" placeholder="שם מלא" class="input-dark p-2 text-xs" />
-        <input id="dirNewId" type="text" placeholder="ת.ז." class="input-dark p-2 text-xs" />
-        <input id="dirNewAmount" type="number" value="2500" class="input-dark p-2 text-xs text-center font-bold" />
-        <button type="button" onclick="addPersonToDirectory()" class="bg-emerald-600 text-white font-bold rounded-xl text-xs px-2 py-2">+ הוסף למאגר</button>
-      </div>
-      <div id="dirManageRows" class="space-y-2 overflow-y-auto flex-1 text-xs"></div>
-      <div class="flex justify-end pt-2 border-t border-[#1e3a5f]"><button type="button" onclick="closeDirManageModal()" class="btn-secondary">סגור</button></div>
-    </div>
-  </div>
-
-  <!-- מודאל נספח ב' -->
+  <!-- Modal: נספח ב' חתום -->
   <div id="protocolModal" class="hidden fixed inset-0 bg-black/85 z-50 overflow-y-auto p-3 flex flex-col items-center">
     <div class="no-print w-full max-w-2xl flex flex-wrap items-center justify-between gap-2 bg-[#13253e] p-3 rounded-xl mb-3 border border-orange-500">
       <span class="text-xs font-bold text-white">נספח ב׳ מוכן לשמירה כ-PDF / הדפסה:</span>
       <div class="flex flex-wrap items-center gap-2">
         <label class="flex items-center gap-1.5 text-xs font-bold text-slate-200"><span>תאריך אישור:</span><input type="date" id="protocolDateInput" onchange="renderAppendixSheet(this.value)" class="input-dark px-2 py-1 text-xs !min-h-[34px]" /></label>
-        <button type="button" onclick="window.print()" class="bg-emerald-600 text-white font-black px-3 py-1.5 rounded-lg text-xs">שמור כ-PDF / הדפס</button>
+        <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-1.5 rounded-lg text-xs">שמור כ-PDF / הדפס</button>
         <button type="button" onclick="closeAppendixModal()" class="btn-secondary">סגור</button>
       </div>
     </div>
     <div id="protocolPrintSheet" class="bg-white text-black w-full max-w-2xl p-6 rounded-xl shadow-2xl"></div>
   </div>
 
-  <!-- מודאל אישור מחיקה -->
-  <div id="confirmDeleteModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <!-- Modal: ניהול מאגר שמות (הוספה / מחיקה) -->
+  <div id="dirManageModal" class="hidden fixed inset-0 bg-black/80 z-[997] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="card w-full max-w-lg p-5 space-y-4 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-black text-white">ניהול מאגר שמות קבוע</h3>
+        <button type="button" onclick="closeDirManageModal()" class="btn-modal-close" aria-label="סגור">✕</button>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <input id="dirNewName" type="text" placeholder="שם מלא" class="input-dark p-2 text-xs sm:col-span-2" />
+        <input id="dirNewTz" type="text" placeholder="ת.ז." class="input-dark p-2 text-xs" />
+        <input id="dirNewAmt" type="number" value="2500" placeholder="סכום" class="input-dark p-2 text-xs text-center font-bold" />
+      </div>
+      <button type="button" onclick="addDirectoryPerson()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded-xl text-xs">+ הוסף למאגר הקבוע</button>
+      <div id="dirManageList" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs"></div>
+      <div class="flex justify-end">
+        <button type="button" onclick="closeDirManageModal()" class="btn-secondary">סגור</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: אישור מחיקה -->
+  <div id="confirmDeleteModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle">
     <div class="card w-full max-w-sm p-5 space-y-4 border-rose-500/40">
-      <div class="flex items-center justify-between"><h3 class="text-base font-black text-white">אישור מחיקה</h3><button type="button" onclick="closeConfirmDeleteModal()" class="btn-modal-close">✕</button></div>
-      <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה?</p>
-      <div class="flex items-center justify-end gap-2"><button type="button" onclick="closeConfirmDeleteModal()" class="btn-secondary">ביטול</button><button type="button" onclick="confirmDeleteScholarshipNow()" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-black">מחק לצמיתות</button></div>
+      <div class="flex items-center justify-between">
+        <h3 id="confirmDeleteTitle" class="text-base font-black text-white">אישור מחיקה</h3>
+        <button type="button" onclick="closeConfirmDeleteModal()" class="btn-modal-close" aria-label="סגור">✕</button>
+      </div>
+      <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה מהרשימה החודשית?</p>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" onclick="closeConfirmDeleteModal()" class="btn-secondary">ביטול</button>
+        <button type="button" onclick="confirmDeleteScholarshipNow()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black">מחק לצמיתות</button>
+      </div>
     </div>
   </div>
 
@@ -490,24 +868,49 @@
 
   <script>
     const _memStore = {};
-    function safeGet(k, defVal = null) { try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; } }
-    function safeSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); } }
+    function safeGet(k, defVal = null) {
+      try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; }
+    }
+    function safeSet(k, v) {
+      try { window.localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); }
+    }
     const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let SCRIPT_URL = safeGet("friends_gas_url") || DEFAULT_SCRIPT_URL;
-    let allShifts = [], allDeposits = [], allExpenses = [], allQueues = [], managerTasks = [], schDirectory = [], scholarships = [];
-    try { window.localStorage.removeItem('friends_scholarships'); } catch (e) {}
 
-    const HEB_MONTHS = { "ינואר":"01","פברואר":"02","מרץ":"03","אפריל":"04","מאי":"05","יוני":"06","יולי":"07","אוגוסט":"08","ספטמבר":"09","אוקטובר":"10","נובמבר":"11","דצמבר":"12" };
-    const MONTH_NAMES = ["","ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
-    const WEEKDAYS_HEB = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","מוצ״ש"];
+    let allShifts = [];
+    let allBankDeposits = [];
+    let allExpenses = [];
+    let allQueues = [];
+    let managerTasks = [];
+    let schDirectory = [];
+    let scholarships = []; // תמיד נטען ישירות מגוגל שיטס (ללא דמה מקומי)
+
+    let analyticsScope = 'month'; // 'month' | 'year'
+    let momChartMode = 'mix';     // 'mix' (מזומן+אשראי) | 'pnl' (הכנסות מול הוצאות)
+
+    const HEB_MONTHS = {
+      "ינואר": "01", "פברואר": "02", "מרץ": "03", "אפריל": "04",
+      "מאי": "05", "יוני": "06", "יולי": "07", "אוגוסט": "08",
+      "ספטמבר": "09", "אוקטובר": "10", "נובמבר": "11", "דצמבר": "12"
+    };
+    const MONTH_SHORT_HEB = ["ינו׳","פבר׳","מרץ","אפר׳","מאי","יוני","יולי","אוג׳","ספט׳","אוק׳","נוב׳","דצמ׳"];
+    const MONTH_FULL_HEB = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+    const WEEKDAY_HEB = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","מוצ״ש"];
 
     document.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
+      const currentMonthNum = String(now.getMonth() + 1).padStart(2, '0');
+      const currentHebMonthYear = `${MONTH_FULL_HEB[now.getMonth()]} ${now.getFullYear()}`;
+
       const mf = document.getElementById('monthFilter');
-      if (mf) mf.value = String(now.getMonth() + 1).padStart(2, '0');
-      const curHeb = `${MONTH_NAMES[now.getMonth() + 1]} ${now.getFullYear()}`;
+      if (mf) mf.value = currentMonthNum;
+      const amf = document.getElementById('analyticsMonthSelect');
+      if (amf) amf.value = currentMonthNum;
+
       const sm = document.getElementById('schMonthSelect');
-      if (sm && [...sm.options].some(o => o.value === curHeb)) sm.value = curHeb;
+      if (sm && [...sm.options].some(o => o.value === currentHebMonthYear)) {
+        sm.value = currentHebMonthYear;
+      }
 
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
@@ -516,34 +919,72 @@
       document.getElementById('managerPhoneInput').value = safeGet('friends_manager_phone', '972503265609');
       document.getElementById('managerEmailInput').value = safeGet('friends_manager_email', 'arri.karp@gmail.com');
       document.getElementById('ownerEmailsInput').value = safeGet('friends_owner_emails', 'robbin8541@gmail.com');
-      document.getElementById('ownerEmailNotifyChk').checked = safeGet('friends_owner_email_notify', 'true') !== 'false';
 
-      renderScholarships();
       refreshOwnerData();
     });
 
-    function showOwnerToast(msg) { const t = document.getElementById('ownerToast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 3000); }
+    function showOwnerToast(msg) {
+      const t = document.getElementById('ownerToast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+
     function openOwnerTab(tabName) {
-      document.querySelectorAll('.owner-section').forEach(s => s.classList.add('hidden'));
-      document.querySelectorAll('.owner-tab').forEach(b => b.classList.remove('active'));
-      document.getElementById('osec-' + tabName)?.classList.remove('hidden');
-      document.getElementById('otab-' + tabName)?.classList.add('active');
+      document.querySelectorAll('.owner-section').forEach(sec => sec.classList.add('hidden'));
+      document.querySelectorAll('.owner-tab').forEach(btn => btn.classList.remove('active'));
+      const sec = document.getElementById('osec-' + tabName);
+      const btn = document.getElementById('otab-' + tabName);
+      if (sec) sec.classList.remove('hidden');
+      if (btn) btn.classList.add('active');
+      if (tabName === 'analytics') renderAnalyticsTab();
     }
 
     function parseDateInfo(raw, sheetName) {
       const s = String(raw || '').trim();
-      let day = '', month = '', year = '', dateObj = null;
+      let day = '', month = '', year = '';
+
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-        const p = s.substring(0,10).split('-'); year = p[0]; month = p[1]; day = p[2];
-        dateObj = new Date(Number(year), Number(month)-1, Number(day));
+        const parts = s.substring(0, 10).split('-');
+        year = parts[0]; month = parts[1]; day = parts[2];
       } else if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}/.test(s)) {
-        const p = s.split(/[./-]/); day = p[0].padStart(2,'0'); month = p[1].padStart(2,'0');
-        year = p[2].length === 2 ? '20'+p[2] : p[2];
-        dateObj = new Date(Number(year), Number(month)-1, Number(day));
+        const parts = s.split(/[./-]/);
+        day = parts[0].padStart(2, '0');
+        month = parts[1].padStart(2, '0');
+        year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+      } else {
+        const d = new Date(s);
+        if (!isNaN(d.getTime())) {
+          day = String(d.getDate()).padStart(2, '0');
+          month = String(d.getMonth() + 1).padStart(2, '0');
+          year = String(d.getFullYear());
+        }
       }
-      if (!month && sheetName) { for (const [h,n] of Object.entries(HEB_MONTHS)) { if (String(sheetName).includes(h)) { month = n; break; } } }
-      if (!year && sheetName) { const ym = String(sheetName).match(/20\d{2}/); if (ym) year = ym[0]; }
-      return { display: (day && month && year) ? `${day}/${month}/${year}` : s, day, month, year, dayOfWeek: dateObj && !isNaN(dateObj) ? dateObj.getDay() : -1 };
+
+      if (!month && sheetName) {
+        for (const [heb, num] of Object.entries(HEB_MONTHS)) {
+          if (String(sheetName).includes(heb)) { month = num; break; }
+        }
+      }
+      if (!year && sheetName) {
+        const ym = String(sheetName).match(/20\d{2}/);
+        if (ym) year = ym[0];
+        else if (String(sheetName).includes('25')) year = '2025';
+      }
+
+      let weekdayIdx = -1;
+      if (day && month && year) {
+        const dt = new Date(Number(year), Number(month) - 1, Number(day));
+        if (!isNaN(dt.getTime())) weekdayIdx = dt.getDay();
+      }
+
+      return {
+        display: (day && month && year) ? `${day}/${month}/${year}` : s,
+        dayNum: Number(day) || 0,
+        month,
+        year,
+        weekdayIdx
+      };
     }
 
     async function sendToGas(payload) {
@@ -551,7 +992,9 @@
         const res = await fetch(SCRIPT_URL + "?payload=" + encodeURIComponent(JSON.stringify(payload)));
         return await res.json();
       } catch (e) {
-        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        try {
+          await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+        } catch (e2) {}
         return { ok: true };
       }
     }
@@ -568,356 +1011,1258 @@
 
         allShifts = rawRows.map(r => {
           const info = parseDateInfo(r.date, r.sheetName);
-          const cash = parseFloat(r.cash) || 0, credit = parseFloat(r.credit) || 0;
-          return { date: info.display, dayNum: info.day, monthNum: info.month, yearNum: info.year, dayOfWeek: info.dayOfWeek, cash, credit, total: cash + credit, approved: Boolean(r.approved) };
-        }).filter(r => (!r.yearNum || r.yearNum === selectedYear) && (r.cash > 0 || r.credit > 0));
-
-        allDeposits = (data.bankDeposits || []).map(d => {
-          const info = parseDateInfo(d.date, '');
-          return { date: info.display || d.date, monthNum: info.month, amount: parseFloat(d.amount) || 0, note: d.note || '' };
+          const cash = parseFloat(r.cash) || 0;
+          const credit = parseFloat(r.credit) || 0;
+          return {
+            date: info.display,
+            dayNum: info.dayNum,
+            monthNum: info.month,
+            yearNum: info.year,
+            weekdayIdx: info.weekdayIdx,
+            cash,
+            credit,
+            total: cash + credit,
+            approved: Boolean(r.approved)
+          };
+        }).filter(r => {
+          if (r.yearNum && r.yearNum !== selectedYear) return false;
+          return r.cash > 0 || r.credit > 0;
         });
 
-        allExpenses = (data.expenses || []).map(e => {
-          const info = parseDateInfo(e.date, '');
-          return { date: info.display || e.date, monthNum: info.month, type: e.type || '', category: e.category || '', amount: parseFloat(e.amount) || 0 };
-        });
+        allBankDeposits = Array.isArray(data.bankDeposits) ? data.bankDeposits : [];
+        allExpenses = Array.isArray(data.expenses) ? data.expenses : [];
 
-        if (data.queues) { allQueues = data.queues; renderQueuesTab(); }
-        if (data.managerTasks) { managerTasks = data.managerTasks; renderManagerTasks(); }
-        if (data.notifySettings) {
-          if (data.notifySettings.managerPhone) { safeSet('friends_manager_phone', data.notifySettings.managerPhone); document.getElementById('managerPhoneInput').value = data.notifySettings.managerPhone; }
-          if (data.notifySettings.managerEmail) { safeSet('friends_manager_email', data.notifySettings.managerEmail); document.getElementById('managerEmailInput').value = data.notifySettings.managerEmail; }
-          if (data.notifySettings.ownerEmails !== undefined) { safeSet('friends_owner_emails', data.notifySettings.ownerEmails); document.getElementById('ownerEmailsInput').value = data.notifySettings.ownerEmails; }
-          if (data.notifySettings.emailNotify !== undefined) { safeSet('friends_owner_email_notify', String(data.notifySettings.emailNotify)); document.getElementById('ownerEmailNotifyChk').checked = Boolean(data.notifySettings.emailNotify); }
+        if (data.queues) {
+          allQueues = data.queues;
+          renderQueuesTab();
         }
-        if (Array.isArray(data.directory)) { schDirectory = data.directory; renderDirectoryList(); renderDirManageRows(); }
-        if (Array.isArray(data.scholarships)) {
+        if (data.managerTasks) {
+          managerTasks = data.managerTasks;
+          renderManagerTasks();
+        }
+        if (data.notifySettings) {
+          const ns = data.notifySettings;
+          if (ns.managerPhone) { safeSet('friends_manager_phone', ns.managerPhone); document.getElementById('managerPhoneInput').value = ns.managerPhone; }
+          if (ns.managerEmail) { safeSet('friends_manager_email', ns.managerEmail); document.getElementById('managerEmailInput').value = ns.managerEmail; }
+          if (ns.ownerEmails !== undefined) { safeSet('friends_owner_emails', ns.ownerEmails); document.getElementById('ownerEmailsInput').value = ns.ownerEmails; }
+          document.getElementById('emailNotifyToggle').checked = (ns.emailNotify !== false);
+        }
+        if (data.directory) {
+          schDirectory = data.directory;
+          renderDirectoryList();
+          renderDirManageList();
+        }
+        if (data.scholarships && Array.isArray(data.scholarships)) {
           scholarships = data.scholarships.map(s => ({
-            id: s.rowNumber || Date.now()+Math.random(), rowNumber: s.rowNumber, month: s.month, name: s.fullName, tz: s.idNumber,
-            amount: Number(s.amount)||2500, verifiedMenachem: (s.received && s.verifier==='מנחם רובינשטיין'), verifiedGura: (s.received && s.verifier==='יהודה גורא')
+            id: s.rowNumber || Date.now() + Math.random(),
+            rowNumber: s.rowNumber,
+            month: s.month,
+            name: s.fullName,
+            tz: s.idNumber,
+            amount: Number(s.amount) || 2500,
+            verifiedMenachem: (s.received && s.verifier === 'מנחם רובינשטיין'),
+            verifiedGura: (s.received && s.verifier === 'יהודה גורא')
           }));
           renderScholarships();
         }
-        renderExpensesTable();
+
         renderIncomeTable();
+        renderExpensesTable();
+        renderAnalyticsTab();
       } catch (e) {
-        renderExpensesTable();
         renderIncomeTable();
+        renderExpensesTable();
+        renderAnalyticsTab();
       } finally {
         setDataLoading(false);
       }
     }
 
+    function onIncomeMonthChange() {
+      const m = document.getElementById('monthFilter').value;
+      if (m !== 'ALL') {
+        const amf = document.getElementById('analyticsMonthSelect');
+        if (amf) amf.value = m;
+      }
+      renderIncomeTable();
+    }
+
     function renderIncomeTable() {
       const m = document.getElementById('monthFilter').value;
       const filtered = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
-      const filteredDeps = allDeposits.filter(d => m === 'ALL' || !d.monthNum || d.monthNum === m);
-      const filteredExps = allExpenses.filter(e => m === 'ALL' || !e.monthNum || e.monthNum === m);
 
-      const cashSum = filtered.reduce((a,r) => a + r.cash, 0);
-      const credSum = filtered.reduce((a,r) => a + r.credit, 0);
-      const totSum = cashSum + credSum;
-      const depSum = filteredDeps.reduce((a,d) => a + d.amount, 0);
-      const expSum = filteredExps.reduce((a,e) => a + e.amount, 0);
-      const cashLeft = Math.max(0, Math.round(cashSum - depSum));
-      const netProfit = Math.round(totSum - expSum);
+      let cashSum = 0, credSum = 0, totSum = 0;
+      filtered.forEach(r => {
+        cashSum += r.cash;
+        credSum += r.credit;
+        totSum += r.total;
+      });
 
       document.getElementById('kpiCashTotal').textContent = Math.round(cashSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCreditTotal').textContent = Math.round(credSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCombinedTotal').textContent = Math.round(totSum).toLocaleString() + ' ₪';
-      document.getElementById('kpiCashLeftToDeposit').textContent = cashLeft.toLocaleString() + ' ₪';
-      const netEl = document.getElementById('kpiNetProfit');
-      netEl.textContent = netProfit.toLocaleString() + ' ₪';
-      netEl.className = 'kpi-val font-black mt-0.5 ' + (netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400');
 
-      // השוואה לחודש קודם באחוזים
-      const momEl = document.getElementById('kpiMomBadge');
+      const momBadge = document.getElementById('kpiMomBadge');
       if (m !== 'ALL' && Number(m) > 1) {
         const prevM = String(Number(m) - 1).padStart(2, '0');
-        const prevTot = allShifts.filter(r => r.monthNum === prevM).reduce((a,r) => a + r.total, 0);
-        if (prevTot > 0 && totSum > 0) {
+        const prevTot = allShifts.filter(r => r.monthNum === prevM).reduce((a, b) => a + b.total, 0);
+        if (prevTot > 0) {
           const pct = Math.round(((totSum - prevTot) / prevTot) * 100);
-          momEl.textContent = `${pct >= 0 ? '+' : ''}${pct}% מול ${MONTH_NAMES[Number(prevM)]}`;
-          momEl.className = 'text-[10px] font-bold mt-0.5 ' + (pct >= 0 ? 'text-emerald-400' : 'text-rose-400');
-        } else { momEl.textContent = ''; }
-      } else { momEl.textContent = ''; }
-
-      renderIncomeChart(filtered, m);
-      renderWeekdayChart(filtered);
+          momBadge.textContent = `${pct >= 0 ? '▲ +' : '▼ '}${pct}% מחודש קודם`;
+          momBadge.className = `text-[10px] font-bold mt-0.5 ${pct >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        } else {
+          momBadge.textContent = '';
+        }
+      } else {
+        momBadge.textContent = '';
+      }
 
       const tbody = document.getElementById('incomeTableBody');
-      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים להצגה בחודש זה</td></tr>'; return; }
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים להצגה בחודש זה</td></tr>';
+        return;
+      }
       tbody.innerHTML = filtered.map(r => `
         <tr>
           <td class="py-2 font-bold text-slate-200">${r.date}</td>
-          <td class="text-emerald-400 font-bold">${r.cash.toLocaleString()} ₪</td>
-          <td class="text-sky-400 font-bold">${r.credit.toLocaleString()} ₪</td>
-          <td class="text-orange-400 font-black">${r.total.toLocaleString()} ₪</td>
-          <td class="text-center">${r.approved ? '<span class="px-2 py-0.5 rounded-full bg-emerald-600/20 text-emerald-400 font-bold text-[11px]">✓ אושר</span>' : '<span class="px-2 py-0.5 rounded-full bg-slate-700/40 text-slate-400 font-bold text-[11px]">ממתין</span>'}</td>
+          <td class="text-emerald-400 font-bold tabular-nums">${r.cash.toLocaleString()} ₪</td>
+          <td class="text-sky-400 font-bold tabular-nums">${r.credit.toLocaleString()} ₪</td>
+          <td class="text-orange-400 font-black tabular-nums">${r.total.toLocaleString()} ₪</td>
+          <td class="text-center">
+            ${r.approved
+              ? '<span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">✓ אושר</span>'
+              : '<span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">ממתין</span>'}
+          </td>
         </tr>
       `).join('');
     }
 
-    function renderIncomeChart(rows, monthFilter) {
-      const box = document.getElementById('incomeChartBox');
-      if (!rows.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-8 text-center">אין נתונים לגרף</div>'; return; }
-      let items = [];
-      if (monthFilter === 'ALL') {
-        const byM = {};
-        rows.forEach(r => { if (!byM[r.monthNum]) byM[r.monthNum] = { label: MONTH_NAMES[Number(r.monthNum)]?.slice(0,4) || r.monthNum, cash: 0, credit: 0 }; byM[r.monthNum].cash += r.cash; byM[r.monthNum].credit += r.credit; });
-        items = Object.keys(byM).sort().map(k => byM[k]);
-      } else {
-        items = rows.map(r => ({ label: r.dayNum || r.date.slice(0,2), cash: r.cash, credit: r.credit }));
-      }
-      const maxVal = Math.max(1, ...items.map(x => x.cash + x.credit));
-      const barW = Math.max(14, Math.min(28, Math.floor(420 / Math.max(items.length, 1)) - 4));
-      const w = Math.max(320, items.length * (barW + 6) + 20), h = 140, padB = 22;
-      const bars = items.map((it, i) => {
-        const x = 10 + i * (barW + 6);
-        const hCash = Math.round((it.cash / maxVal) * (h - padB - 10));
-        const hCred = Math.round((it.credit / maxVal) * (h - padB - 10));
-        const yCash = h - padB - hCash;
-        const yCred = yCash - hCred;
-        return `<g><title>${it.label}: מזומן ${Math.round(it.cash).toLocaleString()} ₪ | אשראי ${Math.round(it.credit).toLocaleString()} ₪</title>
-          <rect x="${x}" y="${yCred}" width="${barW}" height="${hCred}" rx="3" fill="#38bdf8" />
-          <rect x="${x}" y="${yCash}" width="${barW}" height="${hCash}" rx="3" fill="#10b981" />
-          <text x="${x + barW/2}" y="${h - 6}" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.65">${it.label}</text></g>`;
-      }).join('');
-      box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" class="w-full h-36" style="min-width:${Math.min(w,460)}px">${bars}</svg>`;
-    }
-
-    function renderWeekdayChart(rows) {
-      const box = document.getElementById('weekdayChartBox');
-      const sums = Array(7).fill(0), cnts = Array(7).fill(0);
-      rows.forEach(r => { if (r.dayOfWeek >= 0 && r.dayOfWeek <= 6) { sums[r.dayOfWeek] += r.total; cnts[r.dayOfWeek]++; } });
-      const avgs = sums.map((s, i) => cnts[i] ? Math.round(s / cnts[i]) : 0);
-      const maxA = Math.max(1, ...avgs);
-      if (avgs.every(a => a === 0)) { box.innerHTML = '<div class="text-xs text-slate-400 py-8 text-center">אין מספיק נתונים</div>'; return; }
-      box.innerHTML = `<div class="space-y-1.5">${avgs.map((avg, i) => `
-        <div class="flex items-center gap-2 text-xs">
-          <span class="w-10 text-slate-400 font-bold text-right">${WEEKDAYS_HEB[i]}</span>
-          <div class="flex-1 h-4 rounded-full bg-[#091322] overflow-hidden border border-[#1e3a5f]">
-            <div class="h-full rounded-full bg-gradient-to-l from-orange-500 to-amber-400" style="width:${Math.round((avg/maxA)*100)}%"></div>
-          </div>
-          <span class="w-16 text-left font-bold text-slate-200 tabular-nums">${avg.toLocaleString()} ₪</span>
-        </div>`).join('')}</div>`;
-    }
-
-    function renderExpensesTable() {
-      const totalExp = allExpenses.reduce((a, e) => a + e.amount, 0);
-      const lbl = document.getElementById('totalExpensesLbl');
-      if (lbl) lbl.textContent = Math.round(totalExp).toLocaleString() + ' ₪';
-      const tbody = document.getElementById('expensesTableBody');
-      if (!tbody) return;
-      if (!allExpenses.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-400">אין עדיין הוצאות רשומות</td></tr>'; return; }
-      tbody.innerHTML = allExpenses.map(e => `<tr><td class="py-2 font-bold">${e.date}</td><td>${e.category}</td><td class="text-slate-400">${e.type || '-'}</td><td class="text-rose-400 font-bold">${e.amount.toLocaleString()} ₪</td></tr>`).join('');
-    }
-
-    function exportMonthCsv() {
+    function exportIncomeCSV() {
       const m = document.getElementById('monthFilter').value;
-      const rows = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
-      const exps = allExpenses.filter(e => m === 'ALL' || !e.monthNum || e.monthNum === m);
-      let csv = "\uFEFFסוג,תאריך,מזומן / פירוט,אשראי,סה״כ,אושר\n";
-      rows.forEach(r => { csv += `הכנסה,${r.date},${r.cash},${r.credit},${r.total},${r.approved ? 'כן' : 'לא'}\n`; });
-      exps.forEach(e => { csv += `הוצאה,${e.date},"${String(e.category).replace(/"/g,'""')}",,${-e.amount},\n`; });
+      const filtered = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
+      if (!filtered.length) return showOwnerToast('אין נתונים לייצוא');
+      const header = ['תאריך', 'מזומן', 'אשראי', 'סה"כ יומי', 'אישור מעטפה'];
+      const rows = filtered.map(r => [r.date, r.cash, r.credit, r.total, r.approved ? 'אושר' : 'ממתין']);
+      const csv = '\uFEFF' + [header, ...rows].map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `friends_report_${document.getElementById('yearSelect').value}_${m}.csv`;
+      a.download = `friends_income_${document.getElementById('yearSelect').value}_${m}.csv`;
       a.click();
-      showOwnerToast('קובץ CSV ירד למחשב ✓');
+      showOwnerToast('קובץ CSV הורד בהצלחה ✓');
     }
 
+    // ========================
+    // טאב 2: גרפים והפקדות
+    // ========================
+    function setAnalyticsScope(scope) {
+      analyticsScope = scope;
+      document.getElementById('scopeMonthBtn').classList.toggle('active', scope === 'month');
+      document.getElementById('scopeYearBtn').classList.toggle('active', scope === 'year');
+      document.getElementById('analyticsMonthSelect').classList.toggle('hidden', scope === 'year');
+      renderAnalyticsTab();
+    }
+
+    function onAnalyticsMonthChange() {
+      const m = document.getElementById('analyticsMonthSelect').value;
+      const mf = document.getElementById('monthFilter');
+      if (mf && mf.value !== 'ALL') { mf.value = m; renderIncomeTable(); }
+      renderAnalyticsTab();
+    }
+
+    function setMomChartMode(mode) {
+      momChartMode = mode;
+      document.getElementById('momModeMix').classList.toggle('active', mode === 'mix');
+      document.getElementById('momModePnl').classList.toggle('active', mode === 'pnl');
+      renderMonthOverMonthChart();
+    }
+
+    function getExpenseMonthNum(exp) {
+      if (exp.month) {
+        for (const [heb, num] of Object.entries(HEB_MONTHS)) {
+          if (String(exp.month).includes(heb)) return num;
+        }
+      }
+      return parseDateInfo(exp.date, '').month;
+    }
+
+    function renderAnalyticsTab() {
+      const selectedYear = document.getElementById('yearSelect').value;
+      const selMonth = document.getElementById('analyticsMonthSelect').value;
+      const isYear = analyticsScope === 'year';
+
+      const scopeLbl = document.getElementById('analyticsScopeLabel');
+      if (scopeLbl) {
+        scopeLbl.textContent = isYear
+          ? `סיכום שנתי ${selectedYear}`
+          : `${MONTH_FULL_HEB[Number(selMonth) - 1] || ''} ${selectedYear}`;
+      }
+
+      // 1. מזומן שנשאר להפקיד (תמיד מצטבר שנתי מדויק)
+      const totalCashYear = allShifts.reduce((a, b) => a + b.cash, 0);
+      const totalDeposited = allBankDeposits.reduce((a, b) => a + (Number(b.amount) || 0), 0);
+      const cashRemaining = Math.max(0, totalCashYear - totalDeposited);
+      const pctDeposited = totalCashYear > 0 ? Math.min(100, Math.round((totalDeposited / totalCashYear) * 100)) : 0;
+
+      document.getElementById('kpiCashRemaining').textContent = Math.round(cashRemaining).toLocaleString() + ' ₪';
+      document.getElementById('kpiTotalCashYear').textContent = Math.round(totalCashYear).toLocaleString() + ' ₪';
+      document.getElementById('kpiTotalDeposited').textContent = Math.round(totalDeposited).toLocaleString() + ' ₪';
+      document.getElementById('depositProgressPct').textContent = pctDeposited + '%';
+      document.getElementById('depositProgressBar').style.width = pctDeposited + '%';
+
+      // סינון לפי הטווח הנבחר (חודש או שנה)
+      const scopedShifts = isYear ? allShifts : allShifts.filter(s => s.monthNum === selMonth);
+      const scopedExpenses = isYear ? allExpenses : allExpenses.filter(e => getExpenseMonthNum(e) === selMonth);
+
+      const revTotal = scopedShifts.reduce((a, b) => a + b.total, 0);
+      const expTotal = scopedExpenses.reduce((a, b) => a + (Number(b.amount) || 0), 0);
+      const netProfit = revTotal - expTotal;
+      const marginPct = revTotal > 0 ? Math.round((netProfit / revTotal) * 100) : 0;
+
+      const netEl = document.getElementById('kpiNetProfit');
+      netEl.textContent = Math.round(netProfit).toLocaleString() + ' ₪';
+      netEl.className = `text-base sm:text-lg font-black mt-0.5 tabular-nums ${netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+      document.getElementById('kpiProfitMargin').textContent = `שיעור רווחיות: ${marginPct}%`;
+
+      // ממוצע ליום פעיל + השוואה לחודש קודם
+      const activeDays = scopedShifts.length;
+      const dailyAvg = activeDays > 0 ? Math.round(revTotal / activeDays) : 0;
+      document.getElementById('kpiDailyAvg').textContent = dailyAvg.toLocaleString() + ' ₪';
+
+      const avgDeltaEl = document.getElementById('kpiDailyAvgDelta');
+      if (!isYear && Number(selMonth) > 1) {
+        const prevM = String(Number(selMonth) - 1).padStart(2, '0');
+        const prevShifts = allShifts.filter(s => s.monthNum === prevM);
+        const prevAvg = prevShifts.length ? (prevShifts.reduce((a, b) => a + b.total, 0) / prevShifts.length) : 0;
+        if (prevAvg > 0 && dailyAvg > 0) {
+          const dPct = Math.round(((dailyAvg - prevAvg) / prevAvg) * 100);
+          avgDeltaEl.textContent = `${dPct >= 0 ? '▲ +' : '▼ '}${dPct}% מחודש קודם`;
+          avgDeltaEl.className = `text-[11px] mt-0.5 font-bold ${dPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        } else {
+          avgDeltaEl.textContent = `${activeDays} ימי פעילות`;
+          avgDeltaEl.className = 'text-[11px] mt-0.5 text-slate-400';
+        }
+      } else {
+        avgDeltaEl.textContent = `${activeDays} ימי פעילות`;
+        avgDeltaEl.className = 'text-[11px] mt-0.5 text-slate-400';
+      }
+
+      // תחזית סוף חודש (או ממוצע חודשי בתצוגה שנתית)
+      const fLabel = document.getElementById('kpiForecastLabel');
+      const fVal = document.getElementById('kpiForecast');
+      const fSub = document.getElementById('kpiForecastSub');
+      if (isYear) {
+        const activeMonths = new Set(allShifts.map(s => s.monthNum).filter(Boolean)).size;
+        const monthlyAvg = activeMonths > 0 ? Math.round(revTotal / activeMonths) : 0;
+        fLabel.textContent = 'ממוצע חודשי שנתי';
+        fVal.textContent = monthlyAvg.toLocaleString() + ' ₪';
+        fSub.textContent = `על פני ${activeMonths} חודשים פעילים`;
+      } else {
+        const daysInMonth = new Date(Number(selectedYear), Number(selMonth), 0).getDate();
+        // הערכת ימי פעילות בחודש (ללא שישי/ימים סגורים: כ-26 ימים, או יחס ימי הפעילות עד כה)
+        const now = new Date();
+        const isCurrentMonth = (String(now.getFullYear()) === selectedYear && String(now.getMonth() + 1).padStart(2, '0') === selMonth);
+        const passedDays = isCurrentMonth ? Math.max(1, now.getDate()) : daysInMonth;
+        const projected = isCurrentMonth && activeDays > 0
+          ? Math.round((revTotal / passedDays) * daysInMonth)
+          : Math.round(revTotal);
+        fLabel.textContent = isCurrentMonth ? 'תחזית סוף חודש' : 'סיכום חודש מלא';
+        fVal.textContent = projected.toLocaleString() + ' ₪';
+        fSub.textContent = isCurrentMonth ? `לפי קצב ${passedDays} ימים` : `${activeDays} ימי פעילות`;
+      }
+
+      // שיא ושפל
+      if (scopedShifts.length) {
+        const sorted = [...scopedShifts].sort((a, b) => b.total - a.total);
+        const best = sorted[0];
+        const worst = sorted[sorted.length - 1];
+        const bestDayName = best.weekdayIdx >= 0 ? ` (${WEEKDAY_HEB[best.weekdayIdx]})` : '';
+        const worstDayName = worst.weekdayIdx >= 0 ? ` (${WEEKDAY_HEB[worst.weekdayIdx]})` : '';
+        document.getElementById('kpiBestDay').textContent = `שיא: ${best.date.slice(0, 5)}${bestDayName} — ${Math.round(best.total).toLocaleString()} ₪`;
+        document.getElementById('kpiWorstDay').textContent = `שפל: ${worst.date.slice(0, 5)}${worstDayName} — ${Math.round(worst.total).toLocaleString()} ₪`;
+      } else {
+        document.getElementById('kpiBestDay').textContent = 'שיא: -';
+        document.getElementById('kpiWorstDay').textContent = 'שפל: -';
+      }
+
+      // מונה מעטפות ממתינות ל-✓
+      const pendingCount = scopedShifts.filter(s => !s.approved).length;
+      document.getElementById('kpiPendingApprovals').textContent = pendingCount;
+      document.getElementById('kpiPendingSub').textContent = `מתוך ${scopedShifts.length} משמרות`;
+
+      // רינדור כל 6 הגרפים + היסטוריית הפקדות
+      renderSameDaysChart(selMonth);
+      renderMonthOverMonthChart();
+      renderCashCreditDonut(scopedShifts);
+      renderWeekdayAvgChart(scopedShifts);
+      renderDailyTrendChart(scopedShifts, isYear);
+      renderExpenseCategoriesChart(scopedExpenses);
+      renderDepositsTable();
+    }
+
+    // גרף 1: אותם ימים מול חודש קודם (קו מצטבר כפול)
+    function renderSameDaysChart(selMonth) {
+      const box = document.getElementById('chartSameDays');
+      const badge = document.getElementById('sameDaysDeltaBadge');
+      const sub = document.getElementById('sameDaysSubtitle');
+
+      const curM = Number(selMonth);
+      if (curM <= 1) {
+        badge.textContent = '';
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין חודש קודם בשנה זו להשוואה מול ינואר</div>';
+        return;
+      }
+      const prevMonthStr = String(curM - 1).padStart(2, '0');
+      const curShifts = allShifts.filter(s => s.monthNum === selMonth);
+      const prevShifts = allShifts.filter(s => s.monthNum === prevMonthStr);
+
+      if (!curShifts.length && !prevShifts.length) {
+        badge.textContent = '';
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין נתונים להשוואה בחודש זה</div>';
+        return;
+      }
+
+      const maxDay = Math.max(
+        curShifts.reduce((m, s) => Math.max(m, s.dayNum || 0), 0),
+        1
+      );
+      const curCum = [];
+      const prevCum = [];
+      let cRun = 0, pRun = 0;
+      for (let d = 1; d <= maxDay; d++) {
+        cRun += curShifts.filter(s => s.dayNum === d).reduce((a, b) => a + b.total, 0);
+        pRun += prevShifts.filter(s => s.dayNum === d).reduce((a, b) => a + b.total, 0);
+        curCum.push(cRun);
+        prevCum.push(pRun);
+      }
+
+      const diff = cRun - pRun;
+      const pct = pRun > 0 ? Math.round((diff / pRun) * 100) : 0;
+      sub.textContent = `ימים 1–${maxDay} ב${MONTH_FULL_HEB[curM - 1]} מול ימים 1–${maxDay} ב${MONTH_FULL_HEB[curM - 2]}`;
+      badge.textContent = pRun > 0
+        ? `${diff >= 0 ? '+' : ''}${Math.round(diff).toLocaleString()} ₪ (${diff >= 0 ? '+' : ''}${pct}%)`
+        : `${Math.round(cRun).toLocaleString()} ₪`;
+      badge.className = `text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border ${diff >= 0 ? 'border-emerald-500/40 text-emerald-400' : 'border-rose-500/40 text-rose-400'}`;
+
+      const W = 440, H = 195, padL = 44, padR = 14, padT = 16, padB = 28;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+      const maxVal = Math.max(100, ...curCum, ...prevCum);
+
+      const xFor = i => padL + (maxDay > 1 ? (i / (maxDay - 1)) * plotW : plotW / 2);
+      const yFor = v => padT + plotH - (v / maxVal) * plotH;
+
+      const curPts = curCum.map((v, i) => `${xFor(i).toFixed(1)},${yFor(v).toFixed(1)}`).join(' ');
+      const prevPts = prevCum.map((v, i) => `${xFor(i).toFixed(1)},${yFor(v).toFixed(1)}`).join(' ');
+      const areaPts = `${xFor(0).toFixed(1)},${(padT + plotH).toFixed(1)} ${curPts} ${xFor(maxDay - 1).toFixed(1)},${(padT + plotH).toFixed(1)}`;
+
+      let gridLines = '';
+      for (let g = 0; g <= 3; g++) {
+        const v = (maxVal / 3) * g;
+        const y = yFor(v);
+        gridLines += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="3,3" />`;
+        gridLines += `<text x="${padL - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="currentColor" fill-opacity="0.55">${Math.round(v / 1000)}k</text>`;
+      }
+
+      let xLabels = '';
+      const step = Math.max(1, Math.ceil(maxDay / 6));
+      for (let i = 0; i < maxDay; i += step) {
+        xLabels += `<text x="${xFor(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.6">${i + 1}</text>`;
+      }
+
+      box.innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto text-slate-300" dir="ltr">
+          <defs>
+            <linearGradient id="sameDaysFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f97316" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          ${gridLines}
+          <polygon points="${areaPts}" fill="url(#sameDaysFill)" />
+          <polyline points="${prevPts}" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,4" />
+          <polyline points="${curPts}" fill="none" stroke="#f97316" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="${xFor(maxDay - 1).toFixed(1)}" cy="${yFor(cRun).toFixed(1)}" r="4" fill="#f97316" />
+          <circle cx="${xFor(maxDay - 1).toFixed(1)}" cy="${yFor(pRun).toFixed(1)}" r="3.5" fill="#38bdf8" />
+          ${xLabels}
+        </svg>
+        <div class="flex items-center justify-center gap-4 text-[11px] text-slate-400 mt-1">
+          <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-orange-500 inline-block"></span> ${MONTH_FULL_HEB[curM - 1]} (${Math.round(cRun).toLocaleString()} ₪)</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 border-t-2 border-dashed border-sky-400 inline-block"></span> ${MONTH_FULL_HEB[curM - 2]} (${Math.round(pRun).toLocaleString()} ₪)</span>
+        </div>
+      `;
+    }
+
+    // גרף 2: חודש מול חודש לאורך השנה
+    function renderMonthOverMonthChart() {
+      const box = document.getElementById('chartMonthOverMonth');
+      const months = [];
+      for (let m = 1; m <= 12; m++) {
+        const mStr = String(m).padStart(2, '0');
+        const mShifts = allShifts.filter(s => s.monthNum === mStr);
+        const cash = mShifts.reduce((a, b) => a + b.cash, 0);
+        const credit = mShifts.reduce((a, b) => a + b.credit, 0);
+        const rev = cash + credit;
+        const exp = allExpenses.filter(e => getExpenseMonthNum(e) === mStr).reduce((a, b) => a + (Number(b.amount) || 0), 0);
+        months.push({ label: MONTH_SHORT_HEB[m - 1], cash, credit, rev, exp });
+      }
+
+      const maxVal = Math.max(
+        100,
+        ...months.map(x => momChartMode === 'mix' ? x.rev : Math.max(x.rev, x.exp))
+      );
+
+      if (months.every(x => x.rev === 0 && x.exp === 0)) {
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין עדיין נתונים שנתיים להצגה</div>';
+        return;
+      }
+
+      const W = 460, H = 195, padL = 40, padR = 10, padT = 18, padB = 28;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+      const slotW = plotW / 12;
+
+      let grid = '';
+      for (let g = 0; g <= 3; g++) {
+        const v = (maxVal / 3) * g;
+        const y = padT + plotH - (v / maxVal) * plotH;
+        grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="3,3" />`;
+        grid += `<text x="${padL - 5}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="currentColor" fill-opacity="0.55">${Math.round(v / 1000)}k</text>`;
+      }
+
+      let bars = '';
+      months.forEach((m, idx) => {
+        const xCenter = padL + idx * slotW + slotW / 2;
+        if (momChartMode === 'mix') {
+          const bw = Math.min(18, slotW * 0.56);
+          const cashH = (m.cash / maxVal) * plotH;
+          const credH = (m.credit / maxVal) * plotH;
+          const yCash = padT + plotH - cashH;
+          const yCred = yCash - credH;
+          if (m.cash > 0) bars += `<rect x="${(xCenter - bw / 2).toFixed(1)}" y="${yCash.toFixed(1)}" width="${bw}" height="${cashH.toFixed(1)}" rx="2" fill="#10b981"><title>${m.label} — מזומן: ${Math.round(m.cash).toLocaleString()} ₪</title></rect>`;
+          if (m.credit > 0) bars += `<rect x="${(xCenter - bw / 2).toFixed(1)}" y="${yCred.toFixed(1)}" width="${bw}" height="${credH.toFixed(1)}" rx="2" fill="#38bdf8"><title>${m.label} — אשראי: ${Math.round(m.credit).toLocaleString()} ₪</title></rect>`;
+        } else {
+          const bw = Math.min(10, slotW * 0.34);
+          const revH = (m.rev / maxVal) * plotH;
+          const expH = (m.exp / maxVal) * plotH;
+          if (m.rev > 0) bars += `<rect x="${(xCenter - bw - 1).toFixed(1)}" y="${(padT + plotH - revH).toFixed(1)}" width="${bw}" height="${revH.toFixed(1)}" rx="2" fill="#f97316"><title>${m.label} — הכנסות: ${Math.round(m.rev).toLocaleString()} ₪</title></rect>`;
+          if (m.exp > 0) bars += `<rect x="${(xCenter + 1).toFixed(1)}" y="${(padT + plotH - expH).toFixed(1)}" width="${bw}" height="${expH.toFixed(1)}" rx="2" fill="#f43f5e"><title>${m.label} — הוצאות: ${Math.round(m.exp).toLocaleString()} ₪</title></rect>`;
+        }
+        bars += `<text x="${xCenter.toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.65">${m.label}</text>`;
+      });
+
+      const legend = momChartMode === 'mix'
+        ? '<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span> מזומן</span><span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-sky-400 inline-block"></span> אשראי</span>'
+        : '<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-orange-500 inline-block"></span> הכנסות</span><span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-rose-500 inline-block"></span> הוצאות</span>';
+
+      box.innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto text-slate-300" dir="ltr">${grid}${bars}</svg>
+        <div class="flex items-center justify-center gap-4 text-[11px] text-slate-400 mt-1">${legend}</div>
+      `;
+    }
+
+    // גרף 3: דונאט מזומן מול אשראי
+    function renderCashCreditDonut(shifts) {
+      const box = document.getElementById('chartCashCreditDonut');
+      const cash = shifts.reduce((a, b) => a + b.cash, 0);
+      const credit = shifts.reduce((a, b) => a + b.credit, 0);
+      const total = cash + credit;
+      if (total <= 0) {
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין נתוני הכנסות לטווח זה</div>';
+        return;
+      }
+      const cashPct = Math.round((cash / total) * 100);
+      const credPct = 100 - cashPct;
+      const r = 54, circ = 2 * Math.PI * r;
+      const cashDash = (cash / total) * circ;
+      const credDash = (credit / total) * circ;
+
+      box.innerHTML = `
+        <div class="flex flex-wrap items-center justify-around gap-4 py-2">
+          <svg viewBox="0 0 150 150" class="w-36 h-36 shrink-0">
+            <circle cx="75" cy="75" r="${r}" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="18" />
+            <circle cx="75" cy="75" r="${r}" fill="none" stroke="#10b981" stroke-width="18"
+              stroke-dasharray="${cashDash.toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 75 75)" />
+            <circle cx="75" cy="75" r="${r}" fill="none" stroke="#38bdf8" stroke-width="18"
+              stroke-dasharray="${credDash.toFixed(1)} ${circ.toFixed(1)}" stroke-dashoffset="${(-cashDash).toFixed(1)}" transform="rotate(-90 75 75)" />
+            <text x="75" y="71" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor" fill-opacity="0.65">סה״כ</text>
+            <text x="75" y="88" text-anchor="middle" font-size="13" font-weight="900" fill="currentColor">${Math.round(total).toLocaleString()} ₪</text>
+          </svg>
+          <div class="space-y-3 text-xs flex-1 min-w-[160px]">
+            <div class="bg-[#091322] p-2.5 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span class="font-bold">מזומן</span></div>
+              <div class="text-left tabular-nums">
+                <div class="font-black text-emerald-400">${Math.round(cash).toLocaleString()} ₪</div>
+                <div class="text-[10px] text-slate-400">${cashPct}% מהמחזור</div>
+              </div>
+            </div>
+            <div class="bg-[#091322] p-2.5 rounded-xl border border-sky-500/30 flex items-center justify-between">
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-sky-400 inline-block"></span><span class="font-bold">אשראי</span></div>
+              <div class="text-left tabular-nums">
+                <div class="font-black text-sky-400">${Math.round(credit).toLocaleString()} ₪</div>
+                <div class="text-[10px] text-slate-400">${credPct}% מהמחזור</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // גרף 4: ממוצע הכנסות לפי ימי השבוע (א'-מוצ"ש)
+    function renderWeekdayAvgChart(shifts) {
+      const box = document.getElementById('chartWeekdayAvg');
+      const sums = [0, 0, 0, 0, 0, 0, 0];
+      const counts = [0, 0, 0, 0, 0, 0, 0];
+      shifts.forEach(s => {
+        if (s.weekdayIdx >= 0 && s.weekdayIdx <= 6) {
+          sums[s.weekdayIdx] += s.total;
+          counts[s.weekdayIdx]++;
+        }
+      });
+      const avgs = sums.map((sum, i) => counts[i] ? Math.round(sum / counts[i]) : 0);
+      const maxVal = Math.max(100, ...avgs);
+      if (avgs.every(v => v === 0)) {
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין מספיק ימים לחישוב ממוצע שבועי</div>';
+        return;
+      }
+
+      const W = 420, H = 185, padL = 36, padR = 12, padT = 22, padB = 26;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+      const slotW = plotW / 7;
+      const peakVal = Math.max(...avgs);
+
+      let bars = '';
+      avgs.forEach((v, i) => {
+        const bw = Math.min(28, slotW * 0.56);
+        const x = padL + i * slotW + (slotW - bw) / 2;
+        const h = (v / maxVal) * plotH;
+        const y = padT + plotH - h;
+        const color = (v === peakVal && v > 0) ? '#f97316' : '#38bdf8';
+        bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="5" fill="${color}" />`;
+        if (v > 0) {
+          bars += `<text x="${(x + bw / 2).toFixed(1)}" y="${(y - 5).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">${v.toLocaleString()}</text>`;
+        }
+        bars += `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor" fill-opacity="0.75">${WEEKDAY_HEB[i]}</text>`;
+      });
+
+      box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto text-slate-300" dir="ltr">${bars}</svg>`;
+    }
+
+    // גרף 5: מגמת הכנסות יומית (שטח / קו)
+    function renderDailyTrendChart(shifts, isYear) {
+      const box = document.getElementById('chartDailyTrend');
+      document.getElementById('dailyTrendTitle').textContent = isYear ? 'מגמת הכנסות שנתית (לפי משמרות)' : 'מגמת הכנסות יומית בחודש';
+      if (!shifts.length) {
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין נתוני משמרות להצגה</div>';
+        return;
+      }
+
+      const ordered = [...shifts].sort((a, b) => {
+        const ma = Number(a.monthNum) || 0, mb = Number(b.monthNum) || 0;
+        if (ma !== mb) return ma - mb;
+        return (a.dayNum || 0) - (b.dayNum || 0);
+      });
+
+      const W = 440, H = 185, padL = 40, padR = 14, padT = 18, padB = 26;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+      const maxVal = Math.max(100, ...ordered.map(s => s.total));
+      const n = ordered.length;
+
+      const xFor = i => padL + (n > 1 ? (i / (n - 1)) * plotW : plotW / 2);
+      const yFor = v => padT + plotH - (v / maxVal) * plotH;
+
+      const pts = ordered.map((s, i) => `${xFor(i).toFixed(1)},${yFor(s.total).toFixed(1)}`).join(' ');
+      const areaPts = `${xFor(0).toFixed(1)},${(padT + plotH).toFixed(1)} ${pts} ${xFor(n - 1).toFixed(1)},${(padT + plotH).toFixed(1)}`;
+
+      let grid = '';
+      for (let g = 0; g <= 3; g++) {
+        const v = (maxVal / 3) * g;
+        const y = yFor(v);
+        grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="3,3" />`;
+        grid += `<text x="${padL - 5}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="currentColor" fill-opacity="0.55">${Math.round(v).toLocaleString()}</text>`;
+      }
+
+      let xLabels = '';
+      const step = Math.max(1, Math.ceil(n / 6));
+      for (let i = 0; i < n; i += step) {
+        xLabels += `<text x="${xFor(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.6">${ordered[i].date.slice(0, 5)}</text>`;
+      }
+
+      const peakIdx = ordered.reduce((bestI, s, i) => s.total > ordered[bestI].total ? i : bestI, 0);
+
+      box.innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto text-slate-300" dir="ltr">
+          <defs>
+            <linearGradient id="trendAreaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          ${grid}
+          <polygon points="${areaPts}" fill="url(#trendAreaFill)" />
+          <polyline points="${pts}" fill="none" stroke="#10b981" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="${xFor(peakIdx).toFixed(1)}" cy="${yFor(ordered[peakIdx].total).toFixed(1)}" r="4.5" fill="#f97316" />
+          ${xLabels}
+        </svg>
+      `;
+    }
+
+    // גרף 6: התפלגות הוצאות לפי קטגוריה (עמודות אופקיות)
+    function renderExpenseCategoriesChart(expenses) {
+      const box = document.getElementById('chartExpenseCategories');
+      if (!expenses.length) {
+        box.innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין הוצאות רשומות לטווח שנבחר</div>';
+        return;
+      }
+      const byCat = {};
+      let total = 0;
+      expenses.forEach(e => {
+        const rawCat = (e.category || 'אחר').split(' - ')[0].trim() || 'אחר';
+        const amt = Number(e.amount) || 0;
+        byCat[rawCat] = (byCat[rawCat] || 0) + amt;
+        total += amt;
+      });
+      const sorted = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
+      const colors = ['bg-rose-500', 'bg-orange-500', 'bg-amber-400', 'bg-sky-400', 'bg-emerald-500', 'bg-indigo-400'];
+
+      box.innerHTML = `
+        <div class="space-y-2.5">
+          ${sorted.map(([cat, amt], idx) => {
+            const pct = total > 0 ? Math.round((amt / total) * 100) : 0;
+            const c = colors[idx % colors.length];
+            return `
+              <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                  <span class="font-bold">${cat}</span>
+                  <span class="tabular-nums text-slate-300 font-bold">${Math.round(amt).toLocaleString()} ₪ <span class="text-slate-400 font-normal">(${pct}%)</span></span>
+                </div>
+                <div class="w-full h-2 bg-[#091322] rounded-full overflow-hidden border border-[#26466d]">
+                  <div class="h-full ${c} rounded-full" style="width:${pct}%"></div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderDepositsTable() {
+      const tbody = document.getElementById('depositsTableBody');
+      const badge = document.getElementById('depositsCountBadge');
+      if (badge) badge.textContent = `${allBankDeposits.length} הפקדות`;
+      if (!allBankDeposits.length) {
+        tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-400">אין עדיין הפקדות רשומות</td></tr>';
+        return;
+      }
+      tbody.innerHTML = [...allBankDeposits].reverse().map(d => `
+        <tr>
+          <td class="py-2 font-bold">${d.date}</td>
+          <td class="text-emerald-400 font-black tabular-nums">${Number(d.amount || 0).toLocaleString()} ₪</td>
+          <td class="text-slate-400">${d.note || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderExpensesTable() {
+      const tbody = document.getElementById('expensesTableBody');
+      const total = allExpenses.reduce((a, b) => a + (Number(b.amount) || 0), 0);
+      const badge = document.getElementById('expensesTotalBadge');
+      if (badge) badge.textContent = `סה״כ: ${Math.round(total).toLocaleString()} ₪`;
+      if (!allExpenses.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין הוצאות רשומות</td></tr>';
+        return;
+      }
+      tbody.innerHTML = [...allExpenses].reverse().map(e => `
+        <tr>
+          <td class="py-2 font-bold">${e.date}</td>
+          <td class="text-slate-400">${e.type || '-'}</td>
+          <td>${e.category || '-'}</td>
+          <td class="text-slate-400">${e.paymentMethod || '-'}</td>
+          <td class="text-rose-400 font-black tabular-nums">${Number(e.amount || 0).toLocaleString()} ₪</td>
+        </tr>
+      `).join('');
+    }
+
+    // ========================
+    // תורים
+    // ========================
     function renderQueuesTab() {
-      const sonyQ = allQueues.filter(q => q.category==='סוני'), snookerQ = allQueues.filter(q => q.category==='סנוקר');
-      const comp = allQueues.filter(q => q.completed && q.waitMinutes > 0);
-      const avg = comp.length ? Math.round(comp.reduce((a,b) => a + Number(b.waitMinutes||0), 0) / comp.length) : 0;
+      const sonyQ = allQueues.filter(q => q.category === 'סוני');
+      const snookerQ = allQueues.filter(q => q.category === 'סנוקר');
+      const completed = allQueues.filter(q => q.completed && q.waitMinutes > 0);
+      const avg = completed.length ? Math.round(completed.reduce((a, b) => a + Number(b.waitMinutes || 0), 0) / completed.length) : 0;
+
       document.getElementById('qSonyTotal').textContent = sonyQ.length;
       document.getElementById('qSnookerTotal').textContent = snookerQ.length;
       document.getElementById('qAvgWait').textContent = avg + " דק׳";
+
       const byDay = {};
       allQueues.forEach(q => {
-        const k = `${q.date||''} (${q.dayOfWeek||''})`;
-        if (!byDay[k]) byDay[k] = { sony:0, snooker:0, waits:[] };
-        if (q.category==='סנוקר') byDay[k].snooker++; else byDay[k].sony++;
-        if (q.completed && q.waitMinutes > 0) byDay[k].waits.push(Number(q.waitMinutes));
+        const key = `${q.date || ''} (${q.dayOfWeek || ''})`;
+        if (!byDay[key]) byDay[key] = { sony: 0, snooker: 0, waits: [] };
+        if (q.category === 'סנוקר') byDay[key].snooker++;
+        else byDay[key].sony++;
+        if (q.completed && q.waitMinutes > 0) byDay[key].waits.push(Number(q.waitMinutes));
       });
+
+      const dBody = document.getElementById('qDailyTableBody');
       const keys = Object.keys(byDay);
-      document.getElementById('qDailyTableBody').innerHTML = !keys.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>' : keys.map(k => {
-        const d = byDay[k], da = d.waits.length ? Math.round(d.waits.reduce((a,b)=>a+b,0)/d.waits.length) : 0, dm = d.waits.length ? Math.max(...d.waits) : 0;
-        return `<tr><td class="py-2 font-bold">${k}</td><td class="text-sky-400 font-bold">${d.sony}</td><td class="text-emerald-400 font-bold">${d.snooker}</td><td class="text-orange-400 font-bold">${da} דק׳</td><td class="text-rose-400 font-bold">${dm} דק׳</td></tr>`;
-      }).join('');
-      document.getElementById('qAllTableBody').innerHTML = allQueues.map(q => `<tr><td class="py-2 font-bold">${q.date}</td><td class="font-bold">${q.category}</td><td>${q.customerName}</td><td>${q.startTime}</td><td>${q.enteredTime||'-'}</td><td class="text-orange-400">${q.completed?q.waitMinutes+" דק׳":'ממתין'}</td><td>${q.completed?'✓ נכנס':'ממתין'}</td></tr>`).join('');
+      if (!keys.length) {
+        dBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>';
+      } else {
+        dBody.innerHTML = keys.map(k => {
+          const d = byDay[k];
+          const dAvg = d.waits.length ? Math.round(d.waits.reduce((a, b) => a + b, 0) / d.waits.length) : 0;
+          const dMax = d.waits.length ? Math.max(...d.waits) : 0;
+          return `<tr>
+            <td class="py-2 font-bold text-slate-200">${k}</td>
+            <td class="text-sky-400 font-bold">${d.sony}</td>
+            <td class="text-emerald-400 font-bold">${d.snooker}</td>
+            <td class="text-orange-400 font-bold">${dAvg} דק׳</td>
+            <td class="text-rose-400 font-bold">${dMax} דק׳</td>
+          </tr>`;
+        }).join('');
+      }
+
+      document.getElementById('qAllTableBody').innerHTML = allQueues.map(q => `
+        <tr>
+          <td class="py-2 font-bold">${q.date}</td>
+          <td class="${q.category === 'סנוקר' ? 'text-emerald-400' : 'text-sky-400'} font-bold">${q.category}</td>
+          <td>${q.customerName}</td>
+          <td>${q.startTime}</td>
+          <td>${q.enteredTime || '-'}</td>
+          <td class="text-orange-400 font-bold">${q.completed ? q.waitMinutes + " דק׳" : 'ממתין'}</td>
+          <td>${q.completed ? '✓ נכנס' : 'בתור'}</td>
+        </tr>
+      `).join('');
     }
 
+    // ========================
+    // מלגות וניהול מאגר שמות
+    // ========================
     function renderDirectoryList() {
       const box = document.getElementById('schDirectoryList');
-      if (!schDirectory.length) { box.innerHTML = '<div class="text-xs text-slate-400">המאגר ריק כרגע — לחץ על "נהל מאגר שמות".</div>'; return; }
-      box.innerHTML = schDirectory.map((d, i) => `<label class="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] cursor-pointer text-xs"><div class="flex items-center gap-2"><input type="checkbox" class="dir-chk w-4 h-4 accent-orange-600" data-idx="${i}" ${d.active?'checked':''} /><div><div class="font-bold text-white">${d.fullName}</div><div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber||'-'}</div></div></div><span class="text-emerald-400 font-bold">${Number(d.defaultAmount||2500).toLocaleString()} ₪</span></label>`).join('');
+      if (!schDirectory.length) {
+        box.innerHTML = '<div class="text-xs text-slate-400">המאגר ריק כרגע — לחץ על "ניהול מאגר שמות" כדי להוסיף.</div>';
+        return;
+      }
+      box.innerHTML = schDirectory.map((d, idx) => `
+        <label class="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] cursor-pointer text-xs">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" class="dir-chk w-4 h-4 accent-orange-600" data-idx="${idx}" ${d.active ? 'checked' : ''} />
+            <div>
+              <div class="font-bold text-white">${d.fullName}</div>
+              <div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber || '-'}</div>
+            </div>
+          </div>
+          <span class="text-emerald-400 font-bold">${Number(d.defaultAmount || 2500).toLocaleString()} ₪</span>
+        </label>
+      `).join('');
     }
-    function openDirManageModal() { renderDirManageRows(); document.getElementById('dirManageModal').classList.remove('hidden'); }
-    function closeDirManageModal() { document.getElementById('dirManageModal').classList.add('hidden'); }
-    function renderDirManageRows() {
-      const box = document.getElementById('dirManageRows'); if (!box) return;
-      box.innerHTML = !schDirectory.length ? '<div class="text-center text-slate-400 py-4">אין שמות במאגר</div>' : schDirectory.map((d, i) => `<div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#091322] border border-[#26466d]"><div><div class="font-bold text-white">${d.fullName}</div><div class="text-[11px] text-slate-400">ת.ז. ${d.idNumber||'-'} | ${Number(d.defaultAmount||2500).toLocaleString()} ₪</div></div><button type="button" onclick="deletePersonFromDirectory(${i})" class="px-2.5 py-1 rounded-lg bg-rose-600/20 text-rose-300 font-bold text-[11px]">מחק ✕</button></div>`).join('');
+
+    function openDirManageModal() {
+      renderDirManageList();
+      document.getElementById('dirManageModal').classList.remove('hidden');
     }
-    async function addPersonToDirectory() {
-      const fullName = document.getElementById('dirNewName').value.trim(); if (!fullName) return showOwnerToast('הזן שם מלא');
-      const idNumber = document.getElementById('dirNewId').value.trim(), defaultAmount = parseFloat(document.getElementById('dirNewAmount').value)||2500;
-      document.getElementById('dirNewName').value = ''; document.getElementById('dirNewId').value = '';
-      await sendToGas({ action:'addToDirectory', fullName, idNumber, defaultAmount, defaultVerifier:'מנחם רובינשטיין' });
-      showOwnerToast('נוסף למאגר הקבוע ✓'); refreshOwnerData();
+    function closeDirManageModal() {
+      document.getElementById('dirManageModal').classList.add('hidden');
     }
-    async function deletePersonFromDirectory(idx) {
-      const d = schDirectory[idx]; if (!d) return;
-      schDirectory.splice(idx, 1); renderDirectoryList(); renderDirManageRows();
-      if (d.rowNumber) await sendToGas({ action:'deleteFromDirectory', rowNumber: d.rowNumber });
-      showOwnerToast('הוסר מהמאגר ✓'); refreshOwnerData();
+    function renderDirManageList() {
+      const listEl = document.getElementById('dirManageList');
+      if (!listEl) return;
+      if (!schDirectory.length) {
+        listEl.innerHTML = '<div class="text-center text-slate-400 py-4">אין שמות במאגר הקבוע</div>';
+        return;
+      }
+      listEl.innerHTML = schDirectory.map((d, idx) => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#091322] border border-[#26466d]">
+          <div>
+            <div class="font-bold text-white">${d.fullName}</div>
+            <div class="text-[11px] text-slate-400">ת.ז. ${d.idNumber || '-'} | ${Number(d.defaultAmount || 2500).toLocaleString()} ₪</div>
+          </div>
+          <button type="button" onclick="deleteDirectoryPerson(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-2.5 py-1 rounded-lg bg-rose-500/10">מחק ✕</button>
+        </div>
+      `).join('');
     }
-    function toggleAllDir(val) { document.querySelectorAll('.dir-chk').forEach(cb => cb.checked = val); }
+    async function addDirectoryPerson() {
+      const nameEl = document.getElementById('dirNewName');
+      const tzEl = document.getElementById('dirNewTz');
+      const amtEl = document.getElementById('dirNewAmt');
+      const fullName = nameEl.value.trim();
+      const idNumber = tzEl.value.trim();
+      const defaultAmount = Number(amtEl.value) || 2500;
+      if (!fullName) return showOwnerToast('הזן שם מלא');
+      await sendToGas({ action: 'addToDirectory', fullName, idNumber, defaultAmount, defaultVerifier: 'מנחם רובינשטיין' });
+      nameEl.value = '';
+      tzEl.value = '';
+      showOwnerToast('נוסף למאגר הקבוע ✓');
+      await refreshOwnerData();
+    }
+    async function deleteDirectoryPerson(idx) {
+      const item = schDirectory[idx];
+      if (!item) return;
+      schDirectory.splice(idx, 1);
+      renderDirectoryList();
+      renderDirManageList();
+      await sendToGas({ action: 'deleteFromDirectory', rowNumber: item.rowNumber, idNumber: item.idNumber, fullName: item.fullName });
+      showOwnerToast('הוסר מהמאגר הקבוע ✓');
+      refreshOwnerData();
+    }
+
+    function toggleAllDir(val) {
+      document.querySelectorAll('.dir-chk').forEach(cb => cb.checked = val);
+    }
+
     async function addSelectedFromDir() {
       const month = document.getElementById('schMonthSelect').value;
       const checked = [...document.querySelectorAll('.dir-chk:checked')];
-      if (!checked.length) return showOwnerToast('סמן לפחות אברך אחד');
-      const items = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({ fullName:d.fullName, idNumber:d.idNumber, phoneOrNote:d.phoneOrNote, amount:d.defaultAmount, verifier:d.defaultVerifier }));
-      await sendToGas({ action:'addMonthFromDirectory', month, items });
-      showOwnerToast(`נוספו ${items.length} מלגאים ✓`); refreshOwnerData();
+      if (!checked.length) return showOwnerToast('סמן לפחות אברך אחד מהמאגר');
+      const itemsToSave = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({
+        fullName: d.fullName, idNumber: d.idNumber, phoneOrNote: d.phoneOrNote, amount: d.defaultAmount, verifier: d.defaultVerifier
+      }));
+      await sendToGas({ action: 'addMonthFromDirectory', month, items: itemsToSave });
+      showOwnerToast(`נוספו ${itemsToSave.length} מלגאים לחודש ונשמרו בשיטס ✓`);
+      refreshOwnerData();
     }
-    async function sendManagerTask(alsoWa) {
-      const title = document.getElementById('mgrTaskTitle').value.trim(), details = document.getElementById('mgrTaskDetails').value.trim();
-      if (!title) return;
-      managerTasks.unshift({ id:'T'+Date.now(), createdAt:new Date().toLocaleString('he-IL'), title, details, status:'פתוח' });
-      document.getElementById('mgrTaskTitle').value = ''; document.getElementById('mgrTaskDetails').value = ''; renderManagerTasks();
-      if (alsoWa) {
-        let p = (document.getElementById('managerPhoneInput')?.value || '972503265609').replace(/[^0-9]/g,'');
-        if (p.startsWith('0')) p = '972' + p.slice(1);
-        window.open(`https://wa.me/${p}?text=${encodeURIComponent(`📌 *Friends — משימה למנהל*\n• נושא: ${title}\n• פירוט: ${details||'-'}`)}`, '_blank');
+
+    async function addScholarshipRow() {
+      const month = document.getElementById('schMonthSelect').value;
+      const nameInput = document.getElementById('schName');
+      const tzInput = document.getElementById('schId');
+      const amtInput = document.getElementById('schAmount');
+
+      const name = nameInput.value.trim();
+      const tz = tzInput.value.trim();
+      const amount = parseFloat(amtInput.value) || 2500;
+      if (!name) return;
+
+      nameInput.value = '';
+      tzInput.value = '';
+      await sendToGas({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount });
+      showOwnerToast('המלגאי נוסף ונשמר בשיטס ✓');
+      refreshOwnerData();
+    }
+
+    function toggleVerifier(id, field) {
+      const item = scholarships.find(s => s.id === id);
+      if (item) {
+        item[field] = !item[field];
+        renderScholarships();
+        if (item.rowNumber) {
+          const isChecked = item.verifiedMenachem || item.verifiedGura;
+          const verifier = item.verifiedMenachem ? 'מנחם רובינשטיין' : (item.verifiedGura ? 'יהודה גורא' : '');
+          sendToGas({ action: 'toggleScholarshipVerified', rowNumber: item.rowNumber, received: isChecked, verifier }).catch(()=>{});
+        }
       }
-      await sendToGas({ action:'addManagerTask', title, details }); showOwnerToast('המשימה נשלחה ✓');
     }
-    async function closeOwnerTask(id) { const t = managerTasks.find(x=>x.id===id); if (t) t.status='טופל'; renderManagerTasks(); await sendToGas({ action:'completeManagerTask', id, managerNote:'נסגר ע"י הבעלים' }); showOwnerToast('המשימה נסגרה ✓'); }
+
+    function deleteScholarship(id) {
+      const item = scholarships.find(s => s.id === id);
+      _pendingDeleteScholarshipId = id;
+      const msgEl = document.getElementById('confirmDeleteMsg');
+      if (msgEl) {
+        msgEl.textContent = item
+          ? `האם למחוק את ${item.name} (${item.amount.toLocaleString()} ₪) מרשימת המלגות של החודש?`
+          : 'האם למחוק את המלגאי מהרשימה החודשית?';
+      }
+      document.getElementById('confirmDeleteModal').classList.remove('hidden');
+    }
+
+    function renderScholarships() {
+      const month = document.getElementById('schMonthSelect').value;
+      const list = scholarships.filter(s => s.month === month);
+
+      const menachemList = list.filter(s => s.verifiedMenachem);
+      const guraList = list.filter(s => s.verifiedGura);
+      const menachemSum = menachemList.reduce((a, b) => a + b.amount, 0);
+      const guraSum = guraList.reduce((a, b) => a + b.amount, 0);
+      const totalSum = list.reduce((a, b) => a + b.amount, 0);
+
+      document.getElementById('verifierSummary').innerHTML = `
+        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]">
+          <div class="text-slate-400">סה״כ מלגות לחודש (${list.length}):</div>
+          <div class="font-black text-white text-base mt-0.5">${totalSum.toLocaleString()} ₪</div>
+        </div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40">
+          <div class="text-slate-400">מנחם רובינשטיין וידא (${menachemList.length}):</div>
+          <div class="font-black text-emerald-400 text-base mt-0.5">${menachemSum.toLocaleString()} ₪</div>
+        </div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40">
+          <div class="text-slate-400">יהודה צבי גורא וידא (${guraList.length}):</div>
+          <div class="font-black text-sky-400 text-base mt-0.5">${guraSum.toLocaleString()} ₪</div>
+        </div>
+      `;
+
+      const tbody = document.getElementById('schTableBody');
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400">טרם הוזנו מלגות לחודש זה</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map((s, idx) => `
+        <tr>
+          <td class="py-2">${idx + 1}</td>
+          <td class="font-bold">${s.name}</td>
+          <td>${s.tz}</td>
+          <td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td>
+          <td class="text-center">
+            <input type="checkbox" ${s.verifiedMenachem ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedMenachem')" class="w-4 h-4 accent-orange-600 cursor-pointer" />
+          </td>
+          <td class="text-center">
+            <input type="checkbox" ${s.verifiedGura ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedGura')" class="w-4 h-4 accent-orange-600 cursor-pointer" />
+          </td>
+          <td class="text-center">
+            <button type="button" onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // ========================
+    // הפקדות, הוצאות, משימות והגדרות
+    // ========================
+    async function saveBankDeposit() {
+      const dateInput = document.getElementById('bankDepositDate');
+      const amtInput = document.getElementById('bankDepositAmount');
+      const noteInput = document.getElementById('bankDepositNote');
+      const date = dateInput.value;
+      const amount = parseFloat(amtInput.value) || 0;
+      const note = (noteInput.value || '').trim();
+      if (!amount) return showOwnerToast('הזן סכום הפקדה');
+
+      const year = document.getElementById('yearSelect').value;
+      await sendToGas({ action: 'saveBankDeposit', year, date, amount, note });
+      allBankDeposits.push({ date: parseDateInfo(date, '').display, amount, note });
+      amtInput.value = '';
+      noteInput.value = '';
+      dateInput.valueAsDate = new Date();
+      renderAnalyticsTab();
+      showOwnerToast('הפקדת הבנק נרשמה והמד עודכן ✓');
+    }
+
+    async function saveExpense() {
+      const dateInput = document.getElementById('expDate');
+      const typeInput = document.getElementById('expType');
+      const catInput = document.getElementById('expCat');
+      const payInput = document.getElementById('expPaymentMethod');
+      const amtInput = document.getElementById('expAmount');
+      const noteInput = document.getElementById('expNote');
+
+      const date = dateInput.value;
+      const type = typeInput.value;
+      const category = catInput.value;
+      const paymentMethod = payInput.value;
+      const amount = parseFloat(amtInput.value) || 0;
+      const note = noteInput.value.trim();
+      if (!amount) return showOwnerToast('הזן סכום הוצאה');
+
+      const info = parseDateInfo(date, '');
+      const monthName = info.month ? MONTH_FULL_HEB[Number(info.month) - 1] : '';
+      const year = document.getElementById('yearSelect').value;
+
+      await sendToGas({ action: 'saveExpense', year, date, month: monthName, type, category, paymentMethod, amount, note });
+      allExpenses.push({ date: info.display, month: monthName, type, category: category + (note ? ' - ' + note : ''), amount, paymentMethod });
+      amtInput.value = '';
+      noteInput.value = '';
+      dateInput.valueAsDate = new Date();
+      renderExpensesTable();
+      renderAnalyticsTab();
+      showOwnerToast('ההוצאה נשמרה והטבלה עודכנה ✓');
+    }
+
+    async function sendManagerTask(alsoWhatsApp) {
+      const title = document.getElementById('mgrTaskTitle').value.trim();
+      const details = document.getElementById('mgrTaskDetails').value.trim();
+      if (!title) return;
+      managerTasks.unshift({ id: 'T' + Date.now(), createdAt: new Date().toLocaleString('he-IL'), title, details, status: 'פתוח' });
+      document.getElementById('mgrTaskTitle').value = '';
+      document.getElementById('mgrTaskDetails').value = '';
+      renderManagerTasks();
+      if (alsoWhatsApp) {
+        const msg = `📌 *Friends — משימה למנהל מבעל המקום*\n• נושא: ${title}\n• פירוט: ${details || '-'}\nיש לסמן 'טופל' באפליקציה בסיום.`;
+        let mPhone = (document.getElementById('managerPhoneInput')?.value || safeGet('friends_manager_phone', '972503265609')).replace(/[^0-9]/g, '');
+        if (mPhone.startsWith('0')) mPhone = '972' + mPhone.slice(1);
+        window.open(`https://wa.me/${mPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+      }
+      await sendToGas({ action: 'addManagerTask', title, details });
+      showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
+    }
+
+    async function closeOwnerTask(id) {
+      const t = managerTasks.find(x => x.id === id);
+      if (t) t.status = 'טופל';
+      renderManagerTasks();
+      await sendToGas({ action: 'completeManagerTask', id, managerNote: 'נסגר ע"י הבעלים' });
+      showOwnerToast('המשימה נסגרה והתזכורת נעצרה ✓');
+    }
+
     function renderManagerTasks() {
       const box = document.getElementById('mgrTasksList');
-      box.innerHTML = !managerTasks.length ? '<div class="text-slate-400">אין משימות פתוחות.</div>' : managerTasks.map(t => `<div class="p-2.5 rounded-xl bg-[#091322] border ${t.status==='טופל'?'border-emerald-500/40':'border-orange-500/50'} flex justify-between items-center gap-2"><div><strong class="text-white">${t.title}</strong> <span class="text-slate-400">${t.details||''}</span></div>${t.status!=='טופל'?`<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">טופל ✓</button>`:'<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}</div>`).join('');
+      if (!managerTasks.length) {
+        box.innerHTML = '<div class="text-slate-400">אין משימות פתוחות למנהל.</div>';
+        return;
+      }
+      box.innerHTML = managerTasks.map(t => `
+        <div class="p-2.5 rounded-xl bg-[#091322] border ${t.status === 'טופל' ? 'border-emerald-500/40' : 'border-orange-500/50'} flex flex-wrap justify-between items-center gap-2">
+          <div>
+            <span class="font-bold ${t.status === 'טופל' ? 'text-emerald-400' : 'text-orange-400'}">[${t.status}]</span>
+            <strong class="text-white mr-1">${t.title}</strong>
+            <span class="text-slate-400 mr-1">${t.details || ''}</span>
+            <span class="text-[10px] text-slate-500 mr-2">${t.createdAt || ''}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            ${t.status !== 'טופל' ? `<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">סגור משימה (טופל ✓)</button>` : '<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}
+          </div>
+        </div>
+      `).join('');
     }
-    async function setupDailyTrigger() { await sendToGas({ action:'setupDailyTrigger' }); showOwnerToast('תזכורת יומית הופעלה ✓'); }
+
+    async function setupDailyTrigger() {
+      await sendToGas({ action: 'setupDailyTrigger' });
+      showOwnerToast('תזכורת יומית למנהל הופעלה ✓');
+    }
+
     async function saveNotifySettings() {
-      const u = document.getElementById('gasUrlOwnerInput').value.trim(); if (u) { SCRIPT_URL = u; safeSet('friends_gas_url', u); }
+      const newGasUrl = document.getElementById('gasUrlOwnerInput').value.trim();
+      if (newGasUrl) { SCRIPT_URL = newGasUrl; safeSet('friends_gas_url', newGasUrl); }
       const chatWebhookUrl = document.getElementById('chatWebhookInput').value.trim();
       const managerEmail = document.getElementById('managerEmailInput').value.trim();
-      let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g,'');
+      const ownerEmails = document.getElementById('ownerEmailsInput').value.trim();
+      const emailNotify = document.getElementById('emailNotifyToggle').checked;
+      let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g, '');
       if (managerPhone.startsWith('0')) managerPhone = '972' + managerPhone.slice(1);
-      const ownerEmails = document.getElementById('ownerEmailsInput').value.trim() || 'robbin8541@gmail.com';
-      const emailNotify = document.getElementById('ownerEmailNotifyChk').checked;
-      safeSet('friends_chat_webhook', chatWebhookUrl); safeSet('friends_manager_email', managerEmail); safeSet('friends_manager_phone', managerPhone); safeSet('friends_owner_emails', ownerEmails); safeSet('friends_owner_email_notify', String(emailNotify));
-      await sendToGas({ action:'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, ownerEmails, emailNotify });
-      showOwnerToast('ההגדרות והמיילים נשמרו ✓');
+      safeSet('friends_chat_webhook', chatWebhookUrl);
+      safeSet('friends_manager_email', managerEmail);
+      safeSet('friends_manager_phone', managerPhone);
+      safeSet('friends_owner_emails', ownerEmails);
+      await sendToGas({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, ownerEmails, emailNotify });
+      showOwnerToast('הגדרות המייל והמנהל נשמרו ✓');
     }
-    async function saveBankDeposit() {
-      const d = document.getElementById('bankDepositDate'), a = document.getElementById('bankDepositAmount'), amount = parseFloat(a.value)||0;
-      if (!amount) return;
-      allDeposits.push({ date: d.value, monthNum: d.value.slice(5,7), amount, note: '' });
-      renderIncomeTable();
-      await sendToGas({ action:'saveBankDeposit', date: d.value, amount });
-      a.value = ''; d.valueAsDate = new Date(); showOwnerToast('הפקדת הבנק נרשמה ✓');
-    }
-    async function saveExpense() {
-      const d = document.getElementById('expDate'), c = document.getElementById('expCat'), a = document.getElementById('expAmount'), n = document.getElementById('expNote');
-      const amount = parseFloat(a.value)||0; if (!amount) return;
-      allExpenses.push({ date: d.value, monthNum: d.value.slice(5,7), category: c.value + (n.value.trim() ? ' - ' + n.value.trim() : ''), type: 'הוצאה', amount });
-      renderExpensesTable(); renderIncomeTable();
-      await sendToGas({ action:'saveExpense', date: d.value, category: c.value, amount, note: n.value.trim() });
-      a.value = ''; n.value = ''; d.valueAsDate = new Date(); showOwnerToast('ההוצאה נשמרה ✓');
-    }
-    async function addScholarshipRow() {
-      const month = document.getElementById('schMonthSelect').value, n = document.getElementById('schName'), t = document.getElementById('schId'), a = document.getElementById('schAmount');
-      if (!n.value.trim()) return;
-      await sendToGas({ action:'addScholarship', month, fullName:n.value.trim(), idNumber:t.value.trim(), amount:parseFloat(a.value)||2500 });
-      n.value = ''; t.value = ''; showOwnerToast('המלגאי נוסף ✓'); refreshOwnerData();
-    }
-    function toggleVerifier(id, field) {
-      const item = scholarships.find(s => s.id === id); if (!item) return;
-      item[field] = !item[field]; renderScholarships();
-      if (item.rowNumber) sendToGas({ action:'toggleScholarshipVerified', rowNumber:item.rowNumber, received:item.verifiedMenachem||item.verifiedGura, verifier:item.verifiedMenachem?'מנחם רובינשטיין':(item.verifiedGura?'יהודה גורא':'') }).catch(()=>{});
-    }
-    let _pendingDeleteScholarshipId = null;
-    function deleteScholarship(id) { _pendingDeleteScholarshipId = id; const item = scholarships.find(s=>s.id===id); document.getElementById('confirmDeleteMsg').textContent = item ? `למחוק את ${item.name}?` : 'למחוק?'; document.getElementById('confirmDeleteModal').classList.remove('hidden'); }
-    function closeConfirmDeleteModal() { _pendingDeleteScholarshipId = null; document.getElementById('confirmDeleteModal').classList.add('hidden'); }
-    async function confirmDeleteScholarshipNow() {
-      const id = _pendingDeleteScholarshipId; closeConfirmDeleteModal(); if (id === null) return;
-      const item = scholarships.find(s => s.id === id); scholarships = scholarships.filter(s => s.id !== id); renderScholarships();
-      if (item && item.rowNumber) await sendToGas({ action:'deleteScholarship', rowNumber:item.rowNumber });
-      showOwnerToast('המלגאי הוסר ✓'); refreshOwnerData();
-    }
-    function renderScholarships() {
-      const month = document.getElementById('schMonthSelect').value, list = scholarships.filter(s => s.month === month);
-      const mList = list.filter(s=>s.verifiedMenachem), gList = list.filter(s=>s.verifiedGura);
-      document.getElementById('verifierSummary').innerHTML = `
-        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]"><div class="text-slate-400">סה״כ (${list.length}):</div><div class="font-black text-white">${list.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</div></div>
-        <div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40"><div class="text-slate-400">מנחם (${mList.length}):</div><div class="font-black text-emerald-400">${mList.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</div></div>
-        <div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40"><div class="text-slate-400">יהודה (${gList.length}):</div><div class="font-black text-sky-400">${gList.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</div></div>`;
-      document.getElementById('schTableBody').innerHTML = !list.length ? '<tr><td colspan="7" class="py-4 text-center text-slate-400">טרם הוזנו מלגות לחודש זה</td></tr>' : list.map((s,i) => `<tr><td class="py-2">${i+1}</td><td class="font-bold">${s.name}</td><td>${s.tz}</td><td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td><td class="text-center"><input type="checkbox" ${s.verifiedMenachem?'checked':''} onchange="toggleVerifier(${s.id},'verifiedMenachem')" class="w-4 h-4 accent-orange-600" /></td><td class="text-center"><input type="checkbox" ${s.verifiedGura?'checked':''} onchange="toggleVerifier(${s.id},'verifiedGura')" class="w-4 h-4 accent-orange-600" /></td><td class="text-center"><button type="button" onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button></td></tr>`).join('');
-    }
-    function formatIsraeliDate(d) { return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
-    function toHebrewGematria(num) {
-      let n = parseInt(num,10); if (!n||n<=0) return String(num); if (n>=1000) n%=1000;
-      const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"], t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"], o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
-      let out = h[Math.floor(n/100)], r = n%100; out += r===15?"טו":(r===16?"טז":t[Math.floor(r/10)]+o[r%10]);
-      return out.length===1 ? out+"׳" : out.slice(0,-1)+"״"+out.slice(-1);
-    }
-    function formatHebrewDate(d) {
-      try { const p = new Intl.DateTimeFormat("he-IL-u-ca-hebrew",{day:"numeric",month:"long",year:"numeric"}).formatToParts(d); const m = p.find(x=>x.type==="month")?.value||""; return `${toHebrewGematria(p.find(x=>x.type==="day")?.value||"")} ${m.startsWith("ב")?m:"ב"+m} ${toHebrewGematria(p.find(x=>x.type==="year")?.value||"")}`; } catch(e){return "";}
-    }
-    function renderAppendixSheet(iso) {
-      const month = document.getElementById('schMonthSelect').value, list = scholarships.filter(s=>s.month===month), total = list.reduce((a,b)=>a+b.amount,0), now = new Date(), cd = iso ? new Date(iso+'T12:00:00') : now;
-      const ap = formatIsraeliDate(isNaN(cd)?now:cd), heb = formatHebrewDate(isNaN(cd)?now:cd), pr = formatIsraeliDate(now), tm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      document.getElementById('protocolPrintSheet').innerHTML = `<div dir="rtl" style="font-family:Heebo,Arial,sans-serif;color:#0f172a;line-height:1.55;background:#fff;">
-        <div style="display:flex;justify-content:space-between;font-size:12px;border-bottom:1.5px solid #0f172a;padding-bottom:8px;margin-bottom:14px;"><div><strong>בס״ד</strong><div>סימוכין: SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B</div></div><div style="text-align:left;"><div><strong>תאריך אישור וחתימה:</strong> ${ap}</div><div>${heb}</div></div></div>
-        <h1 style="text-align:center;font-size:19px;font-weight:900;margin:6px 0;">נספח ב׳: טופס אישור חודשי של מורשי חתימה להעברת מלגות</h1>
-        <div style="text-align:center;font-weight:700;font-size:13px;margin-bottom:14px;">עמותת שערי עתיד (ע״ר) | מס׳ עמותה: 580811925</div>
-        <table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;border:1px solid #94a3b8;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px;border:1px solid #cbd5e1;">מס׳</th><th style="padding:6px;border:1px solid #cbd5e1;text-align:right;">שם מלא</th><th style="padding:6px;border:1px solid #cbd5e1;">ת.ז.</th><th style="padding:6px;border:1px solid #cbd5e1;">עמידה בתנאים (12.5 ש״ש)</th><th style="padding:6px;border:1px solid #cbd5e1;">סכום</th></tr></thead><tbody>${list.map((s,i)=>`<tr><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">${i+1}</td><td style="padding:6px;border:1px solid #cbd5e1;">${s.name}</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">${s.tz}</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">עומד בתנאי הזכאות (V)</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;font-weight:700;">${s.amount.toLocaleString()} ₪</td></tr>`).join('')}<tr style="background:#f1f5f9;font-weight:800;"><td colspan="4" style="padding:6px;border:1px solid #94a3b8;text-align:left;">סה״כ לתשלום:</td><td style="padding:6px;border:1px solid #94a3b8;text-align:center;">${total.toLocaleString()} ₪</td></tr></tbody></table>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px;padding-top:12px;border-top:1px solid #cbd5e1;gap:12px;">
-          <div style="text-align:center;flex:1;"><div style="font-weight:700;font-size:13px;">יהודה צבי גורא (ת.ז. 214085623)</div><img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px;margin:0 auto;mix-blend-mode:multiply;" /><div style="font-size:11px;border-top:1px solid #cbd5e1;margin-top:4px;">תאריך חתימה: ${ap}</div></div>
-          <div style="text-align:center;"><img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:70px;filter:grayscale(100%) contrast(2.4) brightness(1.45);mix-blend-mode:multiply;" /></div>
-          <div style="text-align:center;flex:1;"><div style="font-weight:700;font-size:13px;">מנחם רובינשטיין (ת.ז. 324982743)</div><img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px;margin:0 auto;mix-blend-mode:multiply;" /><div style="font-size:11px;border-top:1px solid #cbd5e1;margin-top:4px;">תאריך חתימה: ${ap}</div></div>
-        </div>
-        <div style="margin-top:14px;padding-top:6px;border-top:1px dashed #cbd5e1;display:flex;justify-content:space-between;font-size:11px;color:#64748b;"><span>עמותת שערי עתיד (ע״ר 580811925)</span><span>תאריך הדפסה/הפקה: ${pr} בשעה ${tm}</span></div>
-      </div>`;
-    }
-    function openAppendixModal() { const t = new Date().toISOString().split('T')[0]; document.getElementById('protocolDateInput').value = t; renderAppendixSheet(t); document.getElementById('protocolModal').classList.remove('hidden'); }
-    function closeAppendixModal() { document.getElementById('protocolModal').classList.add('hidden'); }
-    async function addNewGuide() { const t = document.getElementById('newGuideTitle'), s = document.getElementById('newGuideSteps'); if (!t.value.trim()||!s.value.trim()) return; await sendToGas({ action:'saveGuide', title:t.value.trim(), steps:s.value.trim() }); t.value=''; s.value=''; showOwnerToast('המדריך פורסם ✓'); }
 
-    function setDataLoading(on, label) {
-      const bar = document.getElementById('topLoadingBar'), pill = document.getElementById('dataLoaderPill'), txt = document.getElementById('dataLoaderText');
-      if (txt && label) txt.textContent = label;
-      if (bar) bar.classList.toggle('active', !!on);
-      if (pill) pill.classList.toggle('active', !!on);
-      document.querySelector('button[onclick="refreshOwnerData()"] svg')?.classList.toggle('icon-spinning', !!on);
+    async function addNewGuide() {
+      const titleInput = document.getElementById('newGuideTitle');
+      const stepsInput = document.getElementById('newGuideSteps');
+      const title = titleInput.value.trim();
+      const steps = stepsInput.value.trim();
+      if (!title || !steps) return;
+      await sendToGas({ action: 'saveGuide', title, steps });
+      titleInput.value = '';
+      stepsInput.value = '';
+      showOwnerToast('המדריך פורסם והשדות נוקו ✓');
     }
-    function buildSkeletonRows(c, r) { return Array.from({length:r},()=>'<tr>'+Array.from({length:c},()=>'<td class="py-3"><span class="skeleton-bar w-16"></span></td>').join('')+'</tr>').join(''); }
+
+    // ========================
+    // נספח ב' חתום + תאריך עברי בגימטריה
+    // ========================
+    function formatIsraeliDate(dateObj) {
+      return `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+    }
+
+    function toHebrewGematria(num) {
+      let n = parseInt(num, 10);
+      if (!n || n <= 0) return String(num);
+      if (n >= 1000) n = n % 1000;
+      const hundreds = ["", "ק", "ר", "ש", "ת", "תק", "תר", "תש", "תת", "תתק"];
+      const tens = ["", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ"];
+      const ones = ["", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
+      let out = hundreds[Math.floor(n / 100)];
+      const rem = n % 100;
+      if (rem === 15) out += "טו";
+      else if (rem === 16) out += "טז";
+      else out += tens[Math.floor(rem / 10)] + ones[rem % 10];
+      if (out.length === 1) return out + "׳";
+      return out.slice(0, -1) + "״" + out.slice(-1);
+    }
+
+    function formatHebrewDate(dateObj) {
+      try {
+        const parts = new Intl.DateTimeFormat("he-IL-u-ca-hebrew", { day: "numeric", month: "long", year: "numeric" }).formatToParts(dateObj);
+        const dayPart = parts.find(p => p.type === "day")?.value || "";
+        const monthPart = parts.find(p => p.type === "month")?.value || "";
+        const yearPart = parts.find(p => p.type === "year")?.value || "";
+        const monthFormatted = monthPart.startsWith("ב") ? monthPart : ("ב" + monthPart);
+        return `${toHebrewGematria(dayPart)} ${monthFormatted} ${toHebrewGematria(yearPart)}`;
+      } catch (e) { return ""; }
+    }
+
+    function renderAppendixSheet(dateIsoStr) {
+      const month = document.getElementById('schMonthSelect').value;
+      const list = scholarships.filter(s => s.month === month);
+      const total = list.reduce((a, b) => a + b.amount, 0);
+      const now = new Date();
+      const chosenDate = dateIsoStr ? new Date(dateIsoStr + 'T12:00:00') : now;
+      const safeDate = isNaN(chosenDate.getTime()) ? now : chosenDate;
+      const approvalDateStr = formatIsraeliDate(safeDate);
+      const hebrewDateStr = formatHebrewDate(safeDate);
+      const printDateStr = formatIsraeliDate(now);
+      const printTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const docRef = `SA-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}-B`;
+
+      document.getElementById('protocolPrintSheet').innerHTML = `
+        <div dir="rtl" style="font-family: Heebo, Arial, sans-serif; color: #0f172a; line-height: 1.55; background: #ffffff;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; font-size:12px; color:#334155; border-bottom:1.5px solid #0f172a; padding-bottom:8px; margin-bottom:14px;">
+            <div>
+              <div style="font-weight:800; color:#0f172a;">בס״ד</div>
+              <div>סימוכין: <strong>${docRef}</strong></div>
+            </div>
+            <div style="text-align:left;">
+              <div><strong>תאריך אישור וחתימה:</strong> ${approvalDateStr}</div>
+              ${hebrewDateStr ? `<div style="color:#475569;">${hebrewDateStr}</div>` : ''}
+            </div>
+          </div>
+          <h1 style="text-align:center; font-size:19px; font-weight:900; margin:6px 0 4px; color:#0f172a;">נספח ב׳: טופס אישור חודשי של מורשי חתימה להעברת מלגות</h1>
+          <div style="text-align:center; font-weight:700; font-size:13px; color:#334155; margin-bottom:16px;">עמותת שערי עתיד (ע״ר) | מס׳ עמותה: 580811925</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; font-size:13px; margin-bottom:14px;">
+            <div><strong>חודש ושנת הזכאות:</strong> ${month}</div>
+            <div><strong>תאריך אישור התשלום:</strong> ${approvalDateStr}</div>
+            <div><strong>סה״כ מלגאים מאושרים:</strong> ${list.length}</div>
+            <div><strong>סה״כ סכום לתשלום:</strong> ${total.toLocaleString()} ש״ח</div>
+          </div>
+          <table style="width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; border:1px solid #94a3b8;">
+            <thead>
+              <tr style="background:#f1f5f9;">
+                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מס׳</th>
+                <th style="padding:7px 8px; border:1px solid #cbd5e1; text-align:right;">שם מלא</th>
+                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מספר זהות</th>
+                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">אישור עמידה בתנאים (12.5 ש״ש)</th>
+                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">סכום בש״ח</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.length ? list.map((s, i) => `
+                <tr style="background:${i % 2 === 1 ? '#f8fafc' : '#ffffff'};">
+                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${i + 1}</td>
+                  <td style="padding:6px 8px; border:1px solid #cbd5e1; font-weight:600;">${s.name}</td>
+                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center; font-variant-numeric:tabular-nums;">${s.tz}</td>
+                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">עומד בתנאי הזכאות (V)</td>
+                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center; font-weight:700; font-variant-numeric:tabular-nums;">${s.amount.toLocaleString()} ₪</td>
+                </tr>
+              `).join('') : '<tr><td colspan="5" style="padding:10px; border:1px solid #cbd5e1; text-align:center;">לא הוזנו מלגאים לחודש זה</td></tr>'}
+              <tr style="background:#f1f5f9; font-weight:800;">
+                <td colspan="4" style="padding:7px 8px; border:1px solid #94a3b8; text-align:left;">סה״כ לתשלום:</td>
+                <td style="padding:7px 6px; border:1px solid #94a3b8; text-align:center; font-variant-numeric:tabular-nums;">${total.toLocaleString()} ₪</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:13px; margin-top:12px; color:#1e293b;">
+            אנו, מורשי החתימה של עמותת שערי עתיד (ע״ר), מאשרים בזאת כי בדקנו את רשימת המוטבים ואימתנו כי עמדו במכסת שעות הלימוד ובקריטריונים שאושרו בפרוטוקול הוועד מיום 01/06/2026.
+          </p>
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px; padding-top:14px; border-top:1px solid #cbd5e1; gap:12px;">
+            <div style="text-align:center; flex:1;">
+              <div style="font-weight:700; font-size:13px;">יהודה צבי גורא</div>
+              <div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 214085623</div>
+              <img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" />
+              <div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div>
+            </div>
+            <div style="text-align:center; flex:0 0 auto; padding-bottom:6px;">
+              <img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:72px; margin:0 auto; object-fit:contain; filter:grayscale(100%) contrast(2.4) brightness(1.45); mix-blend-mode:multiply;" />
+            </div>
+            <div style="text-align:center; flex:1;">
+              <div style="font-weight:700; font-size:13px;">מנחם רובינשטיין</div>
+              <div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 324982743</div>
+              <img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" />
+              <div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div>
+            </div>
+          </div>
+          <div style="margin-top:18px; padding-top:8px; border-top:1px dashed #cbd5e1; display:flex; justify-content:space-between; font-size:11px; color:#64748b;">
+            <span>מסמך ממוחשב — עמותת שערי עתיד (ע״ר 580811925)</span>
+            <span>תאריך הדפסה/הפקה: ${printDateStr} בשעה ${printTimeStr}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function openAppendixModal() {
+      const todayIso = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('protocolDateInput');
+      if (dateInput) dateInput.value = todayIso;
+      renderAppendixSheet(todayIso);
+      document.getElementById('protocolModal').classList.remove('hidden');
+    }
+    function closeAppendixModal() {
+      document.getElementById('protocolModal').classList.add('hidden');
+    }
+
+    // --- Color Scheme Toggle ---
     (function initThemeToggle() {
-      var KEY = "friends-color-scheme", mem = null, mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-      const sys = () => (mql && mql.matches) ? "dark" : "light";
-      const stored = () => { try { var v = localStorage.getItem(KEY); return (v==="light"||v==="dark")?v:mem; } catch(e){return mem;} };
-      function apply(s) {
-        var res = s || sys();
-        document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", s || "light dark");
-        document.documentElement.style.colorScheme = s || "";
-        document.documentElement.dataset.theme = res;
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", res==="light"?"#ffffff":"#0d1c2e");
-        var b = document.getElementById("themeToggleBtn");
-        if (b) b.innerHTML = res==="dark" ? '☀️ <span class="hidden sm:inline">בהיר</span>' : '🌙 <span class="hidden sm:inline">כהה</span>';
+      var STORAGE_KEY = "friends-color-scheme";
+      var memScheme = null;
+      var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+      function getSystemScheme() { return (mql && mql.matches) ? "dark" : "light"; }
+      function getStoredScheme() {
+        try { var v = window.localStorage.getItem(STORAGE_KEY); return (v === "light" || v === "dark") ? v : memScheme; } catch (e) { return memScheme; }
+      }
+      function applyScheme(stored) {
+        var meta = document.querySelector('meta[name="color-scheme"]');
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+        var resolved = stored || getSystemScheme();
+        if (meta) meta.setAttribute("content", stored || "light dark");
+        document.documentElement.style.colorScheme = stored || "";
+        document.documentElement.dataset.theme = resolved;
+        if (themeMeta) themeMeta.setAttribute("content", resolved === "light" ? "#ffffff" : "#0d1c2e");
+        var btn = document.getElementById("themeToggleBtn");
+        if (btn) {
+          var isDark = resolved === "dark";
+          btn.setAttribute("aria-pressed", String(isDark));
+          btn.innerHTML = isDark
+            ? '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><span class="hidden sm:inline">בהיר</span>'
+            : '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="hidden sm:inline">כהה</span>';
+        }
       }
       window.toggleColorScheme = function () {
-        var tgt = (stored() || sys()) === "dark" ? "light" : "dark";
-        mem = tgt === sys() ? null : tgt;
-        try { if (mem === null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, tgt); } catch(e){}
-        apply(mem);
+        var current = getStoredScheme() || getSystemScheme();
+        var target = current === "dark" ? "light" : "dark";
+        var sys = getSystemScheme();
+        memScheme = (target === sys) ? null : target;
+        try { if (target === sys) window.localStorage.removeItem(STORAGE_KEY); else window.localStorage.setItem(STORAGE_KEY, target); } catch (e) {}
+        applyScheme(memScheme);
       };
-      if (mql && mql.addEventListener) mql.addEventListener("change", () => apply(stored()));
-      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => apply(stored())); else apply(stored());
+      if (mql && mql.addEventListener) mql.addEventListener("change", function () { applyScheme(getStoredScheme()); });
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { applyScheme(getStoredScheme()); });
+      else applyScheme(getStoredScheme());
     })();
+
+    function setDataLoading(isLoading, label) {
+      const bar = document.getElementById('topLoadingBar');
+      const pill = document.getElementById('dataLoaderPill');
+      const txt = document.getElementById('dataLoaderText');
+      if (txt && label) txt.textContent = label;
+      if (bar) bar.classList.toggle('active', !!isLoading);
+      if (pill) pill.classList.toggle('active', !!isLoading);
+      const refreshBtn = document.querySelector('button[onclick="refreshOwnerData()"] svg');
+      if (refreshBtn) refreshBtn.classList.toggle('icon-spinning', !!isLoading);
+    }
+
+    function buildSkeletonRows(colCount, rowCount) {
+      const widths = ['w-20', 'w-16', 'w-16', 'w-20', 'w-14'];
+      let out = '';
+      for (let r = 0; r < rowCount; r++) {
+        out += '<tr>';
+        for (let c = 0; c < colCount; c++) out += `<td class="py-3"><span class="skeleton-bar ${widths[c % widths.length]}"></span></td>`;
+        out += '</tr>';
+      }
+      return out;
+    }
+
+    let _pendingDeleteScholarshipId = null;
+    function closeConfirmDeleteModal() {
+      _pendingDeleteScholarshipId = null;
+      const m = document.getElementById('confirmDeleteModal');
+      if (m) m.classList.add('hidden');
+    }
+    function confirmDeleteScholarshipNow() {
+      if (_pendingDeleteScholarshipId === null) return;
+      const id = _pendingDeleteScholarshipId;
+      closeConfirmDeleteModal();
+      const item = scholarships.find(s => s.id === id);
+      scholarships = scholarships.filter(s => s.id !== id);
+      renderScholarships();
+      if (item && item.rowNumber) {
+        sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber }).catch(()=>{});
+      }
+      showOwnerToast('המלגאי הוסר מהרשימה ✓');
+    }
   </script>
 </body>
 </html>
