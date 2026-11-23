@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Friends" />
   <meta name="application-name" content="Friends" />
-        <meta name="text-scale" content="scale" />
+  <meta name="text-scale" content="scale" />
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#0d1c2e" />
   <script>
@@ -48,8 +48,6 @@
       #protocolPrintSheet { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
       .no-print { display: none !important; }
     }
-      /* MWG_UPGRADED */
-
     :root {
       color-scheme: light dark;
       --bg-canvas: light-dark(#f1f5f9, #0b192c);
@@ -66,680 +64,67 @@
       --brand-accent: light-dark(#ea580c, #f97316);
       --sb-track: light-dark(#e2e8f0, #091322);
       --sb-thumb: light-dark(#94a3b8, #2b4d77);
-    }
-    :root:has(> head > meta[name="color-scheme"][content="dark"]),
-    :root[data-theme="dark"] {
-      color-scheme: dark;
-    }
-    :root:has(> head > meta[name="color-scheme"][content="light"]),
-    :root[data-theme="light"] {
-      color-scheme: light;
-    }
-    html {
-      accent-color: var(--brand-accent);
-      scrollbar-gutter: stable;
-      scrollbar-color: var(--sb-thumb) var(--sb-track);
-    }
-    body {
-      min-height: 100dvh;
-      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
-      background-color: light-dark(#f1f5f9, #0b192c) !important;
-      color: light-dark(#0f172a, #f8fafc) !important;
-      
-    }
-    :root[data-theme="dark"] body {
-      background-color: #0b192c !important;
-      color: #f8fafc !important;
-    }
-    :root[data-theme="light"] body {
-      background-color: #f1f5f9 !important;
-      background-image: none !important;
-      color: #0f172a !important;
-    }
-    h1, h2, h3, h4 {
-      text-wrap: balance;
-    }
-    p {
-      text-wrap: pretty;
-    }
-    button, a, select, input, textarea, [role="button"] {
-      touch-action: manipulation;
-    }
-    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
-      outline: 2px solid var(--brand-accent);
-      outline-offset: 2px;
-    }
-    .tabular-nums, #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #qSonyTotal, #qSnookerTotal, #qAvgWait, #lblTotalDaily, #lblEnvelopeDiff {
-      font-variant-numeric: tabular-nums;
-    }
-    .theme-toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      min-height: 36px;
-      padding: 0.35rem 0.65rem;
-      border-radius: 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border: 1px solid light-dark(#cbd5e1, #26466d);
-      background: light-dark(#f8fafc, #091322);
-      color: light-dark(#0f172a, #f8fafc);
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease;
-    }
-    .theme-toggle-btn:hover {
-      border-color: var(--brand-accent);
-    }
-    .theme-toggle-btn:active {
-      transform: scale(0.97);
-    }
-    #protocolModal, #messageModal, #eodModal {
-      overscroll-behavior: contain;
-    }
-    #protocolModal, #protocolPrintSheet {
-      color-scheme: light;
-    }
-
-    :root:has(> head > meta[name="color-scheme"][content="light"]),
-    :root[data-theme="light"] {
-      & header {
-        background: rgba(255, 255, 255, 0.94) !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important;
-      }
-      & header img[alt="Friends"] {
-        background: #0d1c2e;
-        padding: 4px 10px;
-        border-radius: 12px;
-      }
-      & nav {
-        background: #ffffff !important;
-        border-color: #cbd5e1 !important;
-      }
-      & .card {
-        background: #ffffff !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: 0 4px 18px -6px rgba(15, 23, 42, 0.08) !important;
-      }
-      & .input-dark {
-        background: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-        color: #0f172a !important;
-      }
-      & .input-dark::placeholder {
-        color: #64748b !important;
-      }
-      & .owner-tab {
-        color: #334155 !important;
-      }
-      & .owner-tab.active {
-        color: #c2410c !important;
-        background: rgba(249, 115, 22, 0.1) !important;
-      }
-      & .bg-\[\#091322\], & .bg-\[\#051321\], & .bg-\[\#07192b\], & .bg-\[\#0a1e33\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] {
-        background-color: #f8fafc !important;
-      }
-      & .bg-\[\#13253e\], & .bg-\[\#0c2238\], & .bg-\[\#13304d\] {
-        background-color: #ffffff !important;
-      }
-      & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .border-\[\#1b3a5c\], & .border-\[\#23476e\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]), & .divide-\[\#1b3a5c\] > :not([hidden]) ~ :not([hidden]) {
-        border-color: #cbd5e1 !important;
-      }
-      & h1, & h2, & h3, & h4 {
-        color: #0f172a !important;
-      }
-      & .text-white:not(.btn-friends):not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-red-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 {
-        color: #0f172a !important;
-      }
-      & .text-slate-300 {
-        color: #334155 !important;
-      }
-      & .text-slate-400 {
-        color: #475569 !important;
-      }
-      & .text-amber-300 {
-        color: #b45309 !important;
-      }
-      & .text-sky-400 {
-        color: #0369a1 !important;
-      }
-      & .text-emerald-400 {
-        color: #047857 !important;
-      }
-      & .text-orange-400 {
-        color: #c2410c !important;
-      }
-    }
-    @media (prefers-color-scheme: light) {
-      :root:has(> head > meta[name="color-scheme"][content="light dark"]) {
-      & header {
-        background: rgba(255, 255, 255, 0.94) !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important;
-      }
-      & header img[alt="Friends"] {
-        background: #0d1c2e;
-        padding: 4px 10px;
-        border-radius: 12px;
-      }
-      & nav {
-        background: #ffffff !important;
-        border-color: #cbd5e1 !important;
-      }
-      & .card {
-        background: #ffffff !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: 0 4px 18px -6px rgba(15, 23, 42, 0.08) !important;
-      }
-      & .input-dark {
-        background: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-        color: #0f172a !important;
-      }
-      & .input-dark::placeholder {
-        color: #64748b !important;
-      }
-      & .owner-tab {
-        color: #334155 !important;
-      }
-      & .owner-tab.active {
-        color: #c2410c !important;
-        background: rgba(249, 115, 22, 0.1) !important;
-      }
-      & .bg-\[\#091322\], & .bg-\[\#051321\], & .bg-\[\#07192b\], & .bg-\[\#0a1e33\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] {
-        background-color: #f8fafc !important;
-      }
-      & .bg-\[\#13253e\], & .bg-\[\#0c2238\], & .bg-\[\#13304d\] {
-        background-color: #ffffff !important;
-      }
-      & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .border-\[\#1b3a5c\], & .border-\[\#23476e\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]), & .divide-\[\#1b3a5c\] > :not([hidden]) ~ :not([hidden]) {
-        border-color: #cbd5e1 !important;
-      }
-      & h1, & h2, & h3, & h4 {
-        color: #0f172a !important;
-      }
-      & .text-white:not(.btn-friends):not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-red-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 {
-        color: #0f172a !important;
-      }
-      & .text-slate-300 {
-        color: #334155 !important;
-      }
-      & .text-slate-400 {
-        color: #475569 !important;
-      }
-      & .text-amber-300 {
-        color: #b45309 !important;
-      }
-      & .text-sky-400 {
-        color: #0369a1 !important;
-      }
-      & .text-emerald-400 {
-        color: #047857 !important;
-      }
-      & .text-orange-400 {
-        color: #c2410c !important;
-      }
-    }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  
-    .icon-svg {
-      width: 1.05em;
-      height: 1.05em;
-      display: inline-block;
-      vertical-align: -0.18em;
-      flex-shrink: 0;
-      margin-inline-end: 0.25rem;
-    }
-    .theme-toggle-btn .icon-svg {
-      margin-inline-end: 0;
-    }
-
-  
-    /* === MODERN MINIMALIST UI & RESPONSIVE SYSTEM (Mobile / Tablet / Desktop) === */
-    :root {
       --radius-card: 16px;
       --radius-control: 12px;
       --shadow-card-dark: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px -12px rgba(0, 0, 0, 0.55);
       --shadow-card-light: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px -12px rgba(15, 23, 42, 0.12);
     }
-
-    html {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      overflow-x: clip;
-      line-height: 1.5;
-    }
-
-    /* Glassmorphic sticky header */
-    header {
-      backdrop-filter: blur(14px) saturate(150%);
-      -webkit-backdrop-filter: blur(14px) saturate(150%);
-    }
-
-    /* Minimalist card elevation */
-    .card {
-      border-radius: var(--radius-card) !important;
-      box-shadow: var(--shadow-card-dark) !important;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-    }
-
-    :root:has(> head > meta[name="color-scheme"][content="light"]) .card,
-    :root[data-theme="light"] .card {
-      box-shadow: var(--shadow-card-light) !important;
-    }
-
-    /* Consistent minimalist form controls */
-    .input-dark, input[type="text"], input[type="number"], input[type="date"], input[type="tel"], input[type="email"], input[type="url"], select, textarea {
-      border-radius: var(--radius-control) !important;
-      min-height: 40px;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-    }
-
-    .input-dark:focus, select:focus, textarea:focus {
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22) !important;
-    }
-
-    /* Tactile minimalist buttons */
-    button {
-      transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-    }
-    button:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    /* Clean KPI numbers */
-    #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #qSonyTotal, #qSnookerTotal, #qAvgWait, #lblTotalDaily {
-      letter-spacing: -0.02em;
-    }
-
-    /* Refined Navigation Bar */
-    #ownerSidebarNav {
-      scroll-snap-type: x proximity;
-      gap: 0.25rem;
-      padding: 0.35rem 0.5rem;
-    }
-    .owner-tab {
-      scroll-snap-align: start;
-      border-radius: 10px !important;
-      border-bottom: none !important;
-      min-height: 40px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      font-weight: 600;
-    }
-    .owner-tab.active {
-      border-bottom: none !important;
-      box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35);
-    }
-
-    /* Minimalist Data Tables */
-    table {
-      border-collapse: collapse;
-    }
-    thead th {
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      padding-top: 0.65rem;
-      padding-bottom: 0.65rem;
-      white-space: nowrap;
-    }
-    tbody tr {
-      transition: background-color 0.12s ease;
-    }
-    tbody tr:hover {
-      background-color: rgba(148, 163, 184, 0.07);
-    }
-    tbody td {
-      padding-top: 0.6rem;
-      padding-bottom: 0.6rem;
-    }
-
-    /* Modal backdrop polish */
-    #protocolModal, #messageModal, #eodModal {
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
-
-    /* === RESPONSIVE BREAKPOINTS === */
-    /* Mobile (< 640px): comfortable touch targets, compact padding */
-    @media (max-width: 639px) {
-      button, select, input {
-        min-height: 42px;
-      }
-      .card {
-        padding: 0.95rem !important;
-      }
-      main {
-        padding-inline: 0.75rem !important;
-      }
-    }
-
-    /* Tablet (640px - 1023px): balanced 2-column rhythm & wider containers */
-    @media (min-width: 640px) and (max-width: 1023px) {
-      main {
-        padding-inline: 1.25rem !important;
-        padding-top: 1.25rem !important;
-      }
-      .card {
-        padding: 1.25rem !important;
-      }
-    }
-
-    /* Desktop (>= 1024px): spacious dashboard grid & clean alignment */
-    @media (min-width: 1024px) {
-      main {
-        padding-inline: 1.5rem !important;
-        padding-top: 1.5rem !important;
-      }
-      .card {
-        padding: 1.5rem !important;
-      }
-      #ownerSidebarNav {
-        padding-inline: 1.5rem;
-      }
-    }
-
-    /* Crisp A4 Print Rules for Signed PDF */
-    @page {
-      size: A4 portrait;
-      margin: 14mm;
-    }
-
-  
-    /* === SUBTLE HIGH-QUALITY MICRO-ANIMATIONS === */
-    @keyframes fadeSlideUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @keyframes modalPopIn {
-      from {
-        opacity: 0;
-        transform: scale(0.96) translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-    @keyframes ocrPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.55; }
-    }
-    @keyframes inputFlash {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); border-color: #10b981; }
-      100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-    }
-
-    section:not(.hidden) {
-      animation: fadeSlideUp 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-    #protocolModal:not(.hidden) > div,
-    #messageModal:not(.hidden) > div,
-    #eodModal:not(.hidden) > div, #confirmDeleteModal:not(.hidden) > div {
-      animation: modalPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-    #ownerToast:not(.hidden) {
-      animation: fadeSlideUp 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-    .ocr-scanning {
-      animation: ocrPulse 1.1s ease-in-out infinite;
-    }
-    .input-flash {
-      animation: inputFlash 700ms ease-out;
-    }
-    @media (hover: hover) {
-      .card:hover {
-        border-color: color-mix(in srgb, var(--brand-accent) 45%, var(--border-subtle));
-      }
-    }
-
-  
-    /* === MODERN DESIGNED DATA LOADING ANIMATIONS === */
-    @keyframes topBarSweep {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-260%); }
-    }
-    @keyframes spinRing {
-      to { transform: rotate(360deg); }
-    }
-    @keyframes shimmerWave {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    #topLoadingBar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      z-index: 9999;
-      overflow: hidden;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 220ms ease;
-      background: rgba(249, 115, 22, 0.14);
-    }
-    #topLoadingBar.active {
-      opacity: 1;
-    }
-    #topLoadingBar::after {
-      content: "";
-      position: absolute;
-      inset-block: 0;
-      right: 0;
-      width: 42%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, transparent 0%, #f97316 45%, #fb923c 65%, transparent 100%);
-      animation: topBarSweep 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    }
-
-    #dataLoaderPill {
-      position: fixed;
-      top: 12px;
-      left: 50%;
-      transform: translate(-50%, -18px) scale(0.96);
-      z-index: 9998;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.45rem 0.95rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      pointer-events: none;
-      opacity: 0;
-      backdrop-filter: blur(14px) saturate(150%);
-      -webkit-backdrop-filter: blur(14px) saturate(150%);
-      background: light-dark(rgba(255, 255, 255, 0.92), rgba(15, 31, 53, 0.92));
-      color: light-dark(#0f172a, #f8fafc);
-      border: 1px solid light-dark(rgba(203, 213, 225, 0.9), rgba(249, 115, 22, 0.4));
-      box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.35);
-      transition: opacity 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    #dataLoaderPill.active {
-      opacity: 1;
-      transform: translate(-50%, 0) scale(1);
-    }
-    .loader-orbital {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 2px solid light-dark(rgba(234, 88, 12, 0.2), rgba(249, 115, 22, 0.22));
-      border-top-color: #f97316;
-      border-right-color: #fb923c;
-      animation: spinRing 0.72s linear infinite;
-      flex-shrink: 0;
-    }
-
-    .skeleton-bar {
-      display: inline-block;
-      height: 12px;
-      border-radius: 999px;
-      background: linear-gradient(
-        90deg,
-        light-dark(#e2e8f0, #162b47) 25%,
-        light-dark(#f1f5f9, #24436b) 50%,
-        light-dark(#e2e8f0, #162b47) 75%
-      );
-      background-size: 200% 100%;
-      animation: shimmerWave 1.35s ease-in-out infinite;
-    }
-
-    .icon-spinning {
-      animation: spinRing 0.8s linear infinite;
-    }
-
-  
-    /* === STANDARD HIGH-CONTRAST MODAL BUTTONS (Light & Dark) === */
-    .btn-secondary {
-      background-color: light-dark(#f1f5f9, #1e293b) !important;
-      color: light-dark(#0f172a, #f8fafc) !important;
-      border: 1px solid light-dark(#cbd5e1, #475569) !important;
-      border-radius: 12px !important;
-      padding: 0.5rem 1rem !important;
-      font-size: 0.8rem !important;
-      font-weight: 700 !important;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      cursor: pointer;
-    }
-    .btn-secondary:hover {
-      background-color: light-dark(#e2e8f0, #334155) !important;
-      border-color: light-dark(#94a3b8, #64748b) !important;
-    }
-    :root[data-theme="dark"] .btn-secondary {
-      background-color: #1e293b !important;
-      color: #f8fafc !important;
-      border-color: #475569 !important;
-    }
-    :root[data-theme="light"] .btn-secondary {
-      background-color: #f1f5f9 !important;
-      color: #0f172a !important;
-      border-color: #cbd5e1 !important;
-    }
-
-    .btn-modal-close {
-      width: 32px;
-      height: 32px;
-      min-height: 32px !important;
-      border-radius: 999px !important;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important;
-      color: light-dark(#334155, #e2e8f0) !important;
-      border: 1px solid light-dark(#e2e8f0, transparent) !important;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-modal-close:hover {
-      background-color: light-dark(#e2e8f0, rgba(148, 163, 184, 0.28)) !important;
-      color: light-dark(#0f172a, #ffffff) !important;
-    }
-  
-    /* === DESKTOP RIGHT SIDEBAR NAVIGATION (>= 1024px ONLY; Tablet & Mobile stay top horizontal) === */
-    @media (min-width: 1024px) {
-      #ownerSidebarNav {
-        position: fixed !important;
-        top: 73px;
-        right: 0;
-        bottom: 0;
-        width: 244px;
-        box-sizing: border-box;
-        max-width: 244px !important;
-        margin: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        justify-content: flex-start !important;
-        gap: 0.45rem !important;
-        padding: 1.1rem 0.85rem !important;
-        border-top: none !important;
-        border-left: 1px solid var(--border-subtle) !important;
-        background: var(--bg-nav) !important;
-        box-shadow: -4px 0 20px -10px rgba(0, 0, 0, 0.25);
-        overflow-y: auto !important;
-        z-index: 35;
-      }
-      #ownerSidebarNav .owner-tab {
-        flex: 0 0 auto !important;
-        width: 100%;
-        justify-content: flex-start !important;
-        text-align: right;
-        padding: 0.72rem 0.95rem !important;
-        font-size: 0.85rem !important;
-        border-radius: 12px !important;
-      }
-      main {
-        margin-right: 244px !important;
-        margin-left: auto !important;
-        max-width: min(1080px, calc(100% - 244px)) !important;
-      }
-    }
-
-  
-    /* === OKLCH COLOR TOKENS, FLUID TYPOGRAPHY, HIGH CONTRAST & FROSTED GLASS HEADER === */
     @supports (color: oklch(0% 0 0)) {
       :root {
         --brand-orange-light: oklch(61% 0.20 40);
         --brand-orange-dark: oklch(68% 0.19 42);
         --brand-accent: light-dark(var(--brand-orange-light), var(--brand-orange-dark));
-        --surface-canvas-light: oklch(96.8% 0.007 248);
-        --surface-canvas-dark: oklch(21% 0.042 248);
-        --surface-card-light: oklch(100% 0 0);
-        --surface-card-dark: oklch(26.5% 0.048 248);
         --border-subtle: light-dark(oklch(86% 0.015 250), oklch(34% 0.055 248));
         --text-primary: light-dark(oklch(20% 0.035 258), oklch(98% 0.004 248));
         --text-secondary: light-dark(oklch(37% 0.035 255), oklch(84% 0.018 250));
         --text-muted: light-dark(oklch(52% 0.03 255), oklch(70% 0.025 250));
       }
     }
-
-    /* Branded text selection */
-    ::selection {
-      background: color-mix(in oklch, var(--brand-accent) 28%, transparent);
-      color: var(--text-primary);
+    :root:has(> head > meta[name="color-scheme"][content="dark"]), :root[data-theme="dark"] { color-scheme: dark; }
+    :root:has(> head > meta[name="color-scheme"][content="light"]), :root[data-theme="light"] { color-scheme: light; }
+    html {
+      accent-color: var(--brand-accent);
+      scrollbar-gutter: stable;
+      scrollbar-color: var(--sb-thumb) var(--sb-track);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
     }
-
-    /* Fluid typography with clamp() */
-    h1 {
-      font-size: clamp(1.1rem, 0.95rem + 0.65vw, 1.45rem);
+    body {
+      min-height: 100dvh;
+      overflow-x: clip;
+      line-height: 1.5;
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+      background-color: light-dark(#f1f5f9, #0b192c) !important;
+      color: light-dark(#0f172a, #f8fafc) !important;
     }
-    h2 {
-      font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem);
-    }
-    h3 {
-      font-size: clamp(0.9rem, 0.85rem + 0.22vw, 1.04rem);
-    }
+    :root[data-theme="dark"] body { background-color: #0b192c !important; color: #f8fafc !important; }
+    :root[data-theme="light"] body { background-color: #f1f5f9 !important; background-image: none !important; color: #0f172a !important; }
+    ::selection { background: color-mix(in oklch, var(--brand-accent) 28%, transparent); color: var(--text-primary); }
+    h1, h2, h3, h4 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    h1 { font-size: clamp(1.1rem, 0.95rem + 0.65vw, 1.45rem); }
+    h2 { font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem); }
+    h3 { font-size: clamp(0.9rem, 0.85rem + 0.22vw, 1.04rem); }
     #kpiCashTotal, #kpiCreditTotal, #kpiCombinedTotal, #qSonyTotal, #qSnookerTotal, #qAvgWait {
       font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.45rem);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
     }
-
-    /* Subtle frosted-glass top header + full-width edge-to-edge alignment */
+    button, a, select, input, textarea, [role="button"] { touch-action: manipulation; }
+    button { transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease; }
+    button:active:not(:disabled) { transform: scale(0.98); }
+    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+    .icon-svg { width: 1.05em; height: 1.05em; display: inline-block; vertical-align: -0.18em; flex-shrink: 0; margin-inline-end: 0.25rem; }
+    .theme-toggle-btn {
+      display: inline-flex; align-items: center; gap: 0.35rem; min-height: 36px; padding: 0.35rem 0.65rem;
+      border-radius: 0.75rem; font-size: 0.75rem; font-weight: 700;
+      border: 1px solid light-dark(#cbd5e1, #26466d); background: light-dark(#f8fafc, #091322);
+      color: light-dark(#0f172a, #f8fafc); cursor: pointer;
+    }
+    .theme-toggle-btn .icon-svg { margin-inline-end: 0; }
+    .theme-toggle-btn:hover { border-color: var(--brand-accent); }
     header {
       background: light-dark(rgba(255, 255, 255, 0.76), rgba(13, 28, 46, 0.76)) !important;
       backdrop-filter: blur(18px) saturate(180%) !important;
@@ -747,41 +132,96 @@
       border-bottom: 1px solid light-dark(rgba(15, 23, 42, 0.09), rgba(255, 255, 255, 0.09)) !important;
       box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.35) !important;
     }
-    :root[data-theme="dark"] header {
-      background: rgba(13, 28, 46, 0.76) !important;
-      border-bottom-color: rgba(255, 255, 255, 0.09) !important;
+    :root[data-theme="dark"] header { background: rgba(13, 28, 46, 0.76) !important; border-bottom-color: rgba(255, 255, 255, 0.09) !important; }
+    :root[data-theme="light"] header { background: rgba(255, 255, 255, 0.78) !important; border-bottom-color: rgba(15, 23, 42, 0.09) !important; }
+    header > div:first-child { max-width: none !important; width: 100% !important; padding-inline: clamp(0.75rem, 1.5vw, 1.5rem) !important; }
+    .card { border-radius: var(--radius-card) !important; box-shadow: var(--shadow-card-dark) !important; transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+    :root[data-theme="light"] .card { box-shadow: var(--shadow-card-light) !important; }
+    .input-dark, input[type="text"], input[type="number"], input[type="date"], input[type="tel"], input[type="email"], input[type="url"], select, textarea {
+      border-radius: var(--radius-control) !important; min-height: 40px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    :root[data-theme="light"] header {
-      background: rgba(255, 255, 255, 0.78) !important;
-      border-bottom-color: rgba(15, 23, 42, 0.09) !important;
+    .input-dark:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22) !important; }
+    #ownerSidebarNav { scroll-snap-type: x proximity; gap: 0.25rem; padding: 0.35rem 0.5rem; }
+    .owner-tab { scroll-snap-align: start; border-radius: 10px !important; border-bottom: none !important; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; font-weight: 600; }
+    .owner-tab.active { border-bottom: none !important; box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35); }
+    table { border-collapse: collapse; }
+    thead th { font-weight: 700; padding-top: 0.65rem; padding-bottom: 0.65rem; white-space: nowrap; }
+    tbody tr:hover { background-color: rgba(148, 163, 184, 0.07); }
+    tbody td { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+    #protocolModal, #confirmDeleteModal, #dirManageModal { overscroll-behavior: contain; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    #protocolModal, #protocolPrintSheet { color-scheme: light; }
+    .btn-secondary {
+      background-color: light-dark(#f1f5f9, #1e293b) !important; color: light-dark(#0f172a, #f8fafc) !important;
+      border: 1px solid light-dark(#cbd5e1, #475569) !important; border-radius: 12px !important;
+      padding: 0.5rem 1rem !important; font-size: 0.8rem !important; font-weight: 700 !important;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; cursor: pointer;
     }
-
-    /* Push logo cleanly to right edge and action buttons cleanly to left edge */
-    header > div:first-child {
-      max-width: none !important;
-      width: 100% !important;
-      padding-inline: clamp(0.75rem, 1.5vw, 1.5rem) !important;
+    .btn-secondary:hover { background-color: light-dark(#e2e8f0, #334155) !important; }
+    :root[data-theme="dark"] .btn-secondary { background-color: #1e293b !important; color: #f8fafc !important; border-color: #475569 !important; }
+    :root[data-theme="light"] .btn-secondary { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+    .btn-modal-close {
+      width: 32px; height: 32px; min-height: 32px !important; border-radius: 999px !important;
+      display: inline-flex; align-items: center; justify-content: center;
+      background-color: light-dark(#f1f5f9, rgba(148, 163, 184, 0.16)) !important;
+      color: light-dark(#334155, #e2e8f0) !important; border: 1px solid light-dark(#e2e8f0, transparent) !important;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
     }
-
-    /* High-contrast accessibility preference */
-    @media (prefers-contrast: more) {
-      :root {
-        --border-subtle: light-dark(#0f172a, #e2e8f0);
-        --border-input: light-dark(#0f172a, #e2e8f0);
-      }
-      .card, .input-dark, .btn-secondary, .theme-toggle-btn, button {
-        border-width: 1.5px !important;
-      }
-      button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
-        outline-width: 3px !important;
-        outline-offset: 2px !important;
-      }
-      header {
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-      }
+    :root[data-theme="light"] {
+      & header img[alt="Friends"] { background: #0d1c2e; padding: 4px 10px; border-radius: 12px; }
+      & nav { background: #ffffff !important; border-color: #cbd5e1 !important; }
+      & .card { background: #ffffff !important; border-color: #cbd5e1 !important; }
+      & .input-dark { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+      & .owner-tab { color: #334155 !important; }
+      & .owner-tab.active { color: #c2410c !important; background: rgba(249, 115, 22, 0.1) !important; }
+      & .bg-\[\#091322\], & .bg-\[\#0b192c\], & .bg-\[\#0d1c2e\] { background-color: #f8fafc !important; }
+      & .bg-\[\#13253e\] { background-color: #ffffff !important; }
+      & .border-\[\#1e3a5f\], & .border-\[\#26466d\], & .divide-\[\#1e3a5f\] > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
+      & h1, & h2, & h3, & h4 { color: #0f172a !important; }
+      & .text-white:not([class*='bg-orange-']):not([class*='bg-emerald-']):not([class*='bg-sky-']):not([class*='bg-rose-']):not([class*='bg-amber-']):not([class*='bg-slate-']), & .text-slate-100, & .text-slate-200 { color: #0f172a !important; }
+      & .text-slate-300 { color: #334155 !important; }
+      & .text-slate-400 { color: #475569 !important; }
+      & .text-sky-400 { color: #0369a1 !important; }
+      & .text-emerald-400 { color: #047857 !important; }
+      & .text-orange-400 { color: #c2410c !important; }
     }
-
+    @media (min-width: 1024px) {
+      #ownerSidebarNav {
+        position: fixed !important; top: 73px; right: 0; bottom: 0; width: 244px; box-sizing: border-box;
+        max-width: 244px !important; margin: 0 !important; display: flex !important; flex-direction: column !important;
+        align-items: stretch !important; justify-content: flex-start !important; gap: 0.45rem !important;
+        padding: 1.1rem 0.85rem !important; border-top: none !important;
+        border-left: 1px solid var(--border-subtle) !important; background: var(--bg-nav) !important;
+        box-shadow: -4px 0 20px -10px rgba(0, 0, 0, 0.25); overflow-y: auto !important; z-index: 35;
+      }
+      #ownerSidebarNav .owner-tab { flex: 0 0 auto !important; width: 100%; justify-content: flex-start !important; text-align: right; padding: 0.72rem 0.95rem !important; font-size: 0.85rem !important; border-radius: 12px !important; }
+      main { margin-right: 244px !important; margin-left: auto !important; max-width: min(1080px, calc(100% - 244px)) !important; padding-inline: 1.5rem !important; padding-top: 1.5rem !important; }
+      .card { padding: 1.5rem !important; }
+    }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes modalPopIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes topBarSweep { 0% { transform: translateX(100%); } 100% { transform: translateX(-260%); } }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    @keyframes shimmerWave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    section:not(.hidden) { animation: fadeSlideUp 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    #protocolModal:not(.hidden) > div, #confirmDeleteModal:not(.hidden) > div, #dirManageModal:not(.hidden) > div { animation: modalPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    #topLoadingBar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9999; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 220ms ease; background: rgba(249, 115, 22, 0.14); }
+    #topLoadingBar.active { opacity: 1; }
+    #topLoadingBar::after { content: ""; position: absolute; inset-block: 0; right: 0; width: 42%; border-radius: 999px; background: linear-gradient(90deg, transparent 0%, #f97316 45%, #fb923c 65%, transparent 100%); animation: topBarSweep 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+    #dataLoaderPill {
+      position: fixed; top: 12px; left: 50%; transform: translate(-50%, -18px) scale(0.96); z-index: 9998;
+      display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.95rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 700; pointer-events: none; opacity: 0;
+      backdrop-filter: blur(14px); background: light-dark(rgba(255, 255, 255, 0.92), rgba(15, 31, 53, 0.92));
+      color: light-dark(#0f172a, #f8fafc); border: 1px solid light-dark(rgba(203, 213, 225, 0.9), rgba(249, 115, 22, 0.4));
+      box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.35); transition: opacity 200ms ease, transform 220ms ease;
+    }
+    #dataLoaderPill.active { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    .loader-orbital { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(249, 115, 22, 0.22); border-top-color: #f97316; animation: spinRing 0.72s linear infinite; }
+    .skeleton-bar { display: inline-block; height: 12px; border-radius: 999px; background: linear-gradient(90deg, light-dark(#e2e8f0, #162b47) 25%, light-dark(#f1f5f9, #24436b) 50%, light-dark(#e2e8f0, #162b47) 75%); background-size: 200% 100%; animation: shimmerWave 1.35s ease-in-out infinite; }
+    .icon-spinning { animation: spinRing 0.8s linear infinite; }
+    @page { size: A4 portrait; margin: 14mm; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    @media (prefers-contrast: more) { .card, .input-dark, .btn-secondary, .theme-toggle-btn, button { border-width: 1.5px !important; } }
   </style>
 </head>
 <body class="pb-20">
@@ -791,99 +231,79 @@
     <span id="dataLoaderText">טוען נתונים מגוגל שיטס...</span>
   </div>
 
-
   <header class="bg-[#0d1c2e] border-b border-[#1e3a5f] sticky top-0 z-40 shadow-lg">
     <div class="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
       <div class="flex items-center">
         <img src="logo.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/logo.png'" alt="Friends" class="h-14 w-auto object-contain" />
       </div>
-
       <div class="flex items-center gap-2">
-        <button type="button" id="themeToggleBtn" onclick="toggleColorScheme()" class="theme-toggle-btn" aria-label="החלף ערכת נושא"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg> <span class="hidden sm:inline">בהיר</span></button>
+        <button type="button" id="themeToggleBtn" onclick="toggleColorScheme()" class="theme-toggle-btn" aria-label="החלף ערכת נושא">בהיר</button>
         <select id="yearSelect" onchange="refreshOwnerData()" class="input-dark px-3 py-1.5 text-xs font-bold">
           <option value="2026" selected>2026</option>
           <option value="2027">2027</option>
           <option value="2028">2028</option>
         </select>
         <button type="button" onclick="refreshOwnerData()" class="bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl">
-          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>  רענן
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg> רענן
         </button>
       </div>
     </div>
   </header>
 
-
-    <nav id="ownerSidebarNav" class="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar border-t border-[#1e3a5f] bg-[#0b192c]">
-      <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>  הכנסות ובנק</button>
-      <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>  הוצאות</button>
-      <button type="button" onclick="openOwnerTab('queues')" id="otab-queues" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>  תורים</button>
-      <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>  מלגות שערי עתיד</button>
-      <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>  תקלות, משימות והתראות</button>
-    </nav>
-  
+  <nav id="ownerSidebarNav" class="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar border-t border-[#1e3a5f] bg-[#0b192c]">
+    <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-3 px-3 text-xs whitespace-nowrap">הכנסות ובנק</button>
+    <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">הוצאות</button>
+    <button type="button" onclick="openOwnerTab('queues')" id="otab-queues" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">תורים</button>
+    <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">מלגות שערי עתיד</button>
+    <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-3 px-3 text-xs whitespace-nowrap">תקלות, משימות והתראות</button>
+  </nav>
 
   <main class="max-w-5xl mx-auto p-3 space-y-4">
-
     <!-- 1. הכנסות ובנק -->
     <section id="osec-income" class="owner-section space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
         <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>  סה״כ מזומן</div>
+          <div class="text-[11px] text-slate-400">סה״כ מזומן</div>
           <div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5">0 ₪</div>
         </div>
         <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>  סה״כ אשראי</div>
+          <div class="text-[11px] text-slate-400">סה״כ אשראי</div>
           <div id="kpiCreditTotal" class="text-lg font-black text-sky-400 mt-0.5">0 ₪</div>
         </div>
         <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>  סה״כ ביחד</div>
+          <div class="text-[11px] text-slate-400">סה״כ ביחד</div>
           <div id="kpiCombinedTotal" class="text-lg font-black text-orange-400 mt-0.5">0 ₪</div>
         </div>
       </div>
 
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-base font-black"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>  הכנסות: מזומן ואשראי</h2>
+          <h2 class="text-base font-black">הכנסות: מזומן ואשראי</h2>
           <div class="flex items-center gap-2">
             <a href="https://docs.google.com/spreadsheets/d/1YaryrZTB648UXiNCy_D3f1EtiunWhvgvDJ-j2s36m5g/edit" target="_blank" class="text-xs text-sky-400 underline">גיליון ↗</a>
             <select id="monthFilter" onchange="renderIncomeTable()" class="input-dark px-3 py-1.5 text-xs font-bold">
               <option value="ALL">כל החודשים</option>
-              <option value="01">ינואר</option>
-              <option value="02">פברואר</option>
-              <option value="03">מרץ</option>
-              <option value="04">אפריל</option>
-              <option value="05">מאי</option>
-              <option value="06">יוני</option>
-              <option value="07">יולי</option>
-              <option value="08">אוגוסט</option>
-              <option value="09">ספטמבר</option>
-              <option value="10">אוקטובר</option>
-              <option value="11">נובמבר</option>
-              <option value="12">דצמבר</option>
+              <option value="01">ינואר</option><option value="02">פברואר</option><option value="03">מרץ</option>
+              <option value="04">אפריל</option><option value="05">מאי</option><option value="06">יוני</option>
+              <option value="07">יולי</option><option value="08">אוגוסט</option><option value="09">ספטמבר</option>
+              <option value="10">אוקטובר</option><option value="11">נובמבר</option><option value="12">דצמבר</option>
             </select>
           </div>
         </div>
 
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] flex flex-wrap items-center gap-2">
-          <span class="text-xs font-bold text-orange-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>  הפקדה לבנק:</span>
+          <span class="text-xs font-bold text-orange-400">הפקדה לבנק:</span>
           <input id="bankDepositDate" type="date" class="input-dark px-2.5 py-1.5 text-xs" />
           <input id="bankDepositAmount" type="number" placeholder="סכום שהופקד (₪)" class="input-dark px-2.5 py-1.5 text-xs w-36" />
-          <button type="button" onclick="saveBankDeposit()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs">רשום <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> </button>
+          <button type="button" onclick="saveBankDeposit()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs">רשום ✓</button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr>
-                <th class="py-2">תאריך</th>
-                <th><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>  מזומן</th>
-                <th><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>  אשראי</th>
-                <th><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>  סה״כ יומי</th>
-              </tr>
+              <tr><th class="py-2">תאריך</th><th>מזומן</th><th>אשראי</th><th>סה״כ יומי</th></tr>
             </thead>
-            <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]">
-              <tr><td class="py-3"><span class="skeleton-bar w-20"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td><td class="py-3"><span class="skeleton-bar w-20"></span></td></tr><tr><td class="py-3"><span class="skeleton-bar w-24"></span></td><td class="py-3"><span class="skeleton-bar w-14"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td><td class="py-3"><span class="skeleton-bar w-20"></span></td></tr><tr><td class="py-3"><span class="skeleton-bar w-20"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td><td class="py-3"><span class="skeleton-bar w-14"></span></td><td class="py-3"><span class="skeleton-bar w-16"></span></td></tr>
-            </tbody>
+            <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
         </div>
       </div>
@@ -892,7 +312,7 @@
     <!-- 2. הוצאות -->
     <section id="osec-expenses" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>  רישום הוצאות</h2>
+        <h2 class="text-base font-black text-white">רישום הוצאות</h2>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <input id="expDate" type="date" class="input-dark p-2 text-xs" />
           <select id="expCat" class="input-dark p-2 text-xs">
@@ -906,63 +326,34 @@
           <input id="expAmount" type="number" placeholder="סכום (₪)" class="input-dark p-2 text-xs" />
           <input id="expNote" type="text" placeholder="פירוט הוצאה" class="input-dark p-2 text-xs" />
         </div>
-        <button type="button" onclick="saveExpense()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">
-          + שמור הוצאה
-        </button>
+        <button type="button" onclick="saveExpense()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ שמור הוצאה</button>
       </div>
     </section>
 
-    <!-- 3. תורים וזמני המתנה (סוני וסנוקר) -->
+    <!-- 3. תורים -->
     <section id="osec-queues" class="owner-section hidden space-y-3">
       <div class="grid grid-cols-3 gap-2.5">
-        <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>  תורים לסוני</div>
-          <div id="qSonyTotal" class="text-lg font-black text-sky-400 mt-0.5">0</div>
-        </div>
-        <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>  תורים לסנוקר</div>
-          <div id="qSnookerTotal" class="text-lg font-black text-emerald-400 mt-0.5">0</div>
-        </div>
-        <div class="card p-3 text-center">
-          <div class="text-[11px] text-slate-400">⏱️ ממוצע המתנה</div>
-          <div id="qAvgWait" class="text-lg font-black text-orange-400 mt-0.5">0 דק׳</div>
-        </div>
+        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="text-lg font-black text-sky-400 mt-0.5">0</div></div>
+        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסנוקר</div><div id="qSnookerTotal" class="text-lg font-black text-emerald-400 mt-0.5">0</div></div>
+        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">ממוצע המתנה</div><div id="qAvgWait" class="text-lg font-black text-orange-400 mt-0.5">0 דק׳</div></div>
       </div>
-
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>  סיכום תורים לפי ימים (כמה חיכו ובאיזה יום)</h2>
+        <h2 class="text-base font-black text-white">סיכום תורים לפי ימים</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr>
-                <th class="py-2">תאריך ויום</th>
-                <th>סוני <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg> </th>
-                <th>סנוקר <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg> </th>
-                <th>ממוצע המתנה</th>
-                <th>מקסימום</th>
-              </tr>
+              <tr><th class="py-2">תאריך ויום</th><th>סוני</th><th>סנוקר</th><th>ממוצע המתנה</th><th>מקסימום</th></tr>
             </thead>
-            <tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]">
-              <tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>
-            </tbody>
+            <tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]"><tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr></tbody>
           </table>
         </div>
       </div>
-
       <div class="card p-4 space-y-2">
-        <h3 class="text-sm font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>  פירוט כל הנרשמים בתור</h3>
+        <h3 class="text-sm font-black text-white">פירוט כל הנרשמים בתור</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr>
-                <th class="py-2">תאריך</th>
-                <th>תחום</th>
-                <th>שם</th>
-                <th>רישום</th>
-                <th>כניסה</th>
-                <th>המתנה</th>
-                <th>סטטוס</th>
-              </tr>
+              <tr><th class="py-2">תאריך</th><th>תחום</th><th>שם</th><th>רישום</th><th>כניסה</th><th>המתנה</th><th>סטטוס</th></tr>
             </thead>
             <tbody id="qAllTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
@@ -970,46 +361,37 @@
       </div>
     </section>
 
-    <!-- 4. מלגות שערי עתיד + מאגר קבוע -->
+    <!-- 4. מלגות שערי עתיד + ניהול מאגר שמות -->
     <section id="osec-scholarships" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>  מלגות — עמותת שערי עתיד (ע״ר 580811925)</h2>
+            <h2 class="text-base font-black text-white">מלגות — עמותת שערי עתיד (ע״ר 580811925)</h2>
             <p class="text-xs text-slate-400">בחר מהמאגר הקבוע או הוסף ידנית, סמן V לכל מורשה חתימה והפק נספח ב׳ חתום</p>
           </div>
           <div class="flex items-center gap-2">
             <select id="schMonthSelect" onchange="renderScholarships()" class="input-dark px-2.5 py-1.5 text-xs font-bold">
-              <option value="ינואר 2026">ינואר 2026</option>
-              <option value="פברואר 2026">פברואר 2026</option>
-              <option value="מרץ 2026">מרץ 2026</option>
-              <option value="אפריל 2026">אפריל 2026</option>
-              <option value="מאי 2026">מאי 2026</option>
-              <option value="יוני 2026">יוני 2026</option>
-              <option value="יולי 2026">יולי 2026</option>
-              <option value="אוגוסט 2026">אוגוסט 2026</option>
-              <option value="ספטמבר 2026">ספטמבר 2026</option>
-              <option value="אוקטובר 2026">אוקטובר 2026</option>
-              <option value="נובמבר 2026">נובמבר 2026</option>
-              <option value="דצמבר 2026">דצמבר 2026</option>
+              <option value="ינואר 2026">ינואר 2026</option><option value="פברואר 2026">פברואר 2026</option><option value="מרץ 2026">מרץ 2026</option>
+              <option value="אפריל 2026">אפריל 2026</option><option value="מאי 2026">מאי 2026</option><option value="יוני 2026">יוני 2026</option>
+              <option value="יולי 2026">יולי 2026</option><option value="אוגוסט 2026">אוגוסט 2026</option><option value="ספטמבר 2026">ספטמבר 2026</option>
+              <option value="אוקטובר 2026">אוקטובר 2026</option><option value="נובמבר 2026">נובמבר 2026</option><option value="דצמבר 2026">דצמבר 2026</option>
             </select>
-            <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-2 rounded-xl text-xs shadow">
-              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>  הצג והפק נספח ב׳ חתום
-            </button>
+            <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-2 rounded-xl text-xs shadow">הצג והפק נספח ב׳ חתום</button>
           </div>
         </div>
 
-        <!-- מאגר אברכים קבוע לבחירה מהירה -->
+        <!-- מאגר אברכים קבוע + כפתור ניהול (הוספה ומחיקה) -->
         <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs font-black text-orange-400"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>  מאגר מקבלי מלגות קבוע (בחר את מי שמקבל החודש):</span>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="toggleAllDir(true)" class="text-[11px] bg-[#13253e] px-2.5 py-1 rounded-lg border border-[#26466d]">בחר הכל</button>
-              <button type="button" onclick="addSelectedFromDir()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1 rounded-lg text-xs">+ הוסף מסומנים לחודש</button>
+            <span class="text-xs font-black text-orange-400">מאגר מקבלי מלגות קבוע (מהשיטס):</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="openDirManageModal()" class="text-[11px] bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-1.5 rounded-lg">נהל מאגר שמות (הוספה / מחיקה)</button>
+              <button type="button" onclick="toggleAllDir(true)" class="btn-secondary !py-1 !px-2.5 !text-[11px]">בחר הכל</button>
+              <button type="button" onclick="addSelectedFromDir()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs">+ הוסף מסומנים לחודש</button>
             </div>
           </div>
           <div id="schDirectoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto">
-            <div class="text-xs text-slate-400">טוען מאגר מהשיטס... (כשתביא לי את הרשימה אכניס אותה ישר לגיליון "מאגר אברכים קבוע")</div>
+            <div class="text-xs text-slate-400">טוען מאגר מהשיטס...</div>
           </div>
         </div>
 
@@ -1025,15 +407,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-right">
             <thead class="text-slate-400 border-b border-[#1e3a5f]">
-              <tr>
-                <th class="py-2">#</th>
-                <th>שם מלא</th>
-                <th>ת.ז.</th>
-                <th>סכום</th>
-                <th class="text-center">וי (V) מנחם</th>
-                <th class="text-center">וי (V) יהודה</th>
-                <th class="text-center">מחק</th>
-              </tr>
+              <tr><th class="py-2">#</th><th>שם מלא</th><th>ת.ז.</th><th>סכום</th><th class="text-center">וי (V) מנחם</th><th class="text-center">וי (V) יהודה</th><th class="text-center">מחק</th></tr>
             </thead>
             <tbody id="schTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
           </table>
@@ -1041,71 +415,91 @@
       </div>
     </section>
 
-    <!-- 5. תקלות, משימות למנהל והתראות לצ'אט מרחב משותף -->
+    <!-- 5. תקלות, משימות והתראות -->
     <section id="osec-ops" class="owner-section hidden space-y-3">
-      <!-- משימות מהבעלים למנהל -->
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>  שליחת משימה למנהל (תזכורת כל יום עד סימון 'טופל')</h2>
+            <h2 class="text-base font-black text-white">שליחת משימה למנהל (תזכורת כל יום עד סימון 'טופל')</h2>
             <p class="text-xs text-slate-400">כל משימה שתשלח כאן תישלח למנהל ותזכיר לו כל יום אוטומטית עד שיסמן שטופל</p>
           </div>
-          <button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs">⏰ הפעל תזכורת יומית</button>
+          <button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs">הפעל תזכורת יומית</button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <input id="mgrTaskTitle" type="text" placeholder="נושא (למשל: לתקן שלט / נורה בשולחן 2)" class="input-dark p-2.5 text-xs" />
           <input id="mgrTaskDetails" type="text" placeholder="פירוט המשימה למנהל..." class="input-dark p-2.5 text-xs" />
           <div class="flex gap-1.5">
-            <button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>  שלח משימה</button>
-            <button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>  שלח לווצאפ</button>
+            <button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח משימה</button>
+            <button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח לווצאפ</button>
           </div>
         </div>
         <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
 
-      <!-- הגדרות מנהל נוכחי (טלפון + מייל) וצ'אט מרחב משותף -->
+      <!-- פרטי מנהל + הגדרות קבלת מיילים לבעלים -->
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>  פרטי מנהל נוכחי (להחלפה בכל עת) והתראות</h2>
+        <h2 class="text-base font-black text-white">פרטי מנהל נוכחי והגדרות קבלת מיילים לבעלים</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <input id="gasUrlOwnerInput" type="url" placeholder="קישור Web App של Apps Script (.../exec)" class="input-dark p-2 text-xs sm:col-span-2" />
+          <input id="gasUrlOwnerInput" type="url" dir="ltr" placeholder="קישור Web App של Apps Script (.../exec)" class="input-dark p-2 text-xs sm:col-span-2" />
           <input id="managerPhoneInput" type="tel" placeholder="נייד מנהל לווצאפ (97250...)" class="input-dark p-2 text-xs font-bold" />
           <input id="managerEmailInput" type="email" placeholder="מייל מנהל לתזכורות" class="input-dark p-2 text-xs" />
-          <input id="chatWebhookInput" type="url" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs" />
-          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות ופרטי מנהל <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> </button>
+          <input id="chatWebhookInput" type="url" dir="ltr" placeholder="קישור Webhook לצ'אט (לא חובה)" class="input-dark p-2 text-xs sm:col-span-2" />
+          <input id="ownerEmailsInput" type="text" dir="ltr" placeholder="מיילים לקבלת דוחות סוף יום (אפשר כמה, מופרדים בפסיק)" class="input-dark p-2 text-xs sm:col-span-2" />
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-200 sm:col-span-2 cursor-pointer p-2 rounded-xl bg-[#091322] border border-[#26466d]">
+            <input id="ownerEmailNotifyChk" type="checkbox" checked class="w-4 h-4 accent-orange-600" />
+            <span>קבל דוחות סוף יום והתראות למיילים הרשומים למעלה</span>
+          </label>
+          <button type="button" onclick="saveNotifySettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs sm:col-span-2">שמור הגדרות ומיילים ✓</button>
         </div>
       </div>
 
-      <!-- מדריכים למוכרים -->
       <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>  הוספת מדריך "איך מסדרים" למוכרים</h2>
+        <h2 class="text-base font-black text-white">הוספת מדריך "איך מסדרים" למוכרים</h2>
         <input id="newGuideTitle" type="text" placeholder="כותרת התקלה" class="input-dark w-full p-2.5 text-xs" />
         <textarea id="newGuideSteps" rows="3" placeholder="שלבי הפתרון למוכר..." class="input-dark w-full p-2.5 text-xs"></textarea>
-        <button type="button" onclick="addNewGuide()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">
-          + פרסם מדריך למוכרים
-        </button>
+        <button type="button" onclick="addNewGuide()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ פרסם מדריך למוכרים</button>
       </div>
     </section>
-
   </main>
 
+  <!-- מודאל ניהול מאגר שמות (הוספה ומחיקה) -->
+  <div id="dirManageModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="card w-full max-w-lg p-5 space-y-4 max-h-[88vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-[#1e3a5f] pb-2">
+        <h3 class="text-base font-black text-white">ניהול מאגר שמות קבוע (הוספה ומחיקה)</h3>
+        <button type="button" onclick="closeDirManageModal()" class="btn-modal-close" aria-label="סגור">✕</button>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <input id="dirNewName" type="text" placeholder="שם מלא" class="input-dark p-2 text-xs" />
+        <input id="dirNewId" type="text" placeholder="ת.ז." class="input-dark p-2 text-xs" />
+        <input id="dirNewAmount" type="number" value="2500" placeholder="סכום" class="input-dark p-2 text-xs text-center font-bold" />
+        <button type="button" onclick="addPersonToDirectory()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs px-2 py-2">+ הוסף למאגר</button>
+      </div>
+      <div id="dirManageRows" class="space-y-2 overflow-y-auto flex-1 text-xs pr-1"></div>
+      <div class="flex justify-end pt-2 border-t border-[#1e3a5f]">
+        <button type="button" onclick="closeDirManageModal()" class="btn-secondary">סגור</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודאל נספח ב' חתום -->
   <div id="protocolModal" class="hidden fixed inset-0 bg-black/85 z-50 overflow-y-auto p-3 flex flex-col items-center">
-    <div class="no-print w-full max-w-2xl flex items-center justify-between bg-[#13253e] p-3 rounded-xl mb-3 border border-orange-500">
+    <div class="no-print w-full max-w-2xl flex flex-wrap items-center justify-between gap-2 bg-[#13253e] p-3 rounded-xl mb-3 border border-orange-500">
       <span class="text-xs font-bold text-white">נספח ב׳ מוכן לשמירה כ-PDF / הדפסה:</span>
-      <div class="flex gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <label class="flex items-center gap-1.5 text-xs font-bold text-slate-200"><span>תאריך אישור:</span><input type="date" id="protocolDateInput" onchange="renderAppendixSheet(this.value)" class="input-dark px-2 py-1 text-xs !min-h-[34px]" /></label>
-        <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-1.5 rounded-lg text-xs"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect width="12" height="8" x="6" y="14"/></svg>  שמור כ-PDF / הדפס</button>
-        <button type="button" onclick="closeAppendixModal()" class="btn-secondary"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>  סגור</button>
+        <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-1.5 rounded-lg text-xs">שמור כ-PDF / הדפס</button>
+        <button type="button" onclick="closeAppendixModal()" class="btn-secondary">סגור</button>
       </div>
     </div>
     <div id="protocolPrintSheet" class="bg-white text-black w-full max-w-2xl p-6 rounded-xl shadow-2xl"></div>
   </div>
 
-  
-  <!-- Custom Delete Confirmation Modal -->
-  <div id="confirmDeleteModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle">
+  <!-- מודאל אישור מחיקת מלגאי -->
+  <div id="confirmDeleteModal" class="hidden fixed inset-0 bg-black/80 z-[998] flex items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="card w-full max-w-sm p-5 space-y-4 border-rose-500/40">
       <div class="flex items-center justify-between">
-        <h3 id="confirmDeleteTitle" class="text-base font-black text-white">אישור מחיקה</h3>
+        <h3 class="text-base font-black text-white">אישור מחיקה</h3>
         <button type="button" onclick="closeConfirmDeleteModal()" class="btn-modal-close" aria-label="סגור">✕</button>
       </div>
       <p id="confirmDeleteMsg" class="text-xs text-slate-300">האם למחוק את הרשומה מהרשימה החודשית?</p>
@@ -1132,27 +526,21 @@
     let allQueues = [];
     let managerTasks = [];
     let schDirectory = [];
-    let scholarships = JSON.parse(safeGet('friends_scholarships') || '[]');
+    // לא טוענים מלגות דמה ישנות מהדפדפן — מסתנכרן תמיד ישירות מגוגל שיטס האמיתי
+    let scholarships = [];
+    try { window.localStorage.removeItem('friends_scholarships'); } catch (e) {}
 
-    const HEB_MONTHS = {
-      "ינואר": "01", "פברואר": "02", "מרץ": "03", "אפריל": "04",
-      "מאי": "05", "יוני": "06", "יולי": "07", "אוגוסט": "08",
-      "ספטמבר": "09", "אוקטובר": "10", "נובמבר": "11", "דצמבר": "12"
-    };
+    const HEB_MONTHS = { "ינואר":"01","פברואר":"02","מרץ":"03","אפריל":"04","מאי":"05","יוני":"06","יולי":"07","אוגוסט":"08","ספטמבר":"09","אוקטובר":"10","נובמבר":"11","דצמבר":"12" };
 
     document.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
       const currentMonthNum = String(now.getMonth() + 1).padStart(2, '0');
       const monthNamesHeb = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
       const currentHebMonthYear = `${monthNamesHeb[now.getMonth()]} ${now.getFullYear()}`;
-
       const mf = document.getElementById('monthFilter');
       if (mf) mf.value = currentMonthNum;
-
       const sm = document.getElementById('schMonthSelect');
-      if (sm && [...sm.options].some(o => o.value === currentHebMonthYear)) {
-        sm.value = currentHebMonthYear;
-      }
+      if (sm && [...sm.options].some(o => o.value === currentHebMonthYear)) sm.value = currentHebMonthYear;
 
       document.getElementById('bankDepositDate').valueAsDate = now;
       document.getElementById('expDate').valueAsDate = now;
@@ -1160,6 +548,8 @@
       document.getElementById('chatWebhookInput').value = safeGet('friends_chat_webhook', '');
       document.getElementById('managerPhoneInput').value = safeGet('friends_manager_phone', '972503265609');
       document.getElementById('managerEmailInput').value = safeGet('friends_manager_email', 'arri.karp@gmail.com');
+      document.getElementById('ownerEmailsInput').value = safeGet('friends_owner_emails', 'robbin8541@gmail.com');
+      document.getElementById('ownerEmailNotifyChk').checked = safeGet('friends_owner_email_notify', 'true') !== 'false';
 
       renderScholarships();
       refreshOwnerData();
@@ -1184,49 +574,29 @@
     function parseDateInfo(raw, sheetName) {
       const s = String(raw || '').trim();
       let day = '', month = '', year = '';
-
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-        const parts = s.substring(0, 10).split('-');
-        year = parts[0]; month = parts[1]; day = parts[2];
+        const parts = s.substring(0, 10).split('-'); year = parts[0]; month = parts[1]; day = parts[2];
       } else if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}/.test(s)) {
         const parts = s.split(/[./-]/);
-        day = parts[0].padStart(2, '0');
-        month = parts[1].padStart(2, '0');
+        day = parts[0].padStart(2, '0'); month = parts[1].padStart(2, '0');
         year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
       } else {
         const d = new Date(s);
         if (!isNaN(d.getTime())) {
-          day = String(d.getDate()).padStart(2, '0');
-          month = String(d.getMonth() + 1).padStart(2, '0');
-          year = String(d.getFullYear());
+          day = String(d.getDate()).padStart(2, '0'); month = String(d.getMonth() + 1).padStart(2, '0'); year = String(d.getFullYear());
         }
       }
-
-      if (!month && sheetName) {
-        for (const [heb, num] of Object.entries(HEB_MONTHS)) {
-          if (String(sheetName).includes(heb)) { month = num; break; }
-        }
-      }
-      if (!year && sheetName) {
-        const ym = String(sheetName).match(/20\d{2}/);
-        if (ym) year = ym[0];
-        else if (String(sheetName).includes('25')) year = '2025';
-      }
-
-      return {
-        display: (day && month && year) ? `${day}/${month}/${year}` : s,
-        month,
-        year
-      };
+      if (!month && sheetName) { for (const [heb, num] of Object.entries(HEB_MONTHS)) { if (String(sheetName).includes(heb)) { month = num; break; } } }
+      if (!year && sheetName) { const ym = String(sheetName).match(/20\d{2}/); if (ym) year = ym[0]; else if (String(sheetName).includes('25')) year = '2025'; }
+      return { display: (day && month && year) ? `${day}/${month}/${year}` : s, month, year };
     }
 
-    
     async function sendToGas(payload) {
       try {
         const res = await fetch(SCRIPT_URL + "?payload=" + encodeURIComponent(JSON.stringify(payload)));
         return await res.json();
       } catch (e) {
-        await sendToGas(payload);
+        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
         return { ok: true };
       }
     }
@@ -1243,57 +613,25 @@
 
         allShifts = rawRows.map(r => {
           const info = parseDateInfo(r.date, r.sheetName);
-          let cash = 0, credit = 0;
+          const cash = parseFloat(r.cash) || 0;
+          const credit = parseFloat(r.credit) || 0;
+          return { date: info.display, monthNum: info.month, yearNum: info.year, cash, credit, total: cash + credit };
+        }).filter(r => (!r.yearNum || r.yearNum === selectedYear) && (r.cash > 0 || r.credit > 0));
 
-          if (r.cash !== undefined && r.credit !== undefined) {
-            cash = parseFloat(r.cash) || 0;
-            credit = parseFloat(r.credit) || 0;
-          } else {
-            const c1 = parseFloat(r.col1) || 0;
-            const c2 = parseFloat(r.col2) || 0;
-            const c3 = parseFloat(r.col3) || 0;
-            // זיהוי אוטומטי: בלשוניות ישנות (עד אוקטובר 2026) עמודה B (col1/col2) היא מזומן ועמודה C היא אשראי.
-            // בלשוניות החדשות (נובמבר 2026 ומעלה) עמודה D (col3) היא מזומן ועמודה E (col2) היא אשראי.
-            const isNewSheet = String(r.sheetName || '').includes('נובמבר 2026') || String(r.sheetName || '').includes('דצמבר 2026') || Number(info.year) >= 2027;
-            if (isNewSheet) {
-              cash = c3;
-              credit = c2;
-            } else {
-              cash = c2;
-              credit = c3;
-            }
-          }
-
-          return {
-            date: info.display,
-            monthNum: info.month,
-            yearNum: info.year,
-            cash: cash,
-            credit: credit,
-            total: cash + credit
-          };
-        }).filter(r => {
-          if (r.yearNum && r.yearNum !== selectedYear) return false;
-          return r.cash > 0 || r.credit > 0;
-        });
-
-        if (data.queues) {
-          allQueues = data.queues;
-          renderQueuesTab();
-        }
-        if (data.managerTasks) {
-          managerTasks = data.managerTasks;
-          renderManagerTasks();
-        }
+        if (data.queues) { allQueues = data.queues; renderQueuesTab(); }
+        if (data.managerTasks) { managerTasks = data.managerTasks; renderManagerTasks(); }
         if (data.notifySettings) {
           if (data.notifySettings.managerPhone) { safeSet('friends_manager_phone', data.notifySettings.managerPhone); document.getElementById('managerPhoneInput').value = data.notifySettings.managerPhone; }
           if (data.notifySettings.managerEmail) { safeSet('friends_manager_email', data.notifySettings.managerEmail); document.getElementById('managerEmailInput').value = data.notifySettings.managerEmail; }
+          if (data.notifySettings.ownerEmails !== undefined) { safeSet('friends_owner_emails', data.notifySettings.ownerEmails); document.getElementById('ownerEmailsInput').value = data.notifySettings.ownerEmails; }
+          if (data.notifySettings.emailNotify !== undefined) { safeSet('friends_owner_email_notify', String(data.notifySettings.emailNotify)); document.getElementById('ownerEmailNotifyChk').checked = Boolean(data.notifySettings.emailNotify); }
         }
-        if (data.directory) {
+        if (Array.isArray(data.directory)) {
           schDirectory = data.directory;
           renderDirectoryList();
+          renderDirManageRows();
         }
-        if (data.scholarships && Array.isArray(data.scholarships)) {
+        if (Array.isArray(data.scholarships)) {
           scholarships = data.scholarships.map(s => ({
             id: s.rowNumber || Date.now() + Math.random(),
             rowNumber: s.rowNumber,
@@ -1304,10 +642,8 @@
             verifiedMenachem: (s.received && s.verifier === 'מנחם רובינשטיין'),
             verifiedGura: (s.received && s.verifier === 'יהודה גורא')
           }));
-          safeSet('friends_scholarships', JSON.stringify(scholarships));
           renderScholarships();
         }
-
         renderIncomeTable();
       } catch (e) {
         renderIncomeTable();
@@ -1319,18 +655,11 @@
     function renderIncomeTable() {
       const m = document.getElementById('monthFilter').value;
       const filtered = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
-
       let cashSum = 0, credSum = 0, totSum = 0;
-      filtered.forEach(r => {
-        cashSum += r.cash;
-        credSum += r.credit;
-        totSum += r.total;
-      });
-
+      filtered.forEach(r => { cashSum += r.cash; credSum += r.credit; totSum += r.total; });
       document.getElementById('kpiCashTotal').textContent = Math.round(cashSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCreditTotal').textContent = Math.round(credSum).toLocaleString() + ' ₪';
       document.getElementById('kpiCombinedTotal').textContent = Math.round(totSum).toLocaleString() + ' ₪';
-
       const tbody = document.getElementById('incomeTableBody');
       if (!filtered.length) {
         tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-400">אין נתונים להצגה בחודש זה</td></tr>';
@@ -1351,98 +680,106 @@
       const snookerQ = allQueues.filter(q => q.category === 'סנוקר');
       const completed = allQueues.filter(q => q.completed && q.waitMinutes > 0);
       const avg = completed.length ? Math.round(completed.reduce((a, b) => a + Number(b.waitMinutes || 0), 0) / completed.length) : 0;
-
       document.getElementById('qSonyTotal').textContent = sonyQ.length;
       document.getElementById('qSnookerTotal').textContent = snookerQ.length;
       document.getElementById('qAvgWait').textContent = avg + " דק׳";
-
       const byDay = {};
       allQueues.forEach(q => {
         const key = `${q.date || ''} (${q.dayOfWeek || ''})`;
         if (!byDay[key]) byDay[key] = { sony: 0, snooker: 0, waits: [] };
-        if (q.category === 'סנוקר') byDay[key].snooker++;
-        else byDay[key].sony++;
+        if (q.category === 'סנוקר') byDay[key].snooker++; else byDay[key].sony++;
         if (q.completed && q.waitMinutes > 0) byDay[key].waits.push(Number(q.waitMinutes));
       });
-
       const dBody = document.getElementById('qDailyTableBody');
       const keys = Object.keys(byDay);
-      if (!keys.length) {
-        dBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>';
-      } else {
-        dBody.innerHTML = keys.map(k => {
-          const d = byDay[k];
-          const dAvg = d.waits.length ? Math.round(d.waits.reduce((a, b) => a + b, 0) / d.waits.length) : 0;
-          const dMax = d.waits.length ? Math.max(...d.waits) : 0;
-          return `<tr>
-            <td class="py-2 font-bold text-slate-200">${k}</td>
-            <td class="text-sky-400 font-bold">${d.sony}</td>
-            <td class="text-emerald-400 font-bold">${d.snooker}</td>
-            <td class="text-orange-400 font-bold">${dAvg} דק׳</td>
-            <td class="text-rose-400 font-bold">${dMax} דק׳</td>
-          </tr>`;
-        }).join('');
-      }
-
+      dBody.innerHTML = !keys.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין עדיין נתוני תורים</td></tr>' : keys.map(k => {
+        const d = byDay[k];
+        const dAvg = d.waits.length ? Math.round(d.waits.reduce((a, b) => a + b, 0) / d.waits.length) : 0;
+        const dMax = d.waits.length ? Math.max(...d.waits) : 0;
+        return `<tr><td class="py-2 font-bold text-slate-200">${k}</td><td class="text-sky-400 font-bold">${d.sony}</td><td class="text-emerald-400 font-bold">${d.snooker}</td><td class="text-orange-400 font-bold">${dAvg} דק׳</td><td class="text-rose-400 font-bold">${dMax} דק׳</td></tr>`;
+      }).join('');
       document.getElementById('qAllTableBody').innerHTML = allQueues.map(q => `
-        <tr>
-          <td class="py-2 font-bold">${q.date}</td>
-          <td class="${q.category === 'סנוקר' ? 'text-emerald-400' : 'text-sky-400'} font-bold">${q.category}</td>
-          <td>${q.customerName}</td>
-          <td>${q.startTime}</td>
-          <td>${q.enteredTime || '-'}</td>
-          <td class="text-orange-400 font-bold">${q.completed ? q.waitMinutes + " דק׳" : 'ממתין'}</td>
-          <td>${q.completed ? '✓ נכנס' : '⏳ בתור'}</td>
-        </tr>
+        <tr><td class="py-2 font-bold">${q.date}</td><td class="${q.category === 'סנוקר' ? 'text-emerald-400' : 'text-sky-400'} font-bold">${q.category}</td><td>${q.customerName}</td><td>${q.startTime}</td><td>${q.enteredTime || '-'}</td><td class="text-orange-400 font-bold">${q.completed ? q.waitMinutes + " דק׳" : 'ממתין'}</td><td>${q.completed ? '✓ נכנס' : 'ממתין'}</td></tr>
       `).join('');
     }
 
     function renderDirectoryList() {
       const box = document.getElementById('schDirectoryList');
-      if (!schDirectory.length) return;
+      if (!schDirectory.length) {
+        box.innerHTML = '<div class="text-xs text-slate-400">המאגר ריק כרגע — לחץ על "נהל מאגר שמות" כדי להוסיף שמות.</div>';
+        return;
+      }
       box.innerHTML = schDirectory.map((d, idx) => `
         <label class="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] cursor-pointer text-xs">
           <div class="flex items-center gap-2">
             <input type="checkbox" class="dir-chk w-4 h-4 accent-orange-600" data-idx="${idx}" ${d.active ? 'checked' : ''} />
-            <div>
-              <div class="font-bold text-white">${d.fullName}</div>
-              <div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber || '-'}</div>
-            </div>
+            <div><div class="font-bold text-white">${d.fullName}</div><div class="text-[10px] text-slate-400">ת.ז. ${d.idNumber || '-'}</div></div>
           </div>
           <span class="text-emerald-400 font-bold">${Number(d.defaultAmount || 2500).toLocaleString()} ₪</span>
         </label>
       `).join('');
     }
 
-    function toggleAllDir(val) {
-      document.querySelectorAll('.dir-chk').forEach(cb => cb.checked = val);
+    function openDirManageModal() {
+      renderDirManageRows();
+      document.getElementById('dirManageModal').classList.remove('hidden');
+    }
+    function closeDirManageModal() {
+      document.getElementById('dirManageModal').classList.add('hidden');
+    }
+    function renderDirManageRows() {
+      const box = document.getElementById('dirManageRows');
+      if (!box) return;
+      if (!schDirectory.length) {
+        box.innerHTML = '<div class="text-center text-slate-400 py-4">אין שמות במאגר הקבוע</div>';
+        return;
+      }
+      box.innerHTML = schDirectory.map((d, idx) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#091322] border border-[#26466d]">
+          <div>
+            <div class="font-bold text-white">${d.fullName}</div>
+            <div class="text-[11px] text-slate-400">ת.ז. ${d.idNumber || '-'} | סכום: ${Number(d.defaultAmount || 2500).toLocaleString()} ₪</div>
+          </div>
+          <button type="button" onclick="deletePersonFromDirectory(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-[11px]">מחק ✕</button>
+        </div>
+      `).join('');
+    }
+    async function addPersonToDirectory() {
+      const fullName = document.getElementById('dirNewName').value.trim();
+      const idNumber = document.getElementById('dirNewId').value.trim();
+      const defaultAmount = parseFloat(document.getElementById('dirNewAmount').value) || 2500;
+      if (!fullName) return showOwnerToast('הזן שם מלא');
+      document.getElementById('dirNewName').value = '';
+      document.getElementById('dirNewId').value = '';
+      await sendToGas({ action: 'addToDirectory', fullName, idNumber, defaultAmount, defaultVerifier: 'מנחם רובינשטיין' });
+      showOwnerToast('נוסף למאגר הקבוע בשיטס ✓');
+      refreshOwnerData();
+    }
+    async function deletePersonFromDirectory(idx) {
+      const d = schDirectory[idx];
+      if (!d) return;
+      schDirectory.splice(idx, 1);
+      renderDirectoryList();
+      renderDirManageRows();
+      if (d.rowNumber) {
+        await sendToGas({ action: 'deleteFromDirectory', rowNumber: d.rowNumber });
+      }
+      showOwnerToast('הוסר מהמאגר הקבוע בשיטס ✓');
+      refreshOwnerData();
     }
 
-    function addSelectedFromDir() {
+    function toggleAllDir(val) { document.querySelectorAll('.dir-chk').forEach(cb => cb.checked = val); }
+
+    async function addSelectedFromDir() {
       const month = document.getElementById('schMonthSelect').value;
       const checked = [...document.querySelectorAll('.dir-chk:checked')];
       if (!checked.length) return showOwnerToast('סמן לפחות אברך אחד מהמאגר');
-      checked.forEach((cb, idx) => {
-        const d = schDirectory[Number(cb.dataset.idx)];
-        if (d) {
-          scholarships.push({
-            id: Date.now() + idx,
-            month,
-            name: d.fullName,
-            tz: d.idNumber || '',
-            amount: Number(d.defaultAmount) || 2500,
-            verifiedMenachem: d.defaultVerifier === 'מנחם רובינשטיין',
-            verifiedGura: d.defaultVerifier === 'יהודה גורא'
-          });
-        }
-      });
-      safeSet('friends_scholarships', JSON.stringify(scholarships));
-      renderScholarships();
       const itemsToSave = checked.map(cb => schDirectory[Number(cb.dataset.idx)]).filter(Boolean).map(d => ({
         fullName: d.fullName, idNumber: d.idNumber, phoneOrNote: d.phoneOrNote, amount: d.defaultAmount, verifier: d.defaultVerifier
       }));
-      sendToGas({ action: 'addMonthFromDirectory', month, items: itemsToSave }).catch(()=>{});
-      showOwnerToast(`נוספו ${checked.length} מלגאים לחודש ונשמרו בשיטס ✓`);
+      await sendToGas({ action: 'addMonthFromDirectory', month, items: itemsToSave });
+      showOwnerToast(`נוספו ${itemsToSave.length} מלגאים לחודש ונשמרו בשיטס ✓`);
+      refreshOwnerData();
     }
 
     async function sendManagerTask(alsoWhatsApp) {
@@ -1463,7 +800,6 @@
       showOwnerToast('המשימה נשלחה למנהל עם תזכורת יומית ✓');
     }
 
-    
     async function closeOwnerTask(id) {
       const t = managerTasks.find(x => x.id === id);
       if (t) t.status = 'טופל';
@@ -1474,29 +810,16 @@
 
     function renderManagerTasks() {
       const box = document.getElementById('mgrTasksList');
-      if (!managerTasks.length) {
-        box.innerHTML = '<div class="text-slate-400">אין משימות פתוחות למנהל.</div>';
-        return;
-      }
+      if (!managerTasks.length) { box.innerHTML = '<div class="text-slate-400">אין משימות פתוחות למנהל.</div>'; return; }
       box.innerHTML = managerTasks.map(t => `
         <div class="p-2.5 rounded-xl bg-[#091322] border ${t.status === 'טופל' ? 'border-emerald-500/40' : 'border-orange-500/50'} flex flex-wrap justify-between items-center gap-2">
-          <div>
-            <span class="font-bold ${t.status === 'טופל' ? 'text-emerald-400' : 'text-orange-400'}">[${t.status}]</span>
-            <strong class="text-white mr-1">${t.title}</strong>
-            <span class="text-slate-400 mr-1">${t.details || ''}</span>
-            <span class="text-[10px] text-slate-500 mr-2">${t.createdAt || ''}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            ${t.status !== 'טופל' ? `<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">סגור משימה (טופל ✓)</button>` : '<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}
-          </div>
+          <div><span class="font-bold ${t.status === 'טופל' ? 'text-emerald-400' : 'text-orange-400'}">[${t.status}]</span> <strong class="text-white mr-1">${t.title}</strong> <span class="text-slate-400 mr-1">${t.details || ''}</span></div>
+          <div>${t.status !== 'טופל' ? `<button type="button" onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]">סגור משימה (טופל ✓)</button>` : '<span class="text-emerald-400 text-[11px] font-bold">סגור ✓</span>'}</div>
         </div>
       `).join('');
     }
 
-    async function setupDailyTrigger() {
-      await sendToGas({ action: 'setupDailyTrigger' });
-      showOwnerToast('תזכורת יומית למנהל הופעלה ✓');
-    }
+    async function setupDailyTrigger() { await sendToGas({ action: 'setupDailyTrigger' }); showOwnerToast('תזכורת יומית למנהל הופעלה ✓'); }
 
     async function saveNotifySettings() {
       const newGasUrl = document.getElementById('gasUrlOwnerInput').value.trim();
@@ -1505,23 +828,26 @@
       const managerEmail = document.getElementById('managerEmailInput').value.trim();
       let managerPhone = document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g, '');
       if (managerPhone.startsWith('0')) managerPhone = '972' + managerPhone.slice(1);
+      const ownerEmails = document.getElementById('ownerEmailsInput').value.trim() || 'robbin8541@gmail.com';
+      const emailNotify = document.getElementById('ownerEmailNotifyChk').checked;
+
       safeSet('friends_chat_webhook', chatWebhookUrl);
       safeSet('friends_manager_email', managerEmail);
       safeSet('friends_manager_phone', managerPhone);
-      await sendToGas({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, emailNotify: true });
-      showOwnerToast('פרטי המנהל והתראות עודכנו בכל המערכת ✓');
+      safeSet('friends_owner_emails', ownerEmails);
+      safeSet('friends_owner_email_notify', String(emailNotify));
+
+      await sendToGas({ action: 'saveNotifySettings', chatWebhookUrl, managerEmail, managerPhone, ownerEmails, emailNotify });
+      showOwnerToast('הגדרות המנהל והמיילים נשמרו ✓');
     }
 
     async function saveBankDeposit() {
       const dateInput = document.getElementById('bankDepositDate');
       const amtInput = document.getElementById('bankDepositAmount');
-      const date = dateInput.value;
       const amount = parseFloat(amtInput.value) || 0;
       if (!amount) return;
-
-      await sendToGas({ action: 'saveBankDeposit', date, amount });
-      amtInput.value = '';
-      dateInput.valueAsDate = new Date();
+      await sendToGas({ action: 'saveBankDeposit', date: dateInput.value, amount });
+      amtInput.value = ''; dateInput.valueAsDate = new Date();
       showOwnerToast('הפקדת הבנק נרשמה והשדה נוקה ✓');
     }
 
@@ -1530,49 +856,32 @@
       const catInput = document.getElementById('expCat');
       const amtInput = document.getElementById('expAmount');
       const noteInput = document.getElementById('expNote');
-
-      const date = dateInput.value;
-      const category = catInput.value;
       const amount = parseFloat(amtInput.value) || 0;
-      const note = noteInput.value.trim();
       if (!amount) return;
-
-      await sendToGas({ action: 'saveExpense', date, category, amount, note });
-      amtInput.value = '';
-      noteInput.value = '';
-      dateInput.valueAsDate = new Date();
+      await sendToGas({ action: 'saveExpense', date: dateInput.value, category: catInput.value, amount, note: noteInput.value.trim() });
+      amtInput.value = ''; noteInput.value = ''; dateInput.valueAsDate = new Date();
       showOwnerToast('ההוצאה נשמרה והשדות נוקו ✓');
     }
 
-    function addScholarshipRow() {
+    async function addScholarshipRow() {
       const month = document.getElementById('schMonthSelect').value;
       const nameInput = document.getElementById('schName');
       const tzInput = document.getElementById('schId');
       const amtInput = document.getElementById('schAmount');
-
       const name = nameInput.value.trim();
       const tz = tzInput.value.trim();
       const amount = parseFloat(amtInput.value) || 2500;
       if (!name) return;
-
-      scholarships.push({
-        id: Date.now(), month, name, tz, amount,
-        verifiedMenachem: false, verifiedGura: false
-      });
-      safeSet('friends_scholarships', JSON.stringify(scholarships));
-
-      nameInput.value = '';
-      tzInput.value = '';
-      renderScholarships();
-      sendToGas({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount }).catch(()=>{});
+      nameInput.value = ''; tzInput.value = '';
+      await sendToGas({ action: 'addScholarship', month, fullName: name, idNumber: tz, amount });
       showOwnerToast('המלגאי נוסף ונשמר בשיטס ✓');
+      refreshOwnerData();
     }
 
     function toggleVerifier(id, field) {
       const item = scholarships.find(s => s.id === id);
       if (item) {
         item[field] = !item[field];
-        safeSet('friends_scholarships', JSON.stringify(scholarships));
         renderScholarships();
         if (item.rowNumber) {
           const isChecked = item.verifiedMenachem || item.verifiedGura;
@@ -1582,22 +891,30 @@
       }
     }
 
+    let _pendingDeleteScholarshipId = null;
     function deleteScholarship(id) {
       const item = scholarships.find(s => s.id === id);
       _pendingDeleteScholarshipId = id;
       const msgEl = document.getElementById('confirmDeleteMsg');
-      if (msgEl) {
-        msgEl.textContent = item
-          ? `האם למחוק את ${item.name} (${item.amount.toLocaleString()} ₪) מרשימת המלגות של החודש?`
-          : 'האם למחוק את המלגאי מהרשימה החודשית?';
-      }
+      if (msgEl) msgEl.textContent = item ? `האם למחוק את ${item.name} (${item.amount.toLocaleString()} ₪) מרשימת המלגות של החודש?` : 'האם למחוק את המלגאי?';
       document.getElementById('confirmDeleteModal').classList.remove('hidden');
+    }
+    function closeConfirmDeleteModal() { _pendingDeleteScholarshipId = null; document.getElementById('confirmDeleteModal').classList.add('hidden'); }
+    async function confirmDeleteScholarshipNow() {
+      if (_pendingDeleteScholarshipId === null) return;
+      const id = _pendingDeleteScholarshipId;
+      closeConfirmDeleteModal();
+      const item = scholarships.find(s => s.id === id);
+      scholarships = scholarships.filter(s => s.id !== id);
+      renderScholarships();
+      if (item && item.rowNumber) await sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber });
+      showOwnerToast('המלגאי הוסר מהרשימה ✓');
+      refreshOwnerData();
     }
 
     function renderScholarships() {
       const month = document.getElementById('schMonthSelect').value;
       const list = scholarships.filter(s => s.month === month);
-
       const menachemList = list.filter(s => s.verifiedMenachem);
       const guraList = list.filter(s => s.verifiedGura);
       const menachemSum = menachemList.reduce((a, b) => a + b.amount, 0);
@@ -1605,183 +922,88 @@
       const totalSum = list.reduce((a, b) => a + b.amount, 0);
 
       document.getElementById('verifierSummary').innerHTML = `
-        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]">
-          <div class="text-slate-400">סה״כ מלגות לחודש (${list.length}):</div>
-          <div class="font-black text-white text-base mt-0.5">${totalSum.toLocaleString()} ₪</div>
-        </div>
-        <div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40">
-          <div class="text-slate-400">מנחם רובינשטיין וידא (${menachemList.length}):</div>
-          <div class="font-black text-emerald-400 text-base mt-0.5">${menachemSum.toLocaleString()} ₪</div>
-        </div>
-        <div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40">
-          <div class="text-slate-400">יהודה צבי גורא וידא (${guraList.length}):</div>
-          <div class="font-black text-sky-400 text-base mt-0.5">${guraSum.toLocaleString()} ₪</div>
-        </div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]"><div class="text-slate-400">סה״כ מלגות לחודש (${list.length}):</div><div class="font-black text-white text-base mt-0.5">${totalSum.toLocaleString()} ₪</div></div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40"><div class="text-slate-400">מנחם רובינשטיין וידא (${menachemList.length}):</div><div class="font-black text-emerald-400 text-base mt-0.5">${menachemSum.toLocaleString()} ₪</div></div>
+        <div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40"><div class="text-slate-400">יהודה צבי גורא וידא (${guraList.length}):</div><div class="font-black text-sky-400 text-base mt-0.5">${guraSum.toLocaleString()} ₪</div></div>
       `;
-
       const tbody = document.getElementById('schTableBody');
-      if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400">טרם הוזנו מלגות לחודש זה</td></tr>';
-        return;
-      }
+      if (!list.length) { tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400">טרם הוזנו מלגות לחודש זה</td></tr>'; return; }
       tbody.innerHTML = list.map((s, idx) => `
         <tr>
           <td class="py-2">${idx + 1}</td>
           <td class="font-bold">${s.name}</td>
           <td>${s.tz}</td>
           <td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td>
-          <td class="text-center">
-            <input type="checkbox" ${s.verifiedMenachem ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedMenachem')" class="w-4 h-4 accent-orange-600 cursor-pointer" />
-          </td>
-          <td class="text-center">
-            <input type="checkbox" ${s.verifiedGura ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedGura')" class="w-4 h-4 accent-orange-600 cursor-pointer" />
-          </td>
-          <td class="text-center">
-            <button type="button" onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button>
-          </td>
+          <td class="text-center"><input type="checkbox" ${s.verifiedMenachem ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedMenachem')" class="w-4 h-4 accent-orange-600 cursor-pointer" /></td>
+          <td class="text-center"><input type="checkbox" ${s.verifiedGura ? 'checked' : ''} onchange="toggleVerifier(${s.id}, 'verifiedGura')" class="w-4 h-4 accent-orange-600 cursor-pointer" /></td>
+          <td class="text-center"><button type="button" onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button></td>
         </tr>
       `).join('');
     }
 
-    function formatIsraeliDate(dateObj) {
-      const dd = String(dateObj.getDate()).padStart(2, '0');
-      const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const yyyy = dateObj.getFullYear();
-      return `${dd}/${mm}/${yyyy}`;
-    }
-
+    function formatIsraeliDate(dateObj) { return `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()}`; }
     function toHebrewGematria(num) {
-      let n = parseInt(num, 10);
-      if (!n || n <= 0) return String(num);
-      if (n >= 1000) n = n % 1000;
-      const hundreds = ["", "ק", "ר", "ש", "ת", "תק", "תר", "תש", "תת", "תתק"];
-      const tens = ["", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ"];
-      const ones = ["", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
-      let out = hundreds[Math.floor(n / 100)];
-      const rem = n % 100;
-      if (rem === 15) {
-        out += "טו";
-      } else if (rem === 16) {
-        out += "טז";
-      } else {
-        out += tens[Math.floor(rem / 10)] + ones[rem % 10];
-      }
-      if (out.length === 1) return out + "׳";
-      return out.slice(0, -1) + "״" + out.slice(-1);
+      let n = parseInt(num, 10); if (!n || n <= 0) return String(num); if (n >= 1000) n = n % 1000;
+      const h = ["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"], t = ["","י","כ","ל","מ","נ","ס","ע","פ","צ"], o = ["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
+      let out = h[Math.floor(n/100)]; const rem = n % 100;
+      out += (rem === 15) ? "טו" : (rem === 16 ? "טז" : t[Math.floor(rem/10)] + o[rem%10]);
+      return out.length === 1 ? out + "׳" : out.slice(0,-1) + "״" + out.slice(-1);
     }
-
     function formatHebrewDate(dateObj) {
       try {
-        const parts = new Intl.DateTimeFormat("he-IL-u-ca-hebrew", {
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }).formatToParts(dateObj);
-        const dayPart = parts.find(p => p.type === "day")?.value || "";
-        const monthPart = parts.find(p => p.type === "month")?.value || "";
-        const yearPart = parts.find(p => p.type === "year")?.value || "";
-        const dayHeb = toHebrewGematria(dayPart);
-        const yearHeb = toHebrewGematria(yearPart);
-        const monthFormatted = monthPart.startsWith("ב") ? monthPart : ("ב" + monthPart);
-        return `${dayHeb} ${monthFormatted} ${yearHeb}`;
-      } catch (e) {
-        return "";
-      }
+        const parts = new Intl.DateTimeFormat("he-IL-u-ca-hebrew", { day:"numeric", month:"long", year:"numeric" }).formatToParts(dateObj);
+        const d = toHebrewGematria(parts.find(p => p.type==="day")?.value || "");
+        const m = parts.find(p => p.type==="month")?.value || "";
+        const y = toHebrewGematria(parts.find(p => p.type==="year")?.value || "");
+        return `${d} ${m.startsWith("ב") ? m : "ב" + m} ${y}`;
+      } catch (e) { return ""; }
     }
 
     function renderAppendixSheet(dateIsoStr) {
       const month = document.getElementById('schMonthSelect').value;
       const list = scholarships.filter(s => s.month === month);
       const total = list.reduce((a, b) => a + b.amount, 0);
-
       const now = new Date();
       const chosenDate = dateIsoStr ? new Date(dateIsoStr + 'T12:00:00') : now;
       const approvalDateStr = formatIsraeliDate(isNaN(chosenDate.getTime()) ? now : chosenDate);
       const hebrewDateStr = formatHebrewDate(isNaN(chosenDate.getTime()) ? now : chosenDate);
       const printDateStr = formatIsraeliDate(now);
-      const printTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      const docRef = `SA-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}-B`;
+      const printTimeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      const docRef = `SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B`;
 
       document.getElementById('protocolPrintSheet').innerHTML = `
         <div dir="rtl" style="font-family: Heebo, Arial, sans-serif; color: #0f172a; line-height: 1.55; background: #ffffff;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; font-size:12px; color:#334155; border-bottom:1.5px solid #0f172a; padding-bottom:8px; margin-bottom:14px;">
-            <div>
-              <div style="font-weight:800; color:#0f172a;">בס״ד</div>
-              <div>סימוכין: <strong>${docRef}</strong></div>
-            </div>
-            <div style="text-align:left;">
-              <div><strong>תאריך אישור וחתימה:</strong> ${approvalDateStr}</div>
-              ${hebrewDateStr ? `<div style="color:#475569;">${hebrewDateStr}</div>` : ''}
-            </div>
+            <div><div style="font-weight:800; color:#0f172a;">בס״ד</div><div>סימוכין: <strong>${docRef}</strong></div></div>
+            <div style="text-align:left;"><div><strong>תאריך אישור וחתימה:</strong> ${approvalDateStr}</div>${hebrewDateStr ? `<div style="color:#475569;">${hebrewDateStr}</div>` : ''}</div>
           </div>
-
           <h1 style="text-align:center; font-size:19px; font-weight:900; margin:6px 0 4px; color:#0f172a;">נספח ב׳: טופס אישור חודשי של מורשי חתימה להעברת מלגות</h1>
           <div style="text-align:center; font-weight:700; font-size:13px; color:#334155; margin-bottom:16px;">עמותת שערי עתיד (ע״ר) | מס׳ עמותה: 580811925</div>
-
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; font-size:13px; margin-bottom:14px;">
             <div><strong>חודש ושנת הזכאות:</strong> ${month}</div>
             <div><strong>תאריך אישור התשלום:</strong> ${approvalDateStr}</div>
             <div><strong>סה״כ מלגאים מאושרים:</strong> ${list.length}</div>
             <div><strong>סה״כ סכום לתשלום:</strong> ${total.toLocaleString()} ש״ח</div>
           </div>
-
           <table style="width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; border:1px solid #94a3b8;">
-            <thead>
-              <tr style="background:#f1f5f9;">
-                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מס׳</th>
-                <th style="padding:7px 8px; border:1px solid #cbd5e1; text-align:right;">שם מלא</th>
-                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מספר זהות</th>
-                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">אישור עמידה בתנאים (12.5 ש״ש)</th>
-                <th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">סכום בש״ח</th>
-              </tr>
-            </thead>
+            <thead><tr style="background:#f1f5f9;"><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מס׳</th><th style="padding:7px 8px; border:1px solid #cbd5e1; text-align:right;">שם מלא</th><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">מספר זהות</th><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">אישור עמידה בתנאים (12.5 ש״ש)</th><th style="padding:7px 6px; border:1px solid #cbd5e1; text-align:center;">סכום בש״ח</th></tr></thead>
             <tbody>
-              ${list.length ? list.map((s, i) => `
-                <tr style="background:${i % 2 === 1 ? '#f8fafc' : '#ffffff'};">
-                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${i + 1}</td>
-                  <td style="padding:6px 8px; border:1px solid #cbd5e1; font-weight:600;">${s.name}</td>
-                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center; font-variant-numeric:tabular-nums;">${s.tz}</td>
-                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">עומד בתנאי הזכאות (V)</td>
-                  <td style="padding:6px; border:1px solid #cbd5e1; text-align:center; font-weight:700; font-variant-numeric:tabular-nums;">${s.amount.toLocaleString()} ₪</td>
-                </tr>
-              `).join('') : '<tr><td colspan="5" style="padding:10px; border:1px solid #cbd5e1; text-align:center;">לא הוזנו מלגאים לחודש זה</td></tr>'}
-              <tr style="background:#f1f5f9; font-weight:800;">
-                <td colspan="4" style="padding:7px 8px; border:1px solid #94a3b8; text-align:left;">סה״כ לתשלום:</td>
-                <td style="padding:7px 6px; border:1px solid #94a3b8; text-align:center; font-variant-numeric:tabular-nums;">${total.toLocaleString()} ₪</td>
-              </tr>
+              ${list.length ? list.map((s, i) => `<tr style="background:${i%2===1?'#f8fafc':'#ffffff'};"><td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${i+1}</td><td style="padding:6px 8px; border:1px solid #cbd5e1; font-weight:600;">${s.name}</td><td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${s.tz}</td><td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">עומד בתנאי הזכאות (V)</td><td style="padding:6px; border:1px solid #cbd5e1; text-align:center; font-weight:700;">${s.amount.toLocaleString()} ₪</td></tr>`).join('') : '<tr><td colspan="5" style="padding:10px; border:1px solid #cbd5e1; text-align:center;">לא הוזנו מלגאים לחודש זה</td></tr>'}
+              <tr style="background:#f1f5f9; font-weight:800;"><td colspan="4" style="padding:7px 8px; border:1px solid #94a3b8; text-align:left;">סה״כ לתשלום:</td><td style="padding:7px 6px; border:1px solid #94a3b8; text-align:center;">${total.toLocaleString()} ₪</td></tr>
             </tbody>
           </table>
-
-          <p style="font-size:13px; margin-top:12px; color:#1e293b;">
-            אנו, מורשי החתימה של עמותת שערי עתיד (ע״ר), מאשרים בזאת כי בדקנו את רשימת המוטבים ואימתנו כי עמדו במכסת שעות הלימוד ובקריטריונים שאושרו בפרוטוקול הוועד מיום 01/06/2026.
-          </p>
-
+          <p style="font-size:13px; margin-top:12px; color:#1e293b;">אנו, מורשי החתימה של עמותת שערי עתיד (ע״ר), מאשרים בזאת כי בדקנו את רשימת המוטבים ואימתנו כי עמדו במכסת שעות הלימוד ובקריטריונים שאושרו בפרוטוקול הוועד מיום 01/06/2026.</p>
           <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px; padding-top:14px; border-top:1px solid #cbd5e1; gap:12px;">
-            <div style="text-align:center; flex:1;">
-              <div style="font-weight:700; font-size:13px;">יהודה צבי גורא</div>
-              <div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 214085623</div>
-              <img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" />
-              <div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div>
-            </div>
-            <div style="text-align:center; flex:0 0 auto; padding-bottom:6px;">
-              <img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:72px; margin:0 auto; object-fit:contain; filter:grayscale(100%) contrast(2.4) brightness(1.45); mix-blend-mode:multiply;" />
-            </div>
-            <div style="text-align:center; flex:1;">
-              <div style="font-weight:700; font-size:13px;">מנחם רובינשטיין</div>
-              <div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 324982743</div>
-              <img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" />
-              <div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div>
-            </div>
+            <div style="text-align:center; flex:1;"><div style="font-weight:700; font-size:13px;">יהודה צבי גורא</div><div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 214085623</div><img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" /><div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div></div>
+            <div style="text-align:center; flex:0 0 auto; padding-bottom:6px;"><img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:72px; margin:0 auto; object-fit:contain; filter:grayscale(100%) contrast(2.4) brightness(1.45); mix-blend-mode:multiply;" /></div>
+            <div style="text-align:center; flex:1;"><div style="font-weight:700; font-size:13px;">מנחם רובינשטיין</div><div style="font-size:11px; color:#475569; margin-bottom:4px;">מורשה חתימה | ת.ז. 324982743</div><img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:48px; margin:0 auto; object-fit:contain; mix-blend-mode:multiply;" /><div style="font-size:11px; color:#475569; border-top:1px solid #cbd5e1; margin-top:4px; padding-top:3px;">תאריך חתימה: ${approvalDateStr}</div></div>
           </div>
-
           <div style="margin-top:18px; padding-top:8px; border-top:1px dashed #cbd5e1; display:flex; justify-content:space-between; font-size:11px; color:#64748b;">
-            <span>מסמך ממוחשב — עמותת שערי עתיד (ע״ר 580811925)</span>
-            <span>תאריך הדפסה/הפקה: ${printDateStr} בשעה ${printTimeStr}</span>
+            <span>מסמך ממוחשב — עמותת שערי עתיד (ע״ר 580811925)</span><span>תאריך הדפסה/הפקה: ${printDateStr} בשעה ${printTimeStr}</span>
           </div>
         </div>
       `;
     }
-
     function openAppendixModal() {
       const todayIso = new Date().toISOString().split('T')[0];
       const dateInput = document.getElementById('protocolDateInput');
@@ -1789,149 +1011,60 @@
       renderAppendixSheet(todayIso);
       document.getElementById('protocolModal').classList.remove('hidden');
     }
-
-    function closeAppendixModal() {
-      document.getElementById('protocolModal').classList.add('hidden');
-    }
+    function closeAppendixModal() { document.getElementById('protocolModal').classList.add('hidden'); }
 
     async function addNewGuide() {
       const titleInput = document.getElementById('newGuideTitle');
       const stepsInput = document.getElementById('newGuideSteps');
-      const title = titleInput.value.trim();
-      const steps = stepsInput.value.trim();
-      if (!title || !steps) return;
-
-      await sendToGas({ action: 'saveGuide', title, steps });
-      titleInput.value = '';
-      stepsInput.value = '';
+      if (!titleInput.value.trim() || !stepsInput.value.trim()) return;
+      await sendToGas({ action: 'saveGuide', title: titleInput.value.trim(), steps: stepsInput.value.trim() });
+      titleInput.value = ''; stepsInput.value = '';
       showOwnerToast('המדריך פורסם והשדות נוקו ✓');
     }
 
-
-
-  // --- Modern Web Guidance: Color Scheme Toggle (System / Light / Dark) ---
-  (function initThemeToggle() {
-    var STORAGE_KEY = "friends-color-scheme";
-    var memScheme = null;
-    var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-
-    function getSystemScheme() {
-      return (mql && mql.matches) ? "dark" : "light";
-    }
-
-    function getStoredScheme() {
-      try {
-        var v = window.localStorage.getItem(STORAGE_KEY);
-        return (v === "light" || v === "dark") ? v : memScheme;
-      } catch (e) {
-        return memScheme;
-      }
-    }
-
-    function applyScheme(stored) {
-      var meta = document.querySelector('meta[name="color-scheme"]');
-      var themeMeta = document.querySelector('meta[name="theme-color"]');
-      var content = stored || "light dark";
-      var resolved = stored || getSystemScheme();
-      if (meta) meta.setAttribute("content", content);
-      document.documentElement.style.colorScheme = stored || "";
-      document.documentElement.dataset.theme = resolved;
-      if (themeMeta) themeMeta.setAttribute("content", resolved === "light" ? "#ffffff" : "#0d1c2e");
-
-      var btn = document.getElementById("themeToggleBtn");
-      if (btn) {
-        var isDark = resolved === "dark";
-        btn.setAttribute("aria-pressed", String(isDark));
-        btn.setAttribute("aria-label", isDark ? "עבור למצב בהיר" : "עבור למצב כהה");
-        btn.setAttribute("title", isDark ? "מצב כהה פעיל — לחץ למצב בהיר" : "מצב בהיר פעיל — לחץ למצב כהה");
-        btn.innerHTML = isDark
-          ? '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><span class="hidden sm:inline">בהיר</span>'
-          : '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="hidden sm:inline">כהה</span>';
-      }
-    }
-
-    window.toggleColorScheme = function () {
-      var stored = getStoredScheme();
-      var current = stored || getSystemScheme();
-      var target = current === "dark" ? "light" : "dark";
-      var sys = getSystemScheme();
-      memScheme = (target === sys) ? null : target;
-      try {
-        if (target === sys) {
-          window.localStorage.removeItem(STORAGE_KEY);
-        } else {
-          window.localStorage.setItem(STORAGE_KEY, target);
+    (function initThemeToggle() {
+      var STORAGE_KEY = "friends-color-scheme", memScheme = null;
+      var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+      function getSystemScheme() { return (mql && mql.matches) ? "dark" : "light"; }
+      function getStoredScheme() { try { var v = window.localStorage.getItem(STORAGE_KEY); return (v==="light"||v==="dark") ? v : memScheme; } catch (e) { return memScheme; } }
+      function applyScheme(stored) {
+        var meta = document.querySelector('meta[name="color-scheme"]'), themeMeta = document.querySelector('meta[name="theme-color"]');
+        var resolved = stored || getSystemScheme();
+        if (meta) meta.setAttribute("content", stored || "light dark");
+        document.documentElement.style.colorScheme = stored || "";
+        document.documentElement.dataset.theme = resolved;
+        if (themeMeta) themeMeta.setAttribute("content", resolved === "light" ? "#ffffff" : "#0d1c2e");
+        var btn = document.getElementById("themeToggleBtn");
+        if (btn) {
+          var isDark = resolved === "dark";
+          btn.setAttribute("aria-pressed", String(isDark));
+          btn.innerHTML = isDark ? '☀️ <span class="hidden sm:inline">בהיר</span>' : '🌙 <span class="hidden sm:inline">כהה</span>';
         }
-      } catch (e) {}
-      applyScheme(memScheme);
-    };
+      }
+      window.toggleColorScheme = function () {
+        var current = getStoredScheme() || getSystemScheme(), target = current === "dark" ? "light" : "dark", sys = getSystemScheme();
+        memScheme = (target === sys) ? null : target;
+        try { if (target === sys) window.localStorage.removeItem(STORAGE_KEY); else window.localStorage.setItem(STORAGE_KEY, target); } catch (e) {}
+        applyScheme(memScheme);
+      };
+      if (mql && mql.addEventListener) mql.addEventListener("change", () => applyScheme(getStoredScheme()));
+      window.addEventListener("storage", ev => { if (ev.key === STORAGE_KEY) applyScheme(getStoredScheme()); });
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => applyScheme(getStoredScheme()));
+      else applyScheme(getStoredScheme());
+    })();
 
-    if (mql) {
-      var onChange = function () { applyScheme(getStoredScheme()); };
-      if (mql.addEventListener) mql.addEventListener("change", onChange);
-      else if (mql.addListener) mql.addListener(onChange);
-    }
-
-    window.addEventListener("storage", function (ev) {
-      if (ev.key === STORAGE_KEY) applyScheme(getStoredScheme());
-    });
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { applyScheme(getStoredScheme()); });
-    } else {
-      applyScheme(getStoredScheme());
-    }
-  })();
-
-
-
-    // --- Modern Data Loader Helpers ---
     function setDataLoading(isLoading, label) {
-      const bar = document.getElementById('topLoadingBar');
-      const pill = document.getElementById('dataLoaderPill');
-      const txt = document.getElementById('dataLoaderText');
+      const bar = document.getElementById('topLoadingBar'), pill = document.getElementById('dataLoaderPill'), txt = document.getElementById('dataLoaderText');
       if (txt && label) txt.textContent = label;
       if (bar) bar.classList.toggle('active', !!isLoading);
       if (pill) pill.classList.toggle('active', !!isLoading);
       const refreshBtn = document.querySelector('button[onclick="refreshOwnerData()"] svg');
       if (refreshBtn) refreshBtn.classList.toggle('icon-spinning', !!isLoading);
     }
-
     function buildSkeletonRows(colCount, rowCount) {
-      const widths = ['w-20', 'w-16', 'w-16', 'w-20', 'w-14', 'w-16', 'w-12'];
-      let out = '';
-      for (let r = 0; r < rowCount; r++) {
-        out += '<tr>';
-        for (let c = 0; c < colCount; c++) {
-          out += `<td class="py-3"><span class="skeleton-bar ${widths[c % widths.length]}"></span></td>`;
-        }
-        out += '</tr>';
-      }
-      return out;
+      const widths = ['w-20', 'w-16', 'w-16', 'w-20'];
+      return Array.from({ length: rowCount }, () => '<tr>' + Array.from({ length: colCount }, (_, c) => `<td class="py-3"><span class="skeleton-bar ${widths[c%widths.length]}"></span></td>`).join('') + '</tr>').join('');
     }
-
-
-
-    let _pendingDeleteScholarshipId = null;
-    function closeConfirmDeleteModal() {
-      _pendingDeleteScholarshipId = null;
-      const m = document.getElementById('confirmDeleteModal');
-      if (m) m.classList.add('hidden');
-    }
-    function confirmDeleteScholarshipNow() {
-      if (_pendingDeleteScholarshipId === null) return;
-      const id = _pendingDeleteScholarshipId;
-      closeConfirmDeleteModal();
-      const item = scholarships.find(s => s.id === id);
-      scholarships = scholarships.filter(s => s.id !== id);
-      safeSet('friends_scholarships', JSON.stringify(scholarships));
-      renderScholarships();
-      if (item && item.rowNumber) {
-        sendToGas({ action: 'deleteScholarship', rowNumber: item.rowNumber }).catch(()=>{});
-      }
-      showOwnerToast('המלגאי הוסר מהרשימה ✓');
-    }
-
-</script>
+  </script>
 </body>
 </html>
