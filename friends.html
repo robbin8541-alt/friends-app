@@ -71,6 +71,7 @@
     .btn-modal-close { width: 32px; height: 32px; min-height: 32px !important; border-radius: 999px !important; display: inline-flex; align-items: center; justify-content: center; background-color: light-dark(#f1f5f9, rgba(148,163,184,0.16)) !important; color: light-dark(#334155, #e2e8f0) !important; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
     .seg-btn { padding: 0.38rem 0.8rem; border-radius: 10px; font-size: 0.75rem; font-weight: 700; min-height: 34px !important; color: var(--text-muted); background: transparent; cursor: pointer; }
     .seg-btn.active { background: #ea580c; color: #ffffff !important; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35); }
+    .chart-readout-box { background-color: light-dark(#f8fafc, #091322) !important; border-color: light-dark(#cbd5e1, #26466d) !important; color: light-dark(#0f172a, #f8fafc) !important; }
 
     :root[data-theme="light"] {
       & header { background: rgba(255, 255, 255, 0.86) !important; border-color: #cbd5e1 !important; }
@@ -91,6 +92,7 @@
       & .text-emerald-400 { color: #047857 !important; }
       & .text-orange-400 { color: #c2410c !important; }
       & .text-rose-400 { color: #be123c !important; }
+      & .text-amber-300 { color: #b45309 !important; }
     }
 
     header { background: light-dark(rgba(255,255,255,0.78), rgba(13,28,46,0.78)) !important; backdrop-filter: blur(18px) saturate(180%) !important; }
@@ -144,7 +146,7 @@
   <main class="max-w-5xl mx-auto p-3 space-y-4">
 
     <!-- ================================================= -->
-    <!-- 1. הכנסות וגרפים (4 תתי-טאבים: טבלה יומית, יעד והפקדות, גרפים ומגמות, דיוק קופה + הוצאות ותורים) -->
+    <!-- 1. הכנסות וגרפים -->
     <!-- ================================================= -->
     <section id="osec-income" class="owner-section space-y-4">
       <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
@@ -169,7 +171,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 1א: טבלה יומית -->
       <div id="incPane-daily" class="space-y-3">
         <div class="grid grid-cols-3 gap-2.5">
           <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ מזומן</div><div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5 tabular-nums">0 ₪</div></div>
@@ -206,7 +207,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 1ב: יעד והפקדות (כולל יעד יומי לפי ימים פעילים) -->
       <div id="incPane-goals" class="hidden space-y-4">
         <div class="card p-4 space-y-3 border-orange-500/40">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -270,35 +270,33 @@
         </div>
       </div>
 
-      <!-- תת-טאב 1ג: גרפים ומגמות (משודרגים אינטראקטיביים) -->
+      <!-- תת-טאב 1ג: גרפים ומגמות -->
       <div id="incPane-charts" class="hidden space-y-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- גרף מגמת הכנסה יומית משודרג -->
           <div class="card p-4 space-y-2.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
+              <div class="min-w-0">
                 <h3 id="dailyTrendTitle" class="text-sm font-black">מגמת הכנסות יומית (ימים פעילים)</h3>
                 <p id="dailyTrendSub" class="text-[11px] text-slate-400">קו מקווקו = ממוצע יומי • שיא ושפל מסומנים • לחץ/רחף על נקודה לפירוט</p>
               </div>
-              <span id="dailyTrendAvgBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] text-amber-300"></span>
+              <span id="dailyTrendAvgBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] text-amber-300 shrink-0 tabular-nums"></span>
             </div>
-            <div id="dailyTrendHoverBox" class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] text-xs flex flex-wrap items-center justify-between gap-2 min-h-[38px]">
+            <div id="dailyTrendHoverBox" class="chart-readout-box p-2.5 rounded-xl border text-xs flex flex-wrap items-center justify-between gap-2 min-h-[38px]">
               <span class="text-slate-400">בחר או רחף על יום בגרף להצגת פירוט מלא</span>
             </div>
             <div id="chartDailyTrend" class="overflow-x-auto"></div>
           </div>
 
-          <!-- גרף אותם ימים מול חודש קודם משודרג -->
           <div class="card p-4 space-y-2.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
+              <div class="min-w-0">
                 <h3 class="text-sm font-black">אותם ימים מול חודש קודם</h3>
                 <p id="sameDaysSubtitle" class="text-[11px] text-slate-400"></p>
               </div>
-              <span id="sameDaysDeltaBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d]"></span>
+              <span id="sameDaysDeltaBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] shrink-0 tabular-nums"></span>
             </div>
-            <div id="sameDaysSummaryStrip" class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] text-xs font-bold text-slate-200"></div>
-            <div id="sameDaysHoverBox" class="p-2 rounded-xl bg-[#091322]/70 border border-[#1e3a5f] text-[11px] text-slate-300 flex flex-wrap items-center justify-between gap-2 min-h-[34px]">
+            <div id="sameDaysSummaryStrip" class="chart-readout-box p-2.5 rounded-xl border text-xs font-bold"></div>
+            <div id="sameDaysHoverBox" class="chart-readout-box p-2.5 rounded-xl border text-xs font-semibold flex flex-wrap items-center justify-between gap-2 min-h-[36px]">
               <span class="text-slate-400">לחץ/רחף על יום להשוואה מדויקת בין שני החודשים</span>
             </div>
             <div id="chartSameDays" class="overflow-x-auto"></div>
@@ -313,7 +311,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 1ד: דיוק קופה לפי מוכר -->
       <div id="incPane-accuracy" class="hidden card p-4 space-y-2.5">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-black">דוח דיוק קופה לפי מוכר</h3>
@@ -325,7 +322,6 @@
         <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">מוכר</th><th>משמרות</th><th>מדויק (0 ₪)</th><th>אחוז דיוק</th><th>הפרש מצטבר</th></tr></thead><tbody id="sellerAccuracyBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
       </div>
 
-      <!-- תת-טאב 1ה: הוצאות -->
       <div id="incPane-expenses" class="hidden space-y-3">
         <div class="card p-4 space-y-3">
           <h2 class="text-base font-black text-white">רישום הוצאות</h2>
@@ -358,7 +354,7 @@
     </section>
 
     <!-- ================================================= -->
-    <!-- 2. עובדים וציוד (4 תתי-טאבים: משמרות, שעות עובדים, עובדים וקטגוריות, ציוד ומפתחות) -->
+    <!-- 2. עובדים וציוד -->
     <!-- ================================================= -->
     <section id="osec-staff" class="owner-section hidden space-y-4">
       <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
@@ -375,7 +371,6 @@
         </select>
       </div>
 
-      <!-- תת-טאב 2א: משמרות (רק מוכרים + פעיל/סגור) -->
       <div id="staffPane-calendar" class="space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="card p-4 border-emerald-500/40">
@@ -420,7 +415,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 2ב: שעות עובדים -->
       <div id="staffPane-ocr" class="hidden space-y-4">
         <div class="card p-4 space-y-3 border-orange-500/40">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -464,7 +458,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 2ג: עובדים וקטגוריות (מוכרים / ניקיון / מזדמנים) -->
       <div id="staffPane-directory" class="hidden space-y-3">
         <div class="card p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -490,7 +483,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 2ד: ציוד ומפתחות -->
       <div id="staffPane-equipment" class="hidden space-y-3">
         <div class="card p-4 space-y-3 border-amber-500/40">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -514,7 +506,7 @@
     </section>
 
     <!-- ================================================= -->
-    <!-- 3. תפעול ומשימות (3 תתי-טאבים: משימות למנהל, תקלות, חוסרים במלאי + תורים) -->
+    <!-- 3. תפעול ומשימות (+ ספקים והזמנות + הודעות צוות + תקלות + חוסרים + תורים) -->
     <!-- ================================================= -->
     <section id="osec-ops" class="owner-section hidden space-y-4">
       <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
@@ -522,6 +514,8 @@
           <button type="button" id="opsSubBtn-tasks" onclick="switchOpsSubTab('tasks')" class="seg-btn active">משימות למנהל</button>
           <button type="button" id="opsSubBtn-faults" onclick="switchOpsSubTab('faults')" class="seg-btn">תקלות</button>
           <button type="button" id="opsSubBtn-shortages" onclick="switchOpsSubTab('shortages')" class="seg-btn">חוסרים במלאי</button>
+          <button type="button" id="opsSubBtn-suppliers" onclick="switchOpsSubTab('suppliers')" class="seg-btn">ספקים והזמנות</button>
+          <button type="button" id="opsSubBtn-chat" onclick="switchOpsSubTab('chat')" class="seg-btn">הודעות צוות</button>
           <button type="button" id="opsSubBtn-queues" onclick="switchOpsSubTab('queues')" class="seg-btn">תורים</button>
         </div>
         <select id="ownerOpsStatusFilter" onchange="renderOwnerOpsAll()" class="input-dark !w-auto px-3 py-1 text-xs font-bold">
@@ -531,7 +525,6 @@
         </select>
       </div>
 
-      <!-- תת-טאב 3א: משימות למנהל -->
       <div id="opsPane-tasks" class="card p-4 space-y-3">
         <div class="flex justify-between items-center"><h2 class="text-base font-black text-white">שליחת משימה למנהל</h2><button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs">הפעל תזכורת יומית</button></div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -542,19 +535,93 @@
         <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
 
-      <!-- תת-טאב 3ב: תקלות -->
       <div id="opsPane-faults" class="hidden card p-4 space-y-2.5 border-rose-500/40">
         <div class="flex justify-between"><h2 class="text-base font-black text-rose-300">תקלות והודעות מהמתחם</h2><span id="ownerFaultsCount" class="text-xs font-bold text-slate-400">0</span></div>
         <div id="ownerFaultsList" class="space-y-2 text-xs"></div>
       </div>
 
-      <!-- תת-טאב 3ג: חוסרים במלאי -->
       <div id="opsPane-shortages" class="hidden card p-4 space-y-2.5 border-amber-500/40">
         <div class="flex justify-between"><h2 class="text-base font-black text-amber-300">חוסרים במלאי מהמוכרים</h2><span id="ownerShortagesCount" class="text-xs font-bold text-slate-400">0</span></div>
         <div id="ownerShortagesList" class="space-y-2 text-xs"></div>
       </div>
 
-      <!-- תת-טאב 3ד: תורים -->
+      <!-- תת-טאב ספקים והזמנות (בעלים) -->
+      <div id="opsPane-suppliers" class="hidden space-y-4">
+        <div class="card p-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
+            <button type="button" id="ownSupCatBtn-שתייה" onclick="selectOwnerSupplierCategory('שתייה')" class="seg-btn active !py-1 !px-2.5 !min-h-[30px]">שתייה</button>
+            <button type="button" id="ownSupCatBtn-חטיף" onclick="selectOwnerSupplierCategory('חטיף')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">חטיף</button>
+            <button type="button" id="ownSupCatBtn-שונות" onclick="selectOwnerSupplierCategory('שונות')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">שונות</button>
+            <button type="button" id="ownSupCatBtn-הכל" onclick="selectOwnerSupplierCategory('הכל')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">הכל</button>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="ownSupSearchInput" type="text" oninput="renderOwnerSupplierModule()" placeholder="חיפוש מוצר..." class="input-dark !w-36 px-2.5 py-1 text-xs !min-h-[34px]" />
+            <select id="ownSupProductFilter" onchange="renderOwnerSupplierModule()" class="input-dark !w-auto px-2.5 py-1 text-xs font-bold !min-h-[34px]"><option value="">כל המוצרים</option></select>
+            <select id="ownSupVendorFilter" onchange="renderOwnerSupplierModule()" class="input-dark !w-auto px-2.5 py-1 text-xs font-bold !min-h-[34px]"><option value="">כל הספקים</option></select>
+          </div>
+        </div>
+
+        <div id="ownSupLowStockAlerts" class="card p-3.5 border-amber-500/40 text-xs space-y-1.5"></div>
+
+        <div class="card p-4 space-y-3 border-orange-500/40">
+          <h3 class="text-sm font-black text-orange-400">רישום הזמנה מספק או ספירת מלאי באמצע שבוע</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <select id="ownSupEntryType" onchange="onOwnSupEntryTypeChange()" class="input-dark px-2.5 text-xs font-bold">
+              <option value="הזמנה">הזמנה מספק</option>
+              <option value="ספירת ביניים">ספירת מלאי באמצע שבוע</option>
+            </select>
+            <select id="ownSupCategoryInput" class="input-dark px-2.5 text-xs font-bold">
+              <option value="שתייה">שתייה</option>
+              <option value="חטיף">חטיף</option>
+              <option value="שונות">שונות</option>
+            </select>
+            <input id="ownSupItemNameInput" type="text" list="ownSupProductsDl" onchange="onOwnSupProductPicked()" placeholder="שם מוצר (למשל פופס)" class="input-dark px-2.5 text-xs font-bold" />
+            <input id="ownSupVendorInput" type="text" list="ownSupVendorsDl" placeholder="ספק (ספק 1 / ספק 2...)" class="input-dark px-2.5 text-xs font-bold" />
+          </div>
+          <datalist id="ownSupProductsDl"></datalist>
+          <datalist id="ownSupVendorsDl"></datalist>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div><label class="block text-[10px] text-slate-400 mb-0.5">כמות בקרטון</label><input id="ownSupPackSizeInput" type="number" min="1" value="48" class="input-dark px-2 text-xs font-bold text-center" /></div>
+            <div><label class="block text-[10px] text-slate-400 mb-0.5">מחיר לקרטון (₪)</label><input id="ownSupPackPriceInput" type="number" min="0" step="0.1" placeholder="0" class="input-dark px-2 text-xs font-bold text-center" /></div>
+            <div id="ownSupOrderedQtyWrap"><label class="block text-[10px] text-emerald-400 mb-0.5">כמה הוזמן (חתיכות)</label><input id="ownSupOrderedQtyInput" type="number" min="0" placeholder="0" class="input-dark px-2 text-xs font-bold text-center" /></div>
+            <div><label class="block text-[10px] text-amber-300 mb-0.5">שארית שנספרה כעת (חתיכות)</label><input id="ownSupRemainingQtyInput" type="number" min="0" placeholder="0" class="input-dark px-2 text-xs font-bold text-center" /></div>
+            <div><label class="block text-[10px] text-slate-400 mb-0.5">הערה</label><input id="ownSupNoteInput" type="text" placeholder="הערה..." class="input-dark px-2 text-xs" /></div>
+          </div>
+          <button type="button" onclick="saveOwnerSupplierEntry()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ שמור רשומה</button>
+        </div>
+
+        <div class="card p-4 space-y-2 border-sky-500/40">
+          <h3 class="text-sm font-black text-sky-400">ממוצעים, המלצת הזמנה והשוואת מחירים בין ספקים</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right">
+              <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">מוצר</th><th>קטגוריה</th><th>מלאי אחרון</th><th>צריכה משוערת/חודש</th><th>המלצה להזמנה</th><th>השוואת מחירים (ספקים)</th></tr></thead>
+              <tbody id="ownSupplierSummaryBody" class="divide-y divide-[#1e3a5f]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card p-4 space-y-2">
+          <h3 class="text-sm font-black">היסטוריית הזמנות וספירות ביניים</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right">
+              <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>סוג</th><th>ספק</th><th>מוצר</th><th>הוזמן</th><th>שארית</th><th>מחיר/קרטון</th><th></th></tr></thead>
+              <tbody id="ownSupplierHistoryBody" class="divide-y divide-[#1e3a5f]"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- תת-טאב הודעות צוות (בעלים) -->
+      <div id="opsPane-chat" class="hidden card p-4 space-y-3 border-sky-500/40">
+        <h3 class="text-sm font-black text-sky-400">הודעות וצ׳אט צוות (לכולם, למנהל או לעובד ספציפי)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <select id="ownChatRecipientSel" class="input-dark px-2.5 text-xs font-bold"></select>
+          <input id="ownChatInput" type="text" placeholder="כתוב הודעה לצוות..." class="input-dark px-2.5 text-xs sm:col-span-2" onkeydown="if(event.key==='Enter') sendOwnerTeamMessage()" />
+        </div>
+        <button type="button" onclick="sendOwnerTeamMessage()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">שלח הודעה ✓</button>
+        <div id="ownTeamChatList" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
+      </div>
+
       <div id="opsPane-queues" class="hidden space-y-3">
         <div class="grid grid-cols-3 gap-2.5">
           <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="text-lg font-black text-sky-400">0</div></div>
@@ -567,14 +634,21 @@
     </section>
 
     <!-- ================================================= -->
-    <!-- 4. מלגות שערי עתיד (נפרד ונקי כולל נספח ב׳ בעמוד אחד) -->
+    <!-- 4. מלגות שערי עתיד (חודש ושנה מפוצלים לשני בוררים נפרדים + נספח ב׳ בעמוד אחד) -->
     <!-- ================================================= -->
     <section id="osec-scholarships" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div><h2 class="text-base font-black text-white">מלגות — עמותת שערי עתיד (ע״ר 580811925)</h2></div>
           <div class="flex flex-wrap items-center gap-2">
-            <select id="schMonthSelect" onchange="renderScholarships()" class="input-dark px-2.5 py-1.5 text-xs font-bold"></select>
+            <select id="schMonthPartSelect" onchange="renderScholarships()" class="input-dark px-2.5 py-1.5 text-xs font-bold">
+              <option value="ינואר">ינואר</option><option value="פברואר">פברואר</option><option value="מרץ">מרץ</option><option value="אפריל">אפריל</option>
+              <option value="מאי">מאי</option><option value="יוני">יוני</option><option value="יולי">יולי</option><option value="אוגוסט">אוגוסט</option>
+              <option value="ספטמבר">ספטמבר</option><option value="אוקטובר">אוקטובר</option><option value="נובמבר">נובמבר</option><option value="דצמבר">דצמבר</option>
+            </select>
+            <select id="schYearPartSelect" onchange="renderScholarships()" class="input-dark px-2.5 py-1.5 text-xs font-bold">
+              <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
+            </select>
             <button type="button" onclick="openDirManageModal()" class="btn-secondary !py-1.5 !px-3 !text-xs">ניהול מאגר שמות</button>
             <button type="button" onclick="openAppendixModal()" class="bg-emerald-600 text-white font-black px-3 py-2 rounded-xl text-xs">הפק נספח ב׳ חתום</button>
           </div>
@@ -595,7 +669,7 @@
     </section>
 
     <!-- ================================================= -->
-    <!-- 5. הגדרות מערכת (סף אזהרת הפרש, יעד חודשי, קופה קטנה, ניהול שנים + התראות ומדריכים) -->
+    <!-- 5. הגדרות מערכת -->
     <!-- ================================================= -->
     <section id="osec-settings" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3 border-emerald-500/40">
@@ -688,11 +762,11 @@
     const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let SCRIPT_URL = safeGet("friends_gas_url") || DEFAULT_SCRIPT_URL;
 
-    let allShifts = [], allBankDeposits = [], allExpenses = [], allQueues = [], allShortages = [], allFaults = [], allSchedule = [], allEmployeeHours = [], allEquipment = [];
+    let allShifts = [], allBankDeposits = [], allExpenses = [], allQueues = [], allShortages = [], allFaults = [], allSchedule = [], allEmployeeHours = [], allEquipment = [], allSupplierOrders = [], allTeamChat = [];
     let dayStatuses = {}, staffContacts = {}, staffCategories = {}, staffList = [], sellersList = ["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"];
     let managerTasks = [], schDirectory = [], scholarships = [], hoursDraftRows = [];
     let systemSettings = { openingFloat: 500, monthlyTarget: 75000, shortageAlertEnabled: true, shortageThreshold: 0, discrepancyWarningEnabled: true, discrepancyWarningThreshold: 20, businessDayCutoffHour: Number(safeGet("friends_cutoff_hour", "8")) || 8 };
-    let analyticsScope = 'month', momChartMode = 'mix', lastOwnerBizStr = '', selectedOwnerCalDate = '';
+    let analyticsScope = 'month', momChartMode = 'mix', lastOwnerBizStr = '', selectedOwnerCalDate = '', activeOwnerSupCat = 'שתייה';
 
     const HEB_MONTHS = { "ינואר":"01","פברואר":"02","מרץ":"03","אפריל":"04","מאי":"05","יוני":"06","יולי":"07","אוגוסט":"08","ספטמבר":"09","אוקטובר":"10","נובמבר":"11","דצמבר":"12" };
     const MONTH_SHORT_HEB = ["ינו׳","פבר׳","מרץ","אפר׳","מאי","יוני","יולי","אוג׳","ספט׳","אוק׳","נוב׳","דצמ׳"];
@@ -715,9 +789,12 @@
       document.getElementById('monthFilter').value = curM;
       document.getElementById('analyticsMonthSelect').value = curM;
       document.getElementById('ownerCalMonthSelect').value = curM;
+      const mPart = document.getElementById('schMonthPartSelect');
+      const yPart = document.getElementById('schYearPartSelect');
+      if (mPart) mPart.value = MONTH_FULL_HEB[biz.getMonth()];
+      if (yPart && [...yPart.options].some(o => o.value === curY)) yPart.value = curY;
+
       const monthOpts = MONTH_FULL_HEB.map(m => `<option value="${m} ${curY}">${m} ${curY}</option>`).join('');
-      document.getElementById('schMonthSelect').innerHTML = monthOpts;
-      document.getElementById('schMonthSelect').value = `${MONTH_FULL_HEB[biz.getMonth()]} ${curY}`;
       document.getElementById('hoursUploadMonth').innerHTML = monthOpts;
       document.getElementById('hoursUploadMonth').value = `${MONTH_FULL_HEB[biz.getMonth()]} ${curY}`;
       document.getElementById('hoursFilterMonth').innerHTML = `<option value="ALL">כל החודשים</option>` + monthOpts;
@@ -777,7 +854,7 @@
       if (sub === 'equipment') renderOwnerEquipmentList();
     }
     function switchOpsSubTab(sub) {
-      ['tasks', 'faults', 'shortages', 'queues'].forEach(k => {
+      ['tasks', 'faults', 'shortages', 'suppliers', 'chat', 'queues'].forEach(k => {
         document.getElementById('opsPane-' + k).classList.toggle('hidden', k !== sub);
         document.getElementById('opsSubBtn-' + k).classList.toggle('active', k === sub);
       });
@@ -810,6 +887,11 @@
           const yrSel = document.getElementById('yearSelect');
           const mergedY = [...new Set(['2026', '2027', ...data.availableYears, yr])].sort();
           yrSel.innerHTML = mergedY.map(y => `<option value="${y}" ${y === yr ? 'selected' : ''}>${y}</option>`).join('');
+          const yPart = document.getElementById('schYearPartSelect');
+          if (yPart) {
+            const curYP = yPart.value || yr;
+            yPart.innerHTML = mergedY.map(y => `<option value="${y}" ${y === curYP ? 'selected' : ''}>${y}</option>`).join('');
+          }
         }
         allShifts = (data.shifts || []).map(r => {
           const info = parseDateInfo(r.date, r.sheetName);
@@ -825,6 +907,8 @@
         staffCategories = data.staffCategories || {};
         staffContacts = data.staffContacts || {};
         allEquipment = data.equipment || [];
+        allSupplierOrders = data.supplierOrders || [];
+        allTeamChat = data.teamChat || [];
         allBankDeposits = data.bankDeposits || [];
         allExpenses = data.expenses || [];
         allQueues = data.queues || [];
@@ -834,6 +918,8 @@
         allEmployeeHours = data.employeeHours || [];
         managerTasks = data.managerTasks || [];
         schDirectory = data.directory || [];
+
+        populateOwnerChatRecipients();
 
         if (data.systemSettings) {
           systemSettings = Object.assign({}, systemSettings, data.systemSettings);
@@ -860,6 +946,15 @@
 
         renderIncomeTable(); renderExpensesTable(); renderAnalyticsTab(); renderOwnerScheduleCalendar(); renderHoursDashboard(); renderOwnerStaffPhonesList(); renderOwnerEquipmentList(); renderOwnerOpsAll(); renderDirectoryList(); renderDirManageList(); renderScholarships();
       } catch (e) {} finally { setDataLoading(false); }
+    }
+
+    function populateOwnerChatRecipients() {
+      const sel = document.getElementById('ownChatRecipientSel');
+      if (!sel) return;
+      const prev = sel.value;
+      const targets = ['כולם', 'מנהל', ...getAllStaffNamesOwner()];
+      sel.innerHTML = targets.map(t => `<option value="${t}">${t}</option>`).join('');
+      sel.value = targets.includes(prev) ? prev : 'כולם';
     }
 
     // ========================
@@ -889,7 +984,6 @@
       const daysInMonth = new Date(yr, mIdx + 1, 0).getDate();
       const firstWd = new Date(yr, mIdx, 1).getDay();
 
-      // משמרות מושכות רק מוכרים
       const sellersSet = new Set(sellersList);
       const todayBiz = getBizDate(0), tomBiz = getBizDate(1);
       const todayStr = formatIsraeliDate(todayBiz), tomStr = formatIsraeliDate(tomBiz);
@@ -1015,6 +1109,7 @@
       document.getElementById('ownerStaffNameInput').value = ''; document.getElementById('ownerStaffPhoneInput').value = '';
       renderOwnerStaffPhonesList();
       renderOwnerScheduleCalendar();
+      populateOwnerChatRecipients();
       await sendToGas({ action: 'saveStaffMember', name, category, phone });
       showOwnerToast(`נשמר: ${name} (${category}) ✓`);
     }
@@ -1027,6 +1122,7 @@
       delete staffCategories[name];
       renderOwnerStaffPhonesList();
       renderOwnerScheduleCalendar();
+      populateOwnerChatRecipients();
       await sendToGas({ action: 'deleteStaffMember', name });
       showOwnerToast(`העובד ${name} הוסר ✓`);
     }
@@ -1077,6 +1173,222 @@
       renderOwnerEquipmentList();
       await sendToGas({ action: 'returnEquipment', year: document.getElementById('yearSelect').value, id, status: 'הוחזר', returnDate: today });
       showOwnerToast('סומן כהוחזר ✓');
+    }
+
+    // ========================
+    // ספקים והזמנות (בעלים) + הודעות צוות (בעלים)
+    // ========================
+    function selectOwnerSupplierCategory(cat) {
+      activeOwnerSupCat = cat;
+      ['שתייה', 'חטיף', 'שונות', 'הכל'].forEach(c => {
+        document.getElementById('ownSupCatBtn-' + c)?.classList.toggle('active', c === cat);
+      });
+      renderOwnerSupplierModule();
+    }
+
+    function onOwnSupEntryTypeChange() {
+      const isMid = document.getElementById('ownSupEntryType').value === 'ספירת ביניים';
+      document.getElementById('ownSupOrderedQtyWrap').classList.toggle('hidden', isMid);
+    }
+
+    function onOwnSupProductPicked() {
+      const prod = document.getElementById('ownSupItemNameInput').value.trim();
+      if (!prod) return;
+      const prev = (allSupplierOrders || []).find(o => o.itemName === prod);
+      if (prev) {
+        if (prev.category) document.getElementById('ownSupCategoryInput').value = prev.category;
+        if (prev.packSize) document.getElementById('ownSupPackSizeInput').value = prev.packSize;
+      }
+    }
+
+    function parseDMYOwner(dStr) {
+      const m = String(dStr || '').match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+      if (!m) return null;
+      return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+    }
+
+    function computeOwnerSupplierAnalytics() {
+      const orders = [...(allSupplierOrders || [])].sort((a, b) => {
+        const da = parseDMYOwner(a.date)?.getTime() || 0;
+        const db = parseDMYOwner(b.date)?.getTime() || 0;
+        return da - db;
+      });
+      const byProd = {}, vendorsSet = new Set();
+
+      orders.forEach(o => {
+        const prod = String(o.itemName || '').trim();
+        if (!prod) return;
+        const vend = String(o.supplier || 'ספק כללי').trim() || 'ספק כללי';
+        vendorsSet.add(vend);
+        if (!byProd[prod]) {
+          byProd[prod] = { itemName: prod, category: o.category || 'חטיף', packSize: Number(o.packSize) || 1, events: [], pricesByVendor: {} };
+        }
+        if (o.category) byProd[prod].category = o.category;
+        if (Number(o.packSize) > 0) byProd[prod].packSize = Number(o.packSize);
+        if (Number(o.packPrice) > 0) byProd[prod].pricesByVendor[vend] = Number(o.packPrice);
+        byProd[prod].events.push(Object.assign({}, o, { supplier: vend }));
+      });
+
+      const summaries = Object.values(byProd).map(p => {
+        const evs = p.events, lastEv = evs[evs.length - 1];
+        const latestStock = lastEv ? (Number(lastEv.remainingQty) || 0) : 0;
+        let totalConsumed = 0, totalDaysSpan = 0;
+        for (let i = 1; i < evs.length; i++) {
+          const prev = evs[i - 1], cur = evs[i];
+          const d1 = parseDMYOwner(prev.date), d2 = parseDMYOwner(cur.date);
+          const daysDiff = (d1 && d2) ? Math.max(1, Math.round((d2 - d1) / 86400000)) : 14;
+          const startAvailable = (Number(prev.remainingQty) || 0) + (prev.entryType === 'הזמנה' ? (Number(prev.orderedQty) || 0) : 0);
+          const endRemaining = Number(cur.remainingQty) || 0;
+          totalConsumed += Math.max(0, startAvailable - endRemaining);
+          totalDaysSpan += daysDiff;
+        }
+        const dailyRate = totalDaysSpan > 0 ? (totalConsumed / totalDaysSpan) : 0;
+        const monthlyRate = Math.round(dailyRate * 30);
+        const daysLeft = dailyRate > 0 ? Math.round(latestStock / dailyRate) : (latestStock <= 6 ? 3 : 30);
+        const lowStockAlert = (evs.length >= 2 && daysLeft <= 7) || (evs.length === 1 && latestStock <= Math.max(4, Math.round(p.packSize * 0.2)));
+        const recPieces = monthlyRate > 0 ? Math.max(0, Math.round(monthlyRate - latestStock + dailyRate * 5)) : Math.max(0, p.packSize - latestStock);
+        const recPacks = p.packSize > 0 ? (Math.round((recPieces / p.packSize) * 10) / 10) : recPieces;
+        return { itemName: p.itemName, category: p.category, packSize: p.packSize, latestStock, dailyRate: Math.round(dailyRate * 100) / 100, monthlyRate, daysLeft, lowStockAlert, recPieces, recPacks, pricesByVendor: p.pricesByVendor };
+      });
+
+      return { summaries, allProducts: Object.keys(byProd), allVendors: [...vendorsSet] };
+    }
+
+    function renderOwnerSupplierModule() {
+      const { summaries, allProducts, allVendors } = computeOwnerSupplierAnalytics();
+      const prodSel = document.getElementById('ownSupProductFilter');
+      if (prodSel) {
+        const prevP = prodSel.value;
+        prodSel.innerHTML = `<option value="">כל המוצרים</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join('');
+        prodSel.value = allProducts.includes(prevP) ? prevP : '';
+      }
+      const vendSel = document.getElementById('ownSupVendorFilter');
+      if (vendSel) {
+        const prevV = vendSel.value;
+        vendSel.innerHTML = `<option value="">כל הספקים</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join('');
+        vendSel.value = allVendors.includes(prevV) ? prevV : '';
+      }
+      const pDl = document.getElementById('ownSupProductsDl'); if (pDl) pDl.innerHTML = allProducts.map(p => `<option value="${p}"></option>`).join('');
+      const vDl = document.getElementById('ownSupVendorsDl'); if (vDl) vDl.innerHTML = allVendors.map(v => `<option value="${v}"></option>`).join('');
+
+      const qText = (document.getElementById('ownSupSearchInput')?.value || '').trim().toLowerCase();
+      const chosenProd = prodSel?.value || '';
+      const chosenVend = vendSel?.value || '';
+
+      const filteredSummaries = summaries.filter(s => {
+        if (activeOwnerSupCat !== 'הכל' && s.category !== activeOwnerSupCat) return false;
+        if (qText && !s.itemName.toLowerCase().includes(qText)) return false;
+        if (chosenProd && s.itemName !== chosenProd) return false;
+        if (chosenVend && !Object.prototype.hasOwnProperty.call(s.pricesByVendor, chosenVend)) return false;
+        return true;
+      });
+
+      const alerts = summaries.filter(s => s.lowStockAlert);
+      const alertBox = document.getElementById('ownSupLowStockAlerts');
+      if (alertBox) {
+        alertBox.innerHTML = alerts.length
+          ? `<div class="font-black text-amber-300">⚠️ התראות מלאי נמוך — מוצרים שמומלץ להזמין (${alerts.length}):</div>` +
+            `<div class="flex flex-wrap gap-2">${alerts.map(a => `<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 border border-rose-500/50 text-rose-200 font-bold">${a.itemName} (${a.category}) • נשארו ${a.latestStock} יח׳ • להזמין ~${a.recPacks} קרטון (${a.recPieces} יח׳)</span>`).join('')}</div>`
+          : '<div class="text-emerald-400 font-bold">✓ אין התראות חוסר מיידיות במלאי הספקים</div>';
+      }
+
+      document.getElementById('ownSupplierSummaryBody').innerHTML = filteredSummaries.length
+        ? filteredSummaries.map(s => {
+            const vEntries = Object.entries(s.pricesByVendor);
+            const minPrice = vEntries.length ? Math.min(...vEntries.map(([, pr]) => pr)) : 0;
+            const priceHtml = vEntries.length
+              ? vEntries.map(([vn, pr]) => {
+                  const isCheapest = pr === minPrice && vEntries.length > 1;
+                  const perUnit = s.packSize > 1 ? ` (${(pr / s.packSize).toFixed(2)} ₪/יח׳)` : '';
+                  return `<div class="${isCheapest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${pr.toLocaleString()} ₪/קרטון${perUnit}${isCheapest ? ' ★ זול' : ''}</div>`;
+                }).join('')
+              : '<span class="text-slate-400">-</span>';
+
+            return `<tr>
+              <td class="py-2 font-bold">${s.itemName}</td>
+              <td>${s.category}</td>
+              <td class="font-bold ${s.lowStockAlert ? 'text-rose-400' : 'text-emerald-400'} tabular-nums">${s.latestStock} יח׳</td>
+              <td class="tabular-nums">${s.monthlyRate ? s.monthlyRate + ' / חודש (' + s.dailyRate + '/יום)' : 'ממתין ל-2 ספירות+'}</td>
+              <td class="font-black text-orange-400 tabular-nums">${s.recPieces} יח׳ (~${s.recPacks} קרטון)</td>
+              <td>${priceHtml}</td>
+            </tr>`;
+          }).join('')
+        : '<tr><td colspan="6" class="py-4 text-center text-slate-400">אין מוצרים התואמים לסינון</td></tr>';
+
+      const histRows = [...(allSupplierOrders || [])].reverse().filter(o => {
+        if (activeOwnerSupCat !== 'הכל' && (o.category || 'חטיף') !== activeOwnerSupCat) return false;
+        if (qText && !String(o.itemName || '').toLowerCase().includes(qText)) return false;
+        if (chosenProd && o.itemName !== chosenProd) return false;
+        if (chosenVend && o.supplier !== chosenVend) return false;
+        return true;
+      });
+
+      document.getElementById('ownSupplierHistoryBody').innerHTML = histRows.length
+        ? histRows.map(o => `<tr>
+            <td class="py-2 font-bold">${o.date}</td>
+            <td>${o.entryType || 'הזמנה'}</td>
+            <td>${o.supplier || '-'}</td>
+            <td class="font-bold">${o.itemName} <span class="text-[10px] text-slate-400">(${o.category || 'חטיף'} • ${o.packSize || 1}/קרטון)</span></td>
+            <td class="text-emerald-400 font-bold tabular-nums">${o.entryType === 'ספירת ביניים' ? '-' : (o.orderedQty || 0)}</td>
+            <td class="text-amber-300 font-bold tabular-nums">${o.remainingQty || 0}</td>
+            <td class="tabular-nums">${o.packPrice ? Number(o.packPrice).toLocaleString() + ' ₪' : '-'}</td>
+            <td><button type="button" onclick="deleteOwnerSupplierEntry('${o.id}')" class="text-rose-400 font-bold">✕</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="8" class="py-4 text-center text-slate-400">אין רשומות</td></tr>';
+    }
+
+    async function saveOwnerSupplierEntry() {
+      const entryType = document.getElementById('ownSupEntryType').value;
+      const category = document.getElementById('ownSupCategoryInput').value;
+      const itemName = document.getElementById('ownSupItemNameInput').value.trim();
+      const supplier = document.getElementById('ownSupVendorInput').value.trim();
+      const packSize = Math.max(1, Number(document.getElementById('ownSupPackSizeInput').value) || 1);
+      const packPrice = Math.max(0, Number(document.getElementById('ownSupPackPriceInput').value) || 0);
+      const orderedQty = entryType === 'ספירת ביניים' ? 0 : Math.max(0, Number(document.getElementById('ownSupOrderedQtyInput').value) || 0);
+      const remainingQty = Math.max(0, Number(document.getElementById('ownSupRemainingQtyInput').value) || 0);
+      const note = document.getElementById('ownSupNoteInput').value.trim();
+      if (!itemName) return;
+      const newRec = { id: 'SO' + Date.now(), date: formatIsraeliDate(getBizDate(0)), supplier: supplier || 'ספק כללי', category, itemName, packSize, packPrice, entryType, orderedQty, remainingQty, reportedBy: 'בעלים', note };
+      allSupplierOrders.push(newRec);
+      document.getElementById('ownSupItemNameInput').value = '';
+      document.getElementById('ownSupOrderedQtyInput').value = '';
+      document.getElementById('ownSupRemainingQtyInput').value = '';
+      document.getElementById('ownSupNoteInput').value = '';
+      renderOwnerSupplierModule();
+      await sendToGas({ action: 'addSupplierOrder', year: document.getElementById('yearSelect').value, ...newRec });
+      showOwnerToast('הרשומה נשמרה ✓');
+    }
+
+    async function deleteOwnerSupplierEntry(id) {
+      allSupplierOrders = allSupplierOrders.filter(x => x.id !== id);
+      renderOwnerSupplierModule();
+      await sendToGas({ action: 'deleteSupplierOrder', year: document.getElementById('yearSelect').value, id });
+    }
+
+    function renderOwnerTeamChat() {
+      const box = document.getElementById('ownTeamChatList');
+      if (!box) return;
+      const msgs = [...(allTeamChat || [])].reverse();
+      box.innerHTML = msgs.length ? msgs.map(m => `
+        <div class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] space-y-1">
+          <div class="flex justify-between text-[11px]">
+            <div><strong class="text-orange-400">${m.sender || 'צוות'}</strong> <span class="text-slate-400">(${m.senderRole || ''})</span> ← <span class="text-sky-300 font-bold">${m.recipient || 'כולם'}</span></div>
+            <span class="text-slate-400">${m.timestamp || ''}</span>
+          </div>
+          <div class="text-slate-100">${m.message}</div>
+        </div>`).join('') : '<div class="text-slate-400">אין הודעות בצ׳אט</div>';
+    }
+
+    async function sendOwnerTeamMessage() {
+      const recipient = document.getElementById('ownChatRecipientSel')?.value || 'כולם';
+      const message = document.getElementById('ownChatInput')?.value.trim() || '';
+      if (!message) return;
+      const rec = { id: 'MSG' + Date.now(), timestamp: new Date().toLocaleString('he-IL'), sender: 'בעלים', senderRole: 'בעלים', recipient, message };
+      allTeamChat.push(rec);
+      document.getElementById('ownChatInput').value = '';
+      renderOwnerTeamChat();
+      await sendToGas({ action: 'addTeamMessage', year: document.getElementById('yearSelect').value, ...rec });
+      showOwnerToast('ההודעה נשלחה ✓');
     }
 
     // ========================
@@ -1211,10 +1523,6 @@
       document.getElementById('sellerAccuracyBody').innerHTML = !rows.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים</td></tr>' : rows.map(([n,st])=>`<tr><td class="py-2 font-bold">${n}</td><td>${st.c}</td><td class="text-emerald-400 font-bold">${st.e}</td><td class="font-black">${Math.round(st.e/st.c*100)}%</td><td class="${st.d<0?'text-rose-400':'text-emerald-400'} font-bold">${st.d} ₪</td></tr>`).join('');
     }
 
-    // =========================================================================
-    // שדרוג גרף "אותם ימים מול חודש קודם":
-    // פס סיכום בראש הגרף, מקרא ברור, תאריכים על הציר, ולחיצה/ריחוף להשוואה מדויקת
-    // =========================================================================
     let _sameDaysPointsData = [];
     function inspectSameDaysIndex(idx) {
       const item = _sameDaysPointsData[idx];
@@ -1251,30 +1559,21 @@
         const pDay = pS.filter(s => s.dayNum === d).reduce((a, b) => a + b.total, 0);
         cr += cDay; pr += pDay;
         cc.push(cr); pc.push(pr);
-        meta.push({
-          day: d,
-          curDateStr: `${String(d).padStart(2,'0')}/${sm}`,
-          curMonthName: curName,
-          prevMonthName: prevName,
-          curCum: cr,
-          prevCum: pr,
-          curDayVal: cDay,
-          prevDayVal: pDay
-        });
+        meta.push({ day: d, curDateStr: `${String(d).padStart(2,'0')}/${sm}`, curMonthName: curName, prevMonthName: prevName, curCum: cr, prevCum: pr, curDayVal: cDay, prevDayVal: pDay });
       }
       _sameDaysPointsData = meta;
 
       const df = cr - pr, pct = pr ? Math.round(df / pr * 100) : 0;
       document.getElementById('sameDaysSubtitle').textContent = `השוואה מצטברת של ימים 1–${maxD}`;
       badge.textContent = `${df >= 0 ? '+' : ''}${Math.round(df).toLocaleString()} ₪ (${pct >= 0 ? '+' : ''}${pct}%)`;
-      badge.className = `text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] ${df >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+      badge.className = `text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] shrink-0 tabular-nums ${df >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
 
       if (strip) {
         strip.innerHTML = `עד יום <strong>${maxD}</strong>: <span class="text-orange-400">${curName} (${Math.round(cr).toLocaleString()} ₪)</span> מול <span class="text-sky-400">${prevName} (${Math.round(pr).toLocaleString()} ₪)</span> • הפרש: <span class="${df>=0?'text-emerald-400':'text-rose-400'}">${df>=0?'+':''}${Math.round(df).toLocaleString()} ₪ (${pct>=0?'+':''}${pct}%)</span>`;
       }
       if (hoverBox && meta.length) inspectSameDaysIndex(meta.length - 1);
 
-      const W = 500, H = 205, pL = 52, pR = 16, pT = 26, pB = 28, pw = W - pL - pR, ph = H - pT - pB;
+      const W = 500, H = 205, pL = 52, pR = 18, pT = 26, pB = 28, pw = W - pL - pR, ph = H - pT - pB;
       const mv = Math.max(100, ...cc, ...pc);
       const xAt = i => pL + (maxD > 1 ? (i / (maxD - 1)) * pw : pw / 2);
       const yAt = v => pT + ph - (v / mv) * ph;
@@ -1296,9 +1595,7 @@
       const ptsCur = cc.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join(' ');
 
       const dotsHtml = meta.map((m, i) => {
-        const cx = xAt(i).toFixed(1);
-        const cyCur = yAt(m.curCum).toFixed(1);
-        const cyPrev = yAt(m.prevCum).toFixed(1);
+        const cx = xAt(i).toFixed(1), cyCur = yAt(m.curCum).toFixed(1), cyPrev = yAt(m.prevCum).toFixed(1);
         return `<g class="cursor-pointer" onclick="inspectSameDaysIndex(${i})" onmouseenter="inspectSameDaysIndex(${i})">
           <rect x="${Number(cx) - 8}" y="${pT}" width="16" height="${ph}" fill="transparent"/>
           <circle cx="${cx}" cy="${cyPrev}" r="3" fill="#38bdf8"/>
@@ -1320,11 +1617,6 @@
         </svg>`;
     }
 
-    // =========================================================================
-    // שדרוג גרף "מגמת הכנסה יומית":
-    // ציר תאריכים וסכומים ברורים, סימון בולט של יום השיא ויום השפל (ימים פעילים בלבד),
-    // קו ממוצע יומי מקווקו, ולחיצה/ריחוף להצגת תאריך, יום בשבוע, סה״כ ומזומן/אשראי
-    // =========================================================================
     let _dailyTrendPointsData = [];
     function inspectDailyTrendIndex(idx) {
       const s = _dailyTrendPointsData[idx];
@@ -1364,7 +1656,8 @@
       });
       if (hoverBox) inspectDailyTrendIndex(bestIdx);
 
-      const W = 500, H = 215, pL = 52, pR = 22, pT = 30, pB = 30, pw = W - pL - pR, ph = H - pT - pB;
+      // שוליים מוגדלים מימין ומשמאל כדי שהמספרים והכיתובים לא ייחתכו כלל
+      const W = 520, H = 220, pL = 56, pR = 56, pT = 30, pB = 30, pw = W - pL - pR, ph = H - pT - pB;
       const mv = Math.max(100, ...ord.map(x => x.total));
       const n = ord.length;
       const xAt = i => pL + (n > 1 ? (i / (n - 1)) * pw : pw / 2);
@@ -1384,22 +1677,22 @@
       }).join('');
 
       const avgY = yAt(avgVal).toFixed(1);
-      const avgLine = `<line x1="${pL}" y1="${avgY}" x2="${W - pR}" y2="${avgY}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5,4"/>
-                       <text x="${W - pR}" y="${Number(avgY) - 4}" text-anchor="end" font-size="9" font-weight="bold" fill="#fbbf24">ממוצע ${Math.round(avgVal).toLocaleString()} ₪</text>`;
+      const avgLabelX = Math.min(W - 6, Math.max(pL + 40, xAt(n - 1) + 8));
+      const avgLine = `<line x1="${pL}" y1="${avgY}" x2="${W - pR}" y2="${avgY}" stroke="#eab308" stroke-width="1.6" stroke-dasharray="5,4"/>
+                       <text x="${avgLabelX.toFixed(1)}" y="${(Number(avgY) + 3).toFixed(1)}" text-anchor="start" font-size="9.5" font-weight="900" fill="#ca8a04">${Math.round(avgVal).toLocaleString()} ₪</text>`;
 
       const pts = ord.map((x, i) => `${xAt(i).toFixed(1)},${yAt(x.total).toFixed(1)}`).join(' ');
-
       const bestX = xAt(bestIdx), bestY = yAt(ord[bestIdx].total);
       const worstX = xAt(worstIdx), worstY = yAt(ord[worstIdx].total);
 
       const peakCallout = `<g>
         <circle cx="${bestX.toFixed(1)}" cy="${bestY.toFixed(1)}" r="5.5" fill="#10b981" stroke="#ffffff" stroke-width="1.5"/>
-        <text x="${Math.min(W - 45, Math.max(pL + 45, bestX)).toFixed(1)}" y="${Math.max(13, bestY - 9).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="900" fill="#34d399">שיא ${ord[bestIdx].date.slice(0,5)}: ${Math.round(ord[bestIdx].total).toLocaleString()} ₪</text>
+        <text x="${Math.min(W - pR - 10, Math.max(pL + 10, bestX)).toFixed(1)}" y="${Math.max(13, bestY - 9).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="900" fill="#059669">שיא ${ord[bestIdx].date.slice(0,5)}: ${Math.round(ord[bestIdx].total).toLocaleString()} ₪</text>
       </g>`;
 
       const troughCallout = (n > 1 && worstIdx !== bestIdx) ? `<g>
         <circle cx="${worstX.toFixed(1)}" cy="${worstY.toFixed(1)}" r="5.5" fill="#f43f5e" stroke="#ffffff" stroke-width="1.5"/>
-        <text x="${Math.min(W - 45, Math.max(pL + 45, worstX)).toFixed(1)}" y="${Math.min(pT + ph + 12, worstY + 15).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="900" fill="#fb7185">שפל ${ord[worstIdx].date.slice(0,5)}: ${Math.round(ord[worstIdx].total).toLocaleString()} ₪</text>
+        <text x="${Math.min(W - pR - 10, Math.max(pL + 10, worstX)).toFixed(1)}" y="${Math.min(pT + ph + 12, worstY + 15).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="900" fill="#e11d48">שפל ${ord[worstIdx].date.slice(0,5)}: ${Math.round(ord[worstIdx].total).toLocaleString()} ₪</text>
       </g>` : '';
 
       const dots = ord.map((x, i) => {
@@ -1522,6 +1815,8 @@
       document.getElementById('ownerShortagesCount').textContent = shorts.length;
       document.getElementById('ownerShortagesList').innerHTML = shorts.length ? shorts.map(s=>`<div class="p-2.5 rounded-xl bg-[#091322] border border-amber-500/40 flex justify-between items-center"><div><strong class="text-amber-300">[${s.category}]</strong> <strong>${s.item}</strong> <span class="text-slate-400">[${s.status||'פתוח'}]</span></div>${s.status!=='טופל'?`<div class="flex gap-1.5"><button onclick="ownerUpdateShortage('${s.id}','הוזמן')" class="px-2 py-1 rounded bg-sky-600/20 text-sky-300 font-bold">הוזמן</button><button onclick="ownerUpdateShortage('${s.id}','טופל')" class="px-2 py-1 rounded bg-emerald-600 text-white font-bold">טופל ✓</button></div>`:'✓'}</div>`).join('') : '<div class="text-emerald-400 font-bold">אין חוסרים לתצוגה ✓</div>';
 
+      renderOwnerSupplierModule();
+      renderOwnerTeamChat();
       renderQueuesTab();
     }
 
@@ -1581,6 +1876,12 @@
     }
     function renderQueuesTab() { document.getElementById('qSonyTotal').textContent = allQueues.filter(q=>q.category==='סוני').length; document.getElementById('qSnookerTotal').textContent = allQueues.filter(q=>q.category==='סנוקר').length; const c=allQueues.filter(q=>q.completed&&q.waitMinutes>0); document.getElementById('qAvgWait').textContent = (c.length?Math.round(c.reduce((a,b)=>a+Number(b.waitMinutes||0),0)/c.length):0)+' דק׳'; const bd={}; allQueues.forEach(q=>{const k=`${q.date} (${q.dayOfWeek||''})`;if(!bd[k])bd[k]={s:0,sn:0,w:[]};q.category==='סנוקר'?bd[k].sn++:bd[k].s++;if(q.completed&&q.waitMinutes>0)bd[k].w.push(Number(q.waitMinutes));}); document.getElementById('qDailyTableBody').innerHTML = Object.entries(bd).map(([k,d])=>`<tr><td class="py-2 font-bold">${k}</td><td>${d.s}</td><td>${d.sn}</td><td>${d.w.length?Math.round(d.w.reduce((a,b)=>a+b,0)/d.w.length):0}</td><td>${d.w.length?Math.max(...d.w):0}</td></tr>`).join('')||'<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים</td></tr>'; document.getElementById('qAllTableBody').innerHTML = allQueues.map(q=>`<tr><td class="py-2">${q.date}</td><td>${q.category}</td><td>${q.customerName}</td><td>${q.startTime}</td><td>${q.enteredTime||'-'}</td><td>${q.completed?q.waitMinutes+' דק׳':'ממתין'}</td><td>${q.completed?'✓':'בתור'}</td></tr>`).join(''); }
 
+    function getSelectedScholarshipMonthStr() {
+      const mp = document.getElementById('schMonthPartSelect')?.value || MONTH_FULL_HEB[getBizDate(0).getMonth()];
+      const yp = document.getElementById('schYearPartSelect')?.value || document.getElementById('yearSelect')?.value || '2026';
+      return `${mp} ${yp}`;
+    }
+
     function renderDirectoryList() { document.getElementById('schDirectoryList').innerHTML = !schDirectory.length ? '<div class="text-xs text-slate-400">המאגר ריק</div>' : schDirectory.map((d,i)=>`<label class="flex justify-between p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] text-xs cursor-pointer"><span><input type="checkbox" class="dir-chk ml-2" data-idx="${i}" ${d.active?'checked':''}/><strong>${d.fullName}</strong> (${d.idNumber||'-'})</span><span class="text-emerald-400 font-bold">${Number(d.defaultAmount||2500).toLocaleString()} ₪</span></label>`).join(''); }
     function openDirManageModal() { renderDirManageList(); document.getElementById('dirManageModal').classList.remove('hidden'); }
     function closeDirManageModal() { document.getElementById('dirManageModal').classList.add('hidden'); }
@@ -1588,20 +1889,20 @@
     async function addDirectoryPerson() { const fullName=document.getElementById('dirNewName').value.trim(), idNumber=document.getElementById('dirNewTz').value.trim(), defaultAmount=Number(document.getElementById('dirNewAmt').value)||2500; if(!fullName) return; await sendToGas({action:'addToDirectory',fullName,idNumber,defaultAmount}); document.getElementById('dirNewName').value=''; document.getElementById('dirNewTz').value=''; refreshOwnerData(); }
     async function deleteDirectoryPerson(i) { const it=schDirectory[i]; if(!it) return; schDirectory.splice(i,1); renderDirectoryList(); renderDirManageList(); await sendToGas({action:'deleteFromDirectory',rowNumber:it.rowNumber,idNumber:it.idNumber,fullName:it.fullName}); }
     function toggleAllDir(v) { document.querySelectorAll('.dir-chk').forEach(c=>c.checked=v); }
-    async function addSelectedFromDir() { const m=document.getElementById('schMonthSelect').value, ch=[...document.querySelectorAll('.dir-chk:checked')].map(c=>schDirectory[Number(c.dataset.idx)]).filter(Boolean); if(!ch.length) return; await sendToGas({action:'addMonthFromDirectory',month:m,items:ch.map(d=>({fullName:d.fullName,idNumber:d.idNumber,amount:d.defaultAmount,verifier:d.defaultVerifier}))}); refreshOwnerData(); }
-    async function addScholarshipRow() { const m=document.getElementById('schMonthSelect').value, fullName=document.getElementById('schName').value.trim(), idNumber=document.getElementById('schId').value.trim(), amount=parseFloat(document.getElementById('schAmount').value)||2500; if(!fullName) return; document.getElementById('schName').value=''; document.getElementById('schId').value=''; await sendToGas({action:'addScholarship',month:m,fullName,idNumber,amount}); refreshOwnerData(); }
+    async function addSelectedFromDir() { const m=getSelectedScholarshipMonthStr(), ch=[...document.querySelectorAll('.dir-chk:checked')].map(c=>schDirectory[Number(c.dataset.idx)]).filter(Boolean); if(!ch.length) return; await sendToGas({action:'addMonthFromDirectory',month:m,items:ch.map(d=>({fullName:d.fullName,idNumber:d.idNumber,amount:d.defaultAmount,verifier:d.defaultVerifier}))}); refreshOwnerData(); }
+    async function addScholarshipRow() { const m=getSelectedScholarshipMonthStr(), fullName=document.getElementById('schName').value.trim(), idNumber=document.getElementById('schId').value.trim(), amount=parseFloat(document.getElementById('schAmount').value)||2500; if(!fullName) return; document.getElementById('schName').value=''; document.getElementById('schId').value=''; await sendToGas({action:'addScholarship',month:m,fullName,idNumber,amount}); refreshOwnerData(); }
     function toggleVerifier(id, f) { const it=scholarships.find(s=>s.id===id); if(!it) return; it[f]=!it[f]; renderScholarships(); if(it.rowNumber) sendToGas({action:'toggleScholarshipVerified',rowNumber:it.rowNumber,received:it.verifiedMenachem||it.verifiedGura,verifier:it.verifiedMenachem?'מנחם רובינשטיין':(it.verifiedGura?'יהודה גורא':'')}); }
     let _delSchId = null;
     function deleteScholarship(id) { _delSchId=id; const it=scholarships.find(s=>s.id===id); document.getElementById('confirmDeleteMsg').textContent=it?`למחוק את ${it.name}?`:'למחוק?'; document.getElementById('confirmDeleteModal').classList.remove('hidden'); }
     function closeConfirmDeleteModal() { _delSchId=null; document.getElementById('confirmDeleteModal').classList.add('hidden'); }
     function confirmDeleteScholarshipNow() { const it=scholarships.find(s=>s.id===_delSchId); scholarships=scholarships.filter(s=>s.id!==_delSchId); closeConfirmDeleteModal(); renderScholarships(); if(it&&it.rowNumber) sendToGas({action:'deleteScholarship',rowNumber:it.rowNumber}); }
-    function renderScholarships() { const m=document.getElementById('schMonthSelect').value, l=scholarships.filter(s=>s.month===m), tot=l.reduce((a,b)=>a+b.amount,0), ml=l.filter(s=>s.verifiedMenachem), gl=l.filter(s=>s.verifiedGura); document.getElementById('verifierSummary').innerHTML=`<div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]">סה״כ (${l.length}): <strong>${tot.toLocaleString()} ₪</strong></div><div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40">מנחם (${ml.length}): <strong class="text-emerald-400">${ml.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</strong></div><div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40">יהודה (${gl.length}): <strong class="text-sky-400">${gl.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</strong></div>`; document.getElementById('schTableBody').innerHTML=l.map((s,i)=>`<tr><td class="py-2">${i+1}</td><td class="font-bold">${s.name}</td><td>${s.tz}</td><td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td><td class="text-center"><input type="checkbox" ${s.verifiedMenachem?'checked':''} onchange="toggleVerifier(${s.id},'verifiedMenachem')"/></td><td class="text-center"><input type="checkbox" ${s.verifiedGura?'checked':''} onchange="toggleVerifier(${s.id},'verifiedGura')"/></td><td class="text-center"><button onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button></td></tr>`).join('')||'<tr><td colspan="7" class="py-4 text-center text-slate-400">אין מלגות</td></tr>'; }
+    function renderScholarships() { const m=getSelectedScholarshipMonthStr(), l=scholarships.filter(s=>s.month===m), tot=l.reduce((a,b)=>a+b.amount,0), ml=l.filter(s=>s.verifiedMenachem), gl=l.filter(s=>s.verifiedGura); document.getElementById('verifierSummary').innerHTML=`<div class="bg-[#091322] p-3 rounded-xl border border-[#26466d]">סה״כ (${l.length}): <strong>${tot.toLocaleString()} ₪</strong></div><div class="bg-[#091322] p-3 rounded-xl border border-emerald-500/40">מנחם (${ml.length}): <strong class="text-emerald-400">${ml.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</strong></div><div class="bg-[#091322] p-3 rounded-xl border border-sky-500/40">יהודה (${gl.length}): <strong class="text-sky-400">${gl.reduce((a,b)=>a+b.amount,0).toLocaleString()} ₪</strong></div>`; document.getElementById('schTableBody').innerHTML=l.map((s,i)=>`<tr><td class="py-2">${i+1}</td><td class="font-bold">${s.name}</td><td>${s.tz}</td><td class="text-emerald-400 font-bold">${s.amount.toLocaleString()} ₪</td><td class="text-center"><input type="checkbox" ${s.verifiedMenachem?'checked':''} onchange="toggleVerifier(${s.id},'verifiedMenachem')"/></td><td class="text-center"><input type="checkbox" ${s.verifiedGura?'checked':''} onchange="toggleVerifier(${s.id},'verifiedGura')"/></td><td class="text-center"><button onclick="deleteScholarship(${s.id})" class="text-rose-400 font-bold">✕</button></td></tr>`).join('')||'<tr><td colspan="7" class="py-4 text-center text-slate-400">אין מלגות</td></tr>'; }
 
     function formatIsraeliDate(d) { return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
     function toHebrewGematria(num) { let n=parseInt(num,10); if(!n) return String(num); if(n>=1000) n%=1000; const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"], t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"], o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"]; let out=h[Math.floor(n/100)], r=n%100; out+=(r===15?'טו':(r===16?'טז':t[Math.floor(r/10)]+o[r%10])); return out.length===1?out+'׳':out.slice(0,-1)+'״'+out.slice(-1); }
     function formatHebrewDate(d) { try { const p=new Intl.DateTimeFormat("he-IL-u-ca-hebrew",{day:"numeric",month:"long",year:"numeric"}).formatToParts(d); const day=p.find(x=>x.type==='day')?.value||'', mon=p.find(x=>x.type==='month')?.value||'', yr=p.find(x=>x.type==='year')?.value||''; return `${toHebrewGematria(day)} ${mon.startsWith('ב')?mon:'ב'+mon} ${toHebrewGematria(yr)}`; } catch(e){return '';} }
     function renderAppendixSheet(iso) {
-      const m=document.getElementById('schMonthSelect').value, l=scholarships.filter(s=>s.month===m), tot=l.reduce((a,b)=>a+b.amount,0), now=new Date(), dt=iso?new Date(iso+'T12:00:00'):now, ap=formatIsraeliDate(dt), hb=formatHebrewDate(dt);
+      const m=getSelectedScholarshipMonthStr(), l=scholarships.filter(s=>s.month===m), tot=l.reduce((a,b)=>a+b.amount,0), now=new Date(), dt=iso?new Date(iso+'T12:00:00'):now, ap=formatIsraeliDate(dt), hb=formatHebrewDate(dt);
       document.getElementById('protocolPrintSheet').innerHTML=`<div dir="rtl" style="font-family:Heebo,Arial,sans-serif;color:#0f172a;line-height:1.45;">
         <div style="display:flex;justify-content:space-between;font-size:11.5px;border-bottom:1.5px solid #0f172a;padding-bottom:6px;margin-bottom:10px;">
           <div><strong>בס״ד</strong> | סימוכין: SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B</div>
