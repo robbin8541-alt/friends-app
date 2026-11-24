@@ -242,7 +242,7 @@
           </div>
         </div>
 
-        <!-- מחשבון שטרות ומטבעות ישראליים (כולל 10 אג׳ + סמלים מצוירים + העבר למעטפה ואיפוס) -->
+        <!-- מחשבון שטרות ומטבעות ישראליים (כולל 10 אג׳ + כפתורי פלוס/מינוס + העבר למעטפה ואיפוס) -->
         <div id="closingSubCalc" class="hidden space-y-4">
           <div class="p-3.5 rounded-xl bg-[#07192b] border border-orange-500/40 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div>
@@ -724,7 +724,7 @@
     }
 
     // =========================================================================
-    // מחשבון שטרות ומטבעות ישראליים ב-SVG (200..20, 10..0.1) + העבר למעטפה ואיפוס
+    // מחשבון שטרות ומטבעות ישראליים ב-SVG (200..20, 10..0.1) + כפתורי פלוס/מינוס
     // =========================================================================
     function getDenomGraphic(val) {
       const bills = {
@@ -762,14 +762,27 @@
 
     function formatDenomLabel(v) { return v === 0.1 ? "10 אג׳" : (v === 0.5 ? "½ ₪" : (v + " ₪")); }
 
+    function stepDenom(id, delta) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const cur = Math.max(0, parseInt(el.value || "0", 10) || 0);
+      const next = Math.max(0, cur + delta);
+      el.value = next === 0 ? "" : String(next);
+      recalcCoinsAndBills();
+    }
+
     function buildCoinCalcInputs() {
       const mkRow = (val) => {
         const id = "denom_" + String(val).replace(".", "_");
         return `
           <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-[#051321] border border-[#1b3a5c]">
-            <div class="flex items-center gap-2 min-w-[100px]">${getDenomGraphic(val)}<span class="text-xs font-bold text-slate-300">${formatDenomLabel(val)}</span></div>
-            <input id="${id}" type="number" min="0" inputmode="numeric" placeholder="0" oninput="recalcCoinsAndBills()" class="input-dark !w-20 text-center font-extrabold text-sm !py-1.5 !min-h-[36px]" />
-            <span id="${id}_sum" class="text-xs font-bold text-slate-300 min-w-[70px] text-left tabular-nums">0 ₪</span>
+            <div class="flex items-center gap-2 min-w-[96px]">${getDenomGraphic(val)}<span class="text-xs font-bold text-slate-300">${formatDenomLabel(val)}</span></div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="stepDenom('${id}', 1)" class="w-8 h-8 rounded-lg bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 text-emerald-300 font-black text-base flex items-center justify-center leading-none">+</button>
+              <input id="${id}" type="number" min="0" inputmode="numeric" placeholder="0" oninput="recalcCoinsAndBills()" class="input-dark !w-14 text-center font-extrabold text-sm !py-1 !px-1 !min-h-[34px]" />
+              <button type="button" onclick="stepDenom('${id}', -1)" class="w-8 h-8 rounded-lg bg-rose-600/20 hover:bg-rose-600/35 border border-rose-500/40 text-rose-300 font-black text-base flex items-center justify-center leading-none">−</button>
+            </div>
+            <span id="${id}_sum" class="text-xs font-bold text-slate-300 min-w-[64px] text-left tabular-nums">0 ₪</span>
           </div>`;
       };
       document.getElementById("billsRowsContainer").innerHTML = BILL_DENOMS.map(mkRow).join("");
