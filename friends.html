@@ -43,10 +43,10 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @media print {
-      body * { visibility: hidden !important; }
-      #protocolModal, #protocolModal * { visibility: visible !important; }
-      #protocolModal { position: fixed !important; inset: 0 !important; background: #fff !important; padding: 0 !important; }
-      #protocolPrintSheet { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
+      html, body { height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; overflow: visible !important; }
+      body > *:not(#protocolModal) { display: none !important; }
+      #protocolModal { position: static !important; display: block !important; inset: auto !important; background: #fff !important; padding: 0 !important; margin: 0 !important; overflow: visible !important; }
+      #protocolPrintSheet { box-shadow: none !important; border: none !important; border-radius: 0 !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
       .no-print { display: none !important; }
     }
 
@@ -112,7 +112,7 @@
     #dataLoaderPill { position: fixed; top: 12px; left: 50%; transform: translate(-50%, -18px) scale(0.96); z-index: 9998; display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.95rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; pointer-events: none; opacity: 0; backdrop-filter: blur(14px); background: light-dark(rgba(255,255,255,0.92), rgba(15,31,53,0.92)); color: light-dark(#0f172a, #f8fafc); border: 1px solid rgba(249,115,22,0.4); transition: opacity 200ms ease, transform 220ms ease; }
     #dataLoaderPill.active { opacity: 1; transform: translate(-50%, 0) scale(1); }
     .loader-orbital { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(249,115,22,0.22); border-top-color: #f97316; animation: spinRing 0.72s linear infinite; }
-    @page { size: A4 portrait; margin: 14mm; }
+    @page { size: A4 portrait; margin: 12mm; }
   </style>
 </head>
 <body class="pb-20">
@@ -207,7 +207,6 @@
           <div class="w-full h-2.5 bg-[#091322] rounded-full overflow-hidden border border-[#26466d]"><div id="targetProgressBar" class="h-full bg-gradient-to-l from-orange-400 to-orange-600 rounded-full" style="width:0%"></div></div>
           <div id="kpiTargetPace" class="text-[11px] text-slate-400"></div>
 
-          <!-- פירוט יעד יומי לפי הימים הפעילים בגיליון -->
           <div id="dailyTargetBreakdown" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#1e3a5f] text-xs">
             <div class="bg-[#091322] p-2.5 rounded-xl border border-[#26466d]">
               <div class="text-[10px] text-slate-400">ימים פעילים בגיליון</div>
@@ -293,7 +292,6 @@
         </select>
       </div>
 
-      <!-- תת-טאב 1: יומן משמרות חודשי + מי עובד היום/מחר + שעות מתוכננות + טלפונים -->
       <div id="hoursPane-calendar" class="space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="card p-4 border-emerald-500/40">
@@ -350,7 +348,6 @@
         </div>
       </div>
 
-      <!-- תת-טאב 2: דוח שעות מהקופה (OCR) + גרפים -->
       <div id="hoursPane-ocr" class="hidden space-y-4">
         <div class="card p-4 space-y-3 border-orange-500/40">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -714,7 +711,6 @@
       const daysInMonth = new Date(yr, mIdx + 1, 0).getDate();
       const firstWd = new Date(yr, mIdx, 1).getDay();
 
-      // מי עובד היום ומחר (לפי יום עסקים המתחלף ב-08:00)
       const todayBiz = getBizDate(0), tomBiz = getBizDate(1);
       const todayStr = formatIsraeliDate(todayBiz), tomStr = formatIsraeliDate(tomBiz);
       document.getElementById('lblTodayDate').textContent = todayStr;
@@ -873,7 +869,6 @@
       document.getElementById('kpiTargetPct').textContent = tp + '%'; document.getElementById('kpiTargetDetail').textContent = `${Math.round(rev).toLocaleString()} / ${tgt.toLocaleString()} ₪`; document.getElementById('targetProgressBar').style.width = Math.min(100, tp) + '%';
       const remT = Math.max(0, tgt - rev); document.getElementById('kpiTargetPace').textContent = remT ? `נשארו ${Math.round(remT).toLocaleString()} ₪ ליעד` : 'היעד הושג! ✓';
 
-      // חישוב יעד יומי לפי הימים הפעילים בגיליון
       const dtWrap = document.getElementById('dailyTargetBreakdown');
       const biz = getBizDate(0), dim = new Date(Number(yr), Number(sm), 0).getDate();
       const isCur = !isY && String(biz.getFullYear())===yr && String(biz.getMonth()+1).padStart(2,'0')===sm;
@@ -1066,7 +1061,45 @@
     function formatIsraeliDate(d) { return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
     function toHebrewGematria(num) { let n=parseInt(num,10); if(!n) return String(num); if(n>=1000) n%=1000; const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"], t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"], o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"]; let out=h[Math.floor(n/100)], r=n%100; out+=(r===15?'טו':(r===16?'טז':t[Math.floor(r/10)]+o[r%10])); return out.length===1?out+'׳':out.slice(0,-1)+'״'+out.slice(-1); }
     function formatHebrewDate(d) { try { const p=new Intl.DateTimeFormat("he-IL-u-ca-hebrew",{day:"numeric",month:"long",year:"numeric"}).formatToParts(d); const day=p.find(x=>x.type==='day')?.value||'', mon=p.find(x=>x.type==='month')?.value||'', yr=p.find(x=>x.type==='year')?.value||''; return `${toHebrewGematria(day)} ${mon.startsWith('ב')?mon:'ב'+mon} ${toHebrewGematria(yr)}`; } catch(e){return '';} }
-    function renderAppendixSheet(iso) { const m=document.getElementById('schMonthSelect').value, l=scholarships.filter(s=>s.month===m), tot=l.reduce((a,b)=>a+b.amount,0), now=new Date(), dt=iso?new Date(iso+'T12:00:00'):now, ap=formatIsraeliDate(dt), hb=formatHebrewDate(dt); document.getElementById('protocolPrintSheet').innerHTML=`<div dir="rtl" style="font-family:Heebo,Arial,sans-serif;color:#0f172a;line-height:1.55;"><div style="display:flex;justify-content:space-between;font-size:12px;border-bottom:1.5px solid #0f172a;padding-bottom:8px;margin-bottom:14px;"><div><strong>בס״ד</strong> | סימוכין: SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B</div><div style="text-align:left;"><strong>תאריך אישור:</strong> ${ap}<br/>${hb}</div></div><h1 style="text-align:center;font-size:18px;font-weight:900;">נספח ב׳: טופס אישור חודשי להעברת מלגות — שערי עתיד (ע״ר 580811925)</h1><div style="margin:12px 0;font-size:13px;"><strong>חודש:</strong> ${m} | <strong>מלגאים:</strong> ${l.length} | <strong>סה״כ:</strong> ${tot.toLocaleString()} ₪</div><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="background:#f1f5f9;"><th style="border:1px solid #cbd5e1;padding:6px;">#</th><th style="border:1px solid #cbd5e1;padding:6px;">שם מלא</th><th style="border:1px solid #cbd5e1;padding:6px;">ת.ז.</th><th style="border:1px solid #cbd5e1;padding:6px;">סכום</th></tr></thead><tbody>${l.map((s,i)=>`<tr><td style="border:1px solid #cbd5e1;padding:6px;text-align:center;">${i+1}</td><td style="border:1px solid #cbd5e1;padding:6px;">${s.name}</td><td style="border:1px solid #cbd5e1;padding:6px;text-align:center;">${s.tz}</td><td style="border:1px solid #cbd5e1;padding:6px;text-align:center;font-weight:700;">${s.amount.toLocaleString()} ₪</td></tr>`).join('')}</tbody></table><div style="display:flex;justify-content:space-between;margin-top:26px;text-align:center;"><div><strong>יהודה צבי גורא</strong><br/><img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:46px;margin:4px auto;mix-blend-mode:multiply;"/><div style="font-size:11px;">תאריך: ${ap}</div></div><div><img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:70px;mix-blend-mode:multiply;filter:grayscale(100%) contrast(2.2);"/></div><div><strong>מנחם רובינשטיין</strong><br/><img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:46px;margin:4px auto;mix-blend-mode:multiply;"/><div style="font-size:11px;">תאריך: ${ap}</div></div></div></div>`; }
+    function renderAppendixSheet(iso) {
+      const m=document.getElementById('schMonthSelect').value, l=scholarships.filter(s=>s.month===m), tot=l.reduce((a,b)=>a+b.amount,0), now=new Date(), dt=iso?new Date(iso+'T12:00:00'):now, ap=formatIsraeliDate(dt), hb=formatHebrewDate(dt);
+      document.getElementById('protocolPrintSheet').innerHTML=`<div dir="rtl" style="font-family:Heebo,Arial,sans-serif;color:#0f172a;line-height:1.45;">
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;border-bottom:1.5px solid #0f172a;padding-bottom:6px;margin-bottom:10px;">
+          <div><strong>בס״ד</strong> | סימוכין: SA-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-B</div>
+          <div style="text-align:left;"><strong>תאריך אישור:</strong> ${ap}<br/>${hb}</div>
+        </div>
+        <h1 style="text-align:center;font-size:17px;font-weight:900;margin:0 0 8px;">נספח ב׳: טופס אישור חודשי להעברת מלגות — עמותת שערי עתיד (ע״ר 580811925)</h1>
+        <div style="margin:8px 0;font-size:12.5px;"><strong>חודש זכאות:</strong> ${m} &nbsp;|&nbsp; <strong>מספר מלגאים:</strong> ${l.length} &nbsp;|&nbsp; <strong>סה״כ לתשלום:</strong> ${tot.toLocaleString()} ₪</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr style="background:#f1f5f9;"><th style="border:1px solid #cbd5e1;padding:5px;width:36px;">#</th><th style="border:1px solid #cbd5e1;padding:5px;">שם מלא</th><th style="border:1px solid #cbd5e1;padding:5px;width:110px;">מספר זהות</th><th style="border:1px solid #cbd5e1;padding:5px;width:100px;">סכום המלגה</th></tr></thead>
+          <tbody>
+            ${l.map((s,i)=>`<tr><td style="border:1px solid #cbd5e1;padding:4.5px;text-align:center;">${i+1}</td><td style="border:1px solid #cbd5e1;padding:4.5px;">${s.name}</td><td style="border:1px solid #cbd5e1;padding:4.5px;text-align:center;">${s.tz||''}</td><td style="border:1px solid #cbd5e1;padding:4.5px;text-align:center;font-weight:700;">${s.amount.toLocaleString()} ₪</td></tr>`).join('')}
+            <tr style="background:#f8fafc;font-weight:900;"><td colspan="3" style="border:1px solid #cbd5e1;padding:6px;text-align:left;">סה״כ לתשלום (${l.length} מלגאים):</td><td style="border:1px solid #cbd5e1;padding:6px;text-align:center;">${tot.toLocaleString()} ₪</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;padding:8px 10px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;font-size:11.5px;line-height:1.5;">
+          <strong>הצהרת בקרה ואישור מורשי חתימה:</strong> אנו, מורשי החתימה של עמותת שערי עתיד (ע״ר 580811925), מאשרים בזאת כי בדקנו את רשימת המוטבים המפורטת בטבלה לעיל וכן את פלט ההעברות הבנקאיות המצורף לטופס זה, ואימתנו כי כל המלגאים עמדו במכסת שעות הלימוד ובקריטריונים שאושרו בפרוטוקול ישיבת הוועד, בהתאם לדיווחי הנוכחות והאישורים שהתקבלו לחודש זה. מאושר לתשלום בהתאם להחלטת הוועד השנתית.
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px;text-align:center;">
+          <div>
+            <strong>יהודה צבי גורא</strong><br/>
+            <span style="font-size:10.5px;color:#475569;">ת.ז. 214085623 | מורשה חתימה</span>
+            <img src="sig_gura.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_gura.png'" style="height:44px;margin:4px auto;display:block;mix-blend-mode:multiply;"/>
+            <div style="font-size:10.5px;">תאריך: ${ap}</div>
+          </div>
+          <div>
+            <img src="stamp.jpg" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/stamp.jpg'" style="height:68px;margin:0 auto;display:block;mix-blend-mode:multiply;filter:grayscale(100%) contrast(2.2);"/>
+            <div style="font-size:10px;color:#475569;margin-top:2px;">חותמת העמותה</div>
+          </div>
+          <div>
+            <strong>מנחם רובינשטיין</strong><br/>
+            <span style="font-size:10.5px;color:#475569;">ת.ז. 324982743 | מורשה חתימה</span>
+            <img src="sig_menachem.png" onerror="this.src='https://raw.githubusercontent.com/robbin8541-alt/friends-app/main/sig_menachem.png'" style="height:44px;margin:4px auto;display:block;mix-blend-mode:multiply;"/>
+            <div style="font-size:10.5px;">תאריך: ${ap}</div>
+          </div>
+        </div>
+      </div>`;
+    }
     function openAppendixModal() { const iso=new Date().toISOString().split('T')[0]; document.getElementById('protocolDateInput').value=iso; renderAppendixSheet(iso); document.getElementById('protocolModal').classList.remove('hidden'); }
     function closeAppendixModal() { document.getElementById('protocolModal').classList.add('hidden'); }
 
