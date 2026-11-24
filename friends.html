@@ -132,63 +132,35 @@
     </div>
   </header>
 
+  <!-- 5 טאבים ראשיים -->
   <nav id="ownerSidebarNav" class="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar border-t border-[#1e3a5f] bg-[#0b192c] gap-1 p-1.5">
-    <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-2.5 px-3 text-xs whitespace-nowrap">הכנסות יומיות</button>
-    <button type="button" onclick="openOwnerTab('analytics')" id="otab-analytics" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">גרפים והפקדות</button>
-    <button type="button" onclick="openOwnerTab('hours')" id="otab-hours" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">עובדים, יומן ושעות</button>
-    <button type="button" onclick="openOwnerTab('expenses')" id="otab-expenses" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">הוצאות</button>
-    <button type="button" onclick="openOwnerTab('queues')" id="otab-queues" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">תורים</button>
-    <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">מלגות שערי עתיד</button>
-    <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">תקלות, חוסרים והתראות</button>
+    <button type="button" onclick="openOwnerTab('income')" id="otab-income" class="owner-tab active flex-1 py-2.5 px-3 text-xs whitespace-nowrap">1. הכנסות וגרפים</button>
+    <button type="button" onclick="openOwnerTab('staff')" id="otab-staff" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">2. עובדים וציוד</button>
+    <button type="button" onclick="openOwnerTab('ops')" id="otab-ops" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">3. תפעול ומשימות</button>
+    <button type="button" onclick="openOwnerTab('scholarships')" id="otab-scholarships" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">4. מלגות שערי עתיד</button>
+    <button type="button" onclick="openOwnerTab('settings')" id="otab-settings" class="owner-tab flex-1 py-2.5 px-3 text-xs whitespace-nowrap">5. הגדרות מערכת</button>
   </nav>
 
   <main class="max-w-5xl mx-auto p-3 space-y-4">
 
-    <!-- 1. הכנסות יומיות (3 ריבועים למעלה + טבלה) -->
-    <section id="osec-income" class="owner-section space-y-3">
-      <div class="grid grid-cols-3 gap-2.5">
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ מזומן</div><div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5 tabular-nums">0 ₪</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ אשראי</div><div id="kpiCreditTotal" class="text-lg font-black text-sky-400 mt-0.5 tabular-nums">0 ₪</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ ביחד</div><div id="kpiCombinedTotal" class="text-lg font-black text-orange-400 mt-0.5 tabular-nums">0 ₪</div><div id="kpiMomBadge" class="text-[10px] font-bold mt-0.5"></div></div>
-      </div>
-
-      <div class="card p-4 space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-base font-black">פירוט הכנסות יומיות</h2>
-          <div class="flex flex-wrap items-center gap-2">
-            <a href="https://docs.google.com/spreadsheets/d/1YaryrZTB648UXiNCy_D3f1EtiunWhvgvDJ-j2s36m5g/edit" target="_blank" class="text-xs text-sky-400 underline">גיליון ↗</a>
-            <button type="button" onclick="exportIncomeCSV()" class="btn-secondary !py-1.5 !px-2.5 !text-xs">⬇ CSV</button>
-            <select id="monthFilter" onchange="onIncomeMonthChange()" class="input-dark px-3 py-1.5 text-xs font-bold">
-              <option value="ALL">כל החודשים</option>
-              <option value="01">ינואר</option><option value="02">פברואר</option><option value="03">מרץ</option><option value="04">אפריל</option>
-              <option value="05">מאי</option><option value="06">יוני</option><option value="07">יולי</option><option value="08">אוגוסט</option>
-              <option value="09">ספטמבר</option><option value="10">אוקטובר</option><option value="11">נובמבר</option><option value="12">דצמבר</option>
-            </select>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs text-right">
-            <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>מזומן</th><th>אשראי</th><th>סה״כ יומי</th><th class="text-center">אישור מעטפה</th></tr></thead>
-            <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. גרפים, הפקדות, יעד ודיוק (מסודר ב-3 תתי-טאבים נקיים) -->
-    <section id="osec-analytics" class="owner-section hidden space-y-4">
+    <!-- ================================================= -->
+    <!-- 1. הכנסות וגרפים (4 תתי-טאבים: טבלה יומית, יעד והפקדות, גרפים ומגמות, דיוק קופה + הוצאות ותורים) -->
+    <!-- ================================================= -->
+    <section id="osec-income" class="owner-section space-y-4">
       <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
         <div class="flex flex-wrap items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
-          <button type="button" id="aSubBtn-goals" onclick="switchAnalyticsSubTab('goals')" class="seg-btn active">יעד והפקדות</button>
-          <button type="button" id="aSubBtn-charts" onclick="switchAnalyticsSubTab('charts')" class="seg-btn">גרפים ומגמות</button>
-          <button type="button" id="aSubBtn-accuracy" onclick="switchAnalyticsSubTab('accuracy')" class="seg-btn">דיוק קופה</button>
+          <button type="button" id="incSubBtn-daily" onclick="switchIncomeSubTab('daily')" class="seg-btn active">טבלה יומית</button>
+          <button type="button" id="incSubBtn-goals" onclick="switchIncomeSubTab('goals')" class="seg-btn">יעד והפקדות</button>
+          <button type="button" id="incSubBtn-charts" onclick="switchIncomeSubTab('charts')" class="seg-btn">גרפים ומגמות</button>
+          <button type="button" id="incSubBtn-accuracy" onclick="switchIncomeSubTab('accuracy')" class="seg-btn">דיוק קופה</button>
+          <button type="button" id="incSubBtn-expenses" onclick="switchIncomeSubTab('expenses')" class="seg-btn">הוצאות</button>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
+          <div id="analyticsScopeWrap" class="hidden flex items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
             <button type="button" id="scopeMonthBtn" onclick="setAnalyticsScope('month')" class="seg-btn active !py-1 !px-2.5 !min-h-[30px]">חודש נבחר</button>
             <button type="button" id="scopeYearBtn" onclick="setAnalyticsScope('year')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">סיכום שנתי</button>
           </div>
-          <select id="analyticsMonthSelect" onchange="renderAnalyticsTab()" class="input-dark px-3 py-1.5 text-xs font-bold">
+          <select id="analyticsMonthSelect" onchange="syncSharedMonth(this.value)" class="input-dark px-3 py-1.5 text-xs font-bold">
             <option value="01">ינואר</option><option value="02">פברואר</option><option value="03">מרץ</option><option value="04">אפריל</option>
             <option value="05">מאי</option><option value="06">יוני</option><option value="07">יולי</option><option value="08">אוגוסט</option>
             <option value="09">ספטמבר</option><option value="10">אוקטובר</option><option value="11">נובמבר</option><option value="12">דצמבר</option>
@@ -197,8 +169,45 @@
         </div>
       </div>
 
-      <!-- תת-טאב 1: יעד חודשי + יומי + 5 מדדים (כולל שיא ושפל) + הפקדות בנק -->
-      <div id="aPane-goals" class="space-y-4">
+      <!-- תת-טאב 1א: טבלה יומית -->
+      <div id="incPane-daily" class="space-y-3">
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ מזומן</div><div id="kpiCashTotal" class="text-lg font-black text-emerald-400 mt-0.5 tabular-nums">0 ₪</div></div>
+          <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ אשראי</div><div id="kpiCreditTotal" class="text-lg font-black text-sky-400 mt-0.5 tabular-nums">0 ₪</div></div>
+          <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">סה״כ ביחד</div><div id="kpiCombinedTotal" class="text-lg font-black text-orange-400 mt-0.5 tabular-nums">0 ₪</div><div id="kpiMomBadge" class="text-[10px] font-bold mt-0.5"></div></div>
+        </div>
+
+        <div class="card p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="text-base font-black">פירוט הכנסות יומיות</h2>
+            <div class="flex flex-wrap items-center gap-2">
+              <a href="https://docs.google.com/spreadsheets/d/1YaryrZTB648UXiNCy_D3f1EtiunWhvgvDJ-j2s36m5g/edit" target="_blank" class="text-xs text-sky-400 underline">גיליון ↗</a>
+              <button type="button" onclick="exportIncomeCSV()" class="btn-secondary !py-1.5 !px-2.5 !text-xs">⬇ CSV</button>
+              <select id="monthFilter" onchange="onIncomeMonthChange()" class="input-dark px-3 py-1.5 text-xs font-bold">
+                <option value="ALL">כל החודשים</option>
+                <option value="01">ינואר</option><option value="02">פברואר</option><option value="03">מרץ</option><option value="04">אפריל</option>
+                <option value="05">מאי</option><option value="06">יוני</option><option value="07">יולי</option><option value="08">אוגוסט</option>
+                <option value="09">ספטמבר</option><option value="10">אוקטובר</option><option value="11">נובמבר</option><option value="12">דצמבר</option>
+              </select>
+              <select id="incomeTableFilter" onchange="renderIncomeTable()" class="input-dark px-3 py-1.5 text-xs font-bold">
+                <option value="all">סינון: הכל</option>
+                <option value="approved">אושר בלבד</option>
+                <option value="pending">ממתין לאישור</option>
+                <option value="diff">עם הפרש</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right">
+              <thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>מוכר</th><th>מזומן</th><th>אשראי</th><th>סה״כ יומי</th><th>הפרש</th><th class="text-center">אישור מעטפה</th></tr></thead>
+              <tbody id="incomeTableBody" class="divide-y divide-[#1e3a5f]"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- תת-טאב 1ב: יעד והפקדות (כולל יעד יומי לפי ימים פעילים) -->
+      <div id="incPane-goals" class="hidden space-y-4">
         <div class="card p-4 space-y-3 border-orange-500/40">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div><div class="text-xs font-bold text-slate-400">יעד הכנסות (<span id="targetScopeText">חודשי</span>)</div><div class="flex items-baseline gap-2 mt-0.5"><span id="kpiTargetPct" class="text-xl font-black text-orange-400 tabular-nums">0%</span><span id="kpiTargetDetail" class="text-xs text-slate-300 tabular-nums"></span></div></div>
@@ -209,11 +218,11 @@
 
           <div id="dailyTargetBreakdown" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#1e3a5f] text-xs">
             <div class="bg-[#091322] p-2.5 rounded-xl border border-[#26466d]">
-              <div class="text-[10px] text-slate-400">ימים פעילים בגיליון</div>
+              <div class="text-[10px] text-slate-400">ימים פעילים בחודש</div>
               <div id="dtActiveDaysVal" class="font-black text-white mt-0.5 tabular-nums">-</div>
             </div>
             <div class="bg-[#091322] p-2.5 rounded-xl border border-[#26466d]">
-              <div class="text-[10px] text-slate-400">יעד יומי בסיסי לחודש</div>
+              <div class="text-[10px] text-slate-400">יעד יומי בסיסי (ליום פעיל)</div>
               <div id="dtBaseDailyVal" class="font-black text-sky-400 mt-0.5 tabular-nums">0 ₪</div>
             </div>
             <div class="bg-[#091322] p-2.5 rounded-xl border border-orange-500/50">
@@ -231,7 +240,7 @@
           <div class="card p-3"><div class="text-[11px] text-slate-400">רווח נקי ורווחיות</div><div id="kpiNetProfit" class="text-base sm:text-lg font-black text-emerald-400 mt-0.5 tabular-nums">0 ₪</div><div id="kpiProfitMargin" class="text-[11px] text-slate-400 mt-0.5">0%</div></div>
           <div class="card p-3"><div id="kpiForecastLabel" class="text-[11px] text-slate-400">תחזית סוף חודש</div><div id="kpiForecast" class="text-base sm:text-lg font-black text-orange-400 mt-0.5 tabular-nums">0 ₪</div><div id="kpiForecastSub" class="text-[11px] text-slate-400 mt-0.5"></div></div>
           <div class="card p-3"><div class="text-[11px] text-slate-400">ממוצע ליום פעיל</div><div id="kpiDailyAvg" class="text-base sm:text-lg font-black text-sky-400 mt-0.5 tabular-nums">0 ₪</div><div id="kpiDailyAvgDelta" class="text-[11px] mt-0.5 font-bold"></div></div>
-          <div class="card p-3"><div class="text-[11px] text-slate-400">שיא ושפל</div><div id="kpiBestDay" class="text-xs font-black text-emerald-400 mt-1">שיא: -</div><div id="kpiWorstDay" class="text-xs font-bold text-rose-400 mt-0.5">שפל: -</div></div>
+          <div class="card p-3"><div class="text-[11px] text-slate-400">שיא ושפל (ימים פעילים)</div><div id="kpiBestDay" class="text-xs font-black text-emerald-400 mt-1">שיא: -</div><div id="kpiWorstDay" class="text-xs font-bold text-rose-400 mt-0.5">שפל: -</div></div>
           <div class="card p-3 col-span-2 lg:col-span-1"><div class="text-[11px] text-slate-400">מעטפות ממתינות ל-✓</div><div id="kpiPendingApprovals" class="text-base sm:text-lg font-black text-amber-300 mt-0.5 tabular-nums">0</div><div id="kpiPendingSub" class="text-[11px] text-slate-400 mt-0.5"></div></div>
         </div>
 
@@ -261,29 +270,103 @@
         </div>
       </div>
 
-      <!-- תת-טאב 2: כל 6 הגרפים מסודרים בזוגות -->
-      <div id="aPane-charts" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div class="card p-4 space-y-2.5"><div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-black">אותם ימים מול חודש קודם</h3><p id="sameDaysSubtitle" class="text-[11px] text-slate-400"></p></div><span id="sameDaysDeltaBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d]"></span></div><div id="chartSameDays" class="overflow-x-auto"></div></div>
-        <div class="card p-4 space-y-2.5"><div class="flex flex-wrap items-center justify-between gap-2"><h3 class="text-sm font-black">חודש מול חודש</h3><div class="flex items-center gap-1 bg-[#091322] p-0.5 rounded-lg border border-[#26466d]"><button type="button" id="momModeMix" onclick="setMomChartMode('mix')" class="seg-btn active !py-1 !px-2 !text-[11px] !min-h-[28px]">מזומן+אשראי</button><button type="button" id="momModePnl" onclick="setMomChartMode('pnl')" class="seg-btn !py-1 !px-2 !text-[11px] !min-h-[28px]">הכנסות מול הוצאות</button></div></div><div id="chartMonthOverMonth" class="overflow-x-auto"></div></div>
-        <div class="card p-4 space-y-2.5"><h3 class="text-sm font-black">חלוקת מזומן מול אשראי</h3><div id="chartCashCreditDonut"></div></div>
-        <div class="card p-4 space-y-2.5"><h3 class="text-sm font-black">ממוצע לפי ימי השבוע (א׳–מוצ״ש)</h3><div id="chartWeekdayAvg" class="overflow-x-auto"></div></div>
-        <div class="card p-4 space-y-2.5"><h3 id="dailyTrendTitle" class="text-sm font-black">מגמת הכנסות יומית</h3><div id="chartDailyTrend" class="overflow-x-auto"></div></div>
-        <div class="card p-4 space-y-2.5"><h3 class="text-sm font-black">התפלגות הוצאות לפי קטגוריה</h3><div id="chartExpenseCategories"></div></div>
+      <!-- תת-טאב 1ג: גרפים ומגמות (משודרגים אינטראקטיביים) -->
+      <div id="incPane-charts" class="hidden space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- גרף מגמת הכנסה יומית משודרג -->
+          <div class="card p-4 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 id="dailyTrendTitle" class="text-sm font-black">מגמת הכנסות יומית (ימים פעילים)</h3>
+                <p id="dailyTrendSub" class="text-[11px] text-slate-400">קו מקווקו = ממוצע יומי • שיא ושפל מסומנים • לחץ/רחף על נקודה לפירוט</p>
+              </div>
+              <span id="dailyTrendAvgBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] text-amber-300"></span>
+            </div>
+            <div id="dailyTrendHoverBox" class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] text-xs flex flex-wrap items-center justify-between gap-2 min-h-[38px]">
+              <span class="text-slate-400">בחר או רחף על יום בגרף להצגת פירוט מלא</span>
+            </div>
+            <div id="chartDailyTrend" class="overflow-x-auto"></div>
+          </div>
+
+          <!-- גרף אותם ימים מול חודש קודם משודרג -->
+          <div class="card p-4 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-black">אותם ימים מול חודש קודם</h3>
+                <p id="sameDaysSubtitle" class="text-[11px] text-slate-400"></p>
+              </div>
+              <span id="sameDaysDeltaBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d]"></span>
+            </div>
+            <div id="sameDaysSummaryStrip" class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] text-xs font-bold text-slate-200"></div>
+            <div id="sameDaysHoverBox" class="p-2 rounded-xl bg-[#091322]/70 border border-[#1e3a5f] text-[11px] text-slate-300 flex flex-wrap items-center justify-between gap-2 min-h-[34px]">
+              <span class="text-slate-400">לחץ/רחף על יום להשוואה מדויקת בין שני החודשים</span>
+            </div>
+            <div id="chartSameDays" class="overflow-x-auto"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="card p-4 space-y-2.5"><div class="flex flex-wrap items-center justify-between gap-2"><h3 class="text-sm font-black">חודש מול חודש</h3><div class="flex items-center gap-1 bg-[#091322] p-0.5 rounded-lg border border-[#26466d]"><button type="button" id="momModeMix" onclick="setMomChartMode('mix')" class="seg-btn active !py-1 !px-2 !text-[11px] !min-h-[28px]">מזומן+אשראי</button><button type="button" id="momModePnl" onclick="setMomChartMode('pnl')" class="seg-btn !py-1 !px-2 !text-[11px] !min-h-[28px]">הכנסות מול הוצאות</button></div></div><div id="chartMonthOverMonth" class="overflow-x-auto"></div></div>
+          <div class="card p-4 space-y-2.5"><h3 class="text-sm font-black">ממוצע לפי ימי השבוע (א׳–מוצ״ש)</h3><div id="chartWeekdayAvg" class="overflow-x-auto"></div></div>
+          <div class="card p-4 space-y-2.5"><h3 class="text-sm font-black">חלוקת מזומן מול אשראי</h3><div id="chartCashCreditDonut"></div></div>
+          <div class="card p-4 space-y-2.5"><h3 class="text-sm font-black">התפלגות הוצאות לפי קטגוריה</h3><div id="chartExpenseCategories"></div></div>
+        </div>
       </div>
 
-      <!-- תת-טאב 3: דיוק קופה לפי מוכר -->
-      <div id="aPane-accuracy" class="hidden card p-4 space-y-2.5">
-        <h3 class="text-sm font-black">דוח דיוק קופה לפי מוכר</h3>
+      <!-- תת-טאב 1ד: דיוק קופה לפי מוכר -->
+      <div id="incPane-accuracy" class="hidden card p-4 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-black">דוח דיוק קופה לפי מוכר</h3>
+          <select id="accuracySellerFilter" onchange="renderAnalyticsTab()" class="input-dark !w-auto px-3 py-1 text-xs font-bold">
+            <option value="all">סינון: כל המוכרים</option>
+            <option value="diffOnly">מוכרים עם הפרש מצטבר</option>
+          </select>
+        </div>
         <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">מוכר</th><th>משמרות</th><th>מדויק (0 ₪)</th><th>אחוז דיוק</th><th>הפרש מצטבר</th></tr></thead><tbody id="sellerAccuracyBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
+      </div>
+
+      <!-- תת-טאב 1ה: הוצאות -->
+      <div id="incPane-expenses" class="hidden space-y-3">
+        <div class="card p-4 space-y-3">
+          <h2 class="text-base font-black text-white">רישום הוצאות</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            <input id="expDate" type="date" class="input-dark p-2 text-xs" />
+            <select id="expType" class="input-dark p-2 text-xs"><option value="הוצאה משתנה">הוצאה משתנה</option><option value="הוצאה קבועה">הוצאה קבועה</option></select>
+            <select id="expCat" class="input-dark p-2 text-xs"><option value="שכירות וארנונה">שכירות וארנונה</option><option value="חשמל ותקשורת">חשמל ותקשורת</option><option value="משכורות מוכרים">משכורות מוכרים</option><option value="ציוד סוני וסנוקר">ציוד סוני וסנוקר</option><option value="ניקיון ותחזוקה">ניקיון ותחזוקה</option><option value="אחר">אחר</option></select>
+            <select id="expPaymentMethod" class="input-dark p-2 text-xs"><option value="מזומן">מזומן</option><option value="אשראי">אשראי</option><option value="העברה בנקאית">העברה בנקאית</option></select>
+            <input id="expAmount" type="number" placeholder="סכום (₪)" class="input-dark p-2 text-xs" />
+            <input id="expNote" type="text" placeholder="פירוט הוצאה" class="input-dark p-2 text-xs" />
+          </div>
+          <button type="button" onclick="saveExpense()" class="bg-orange-600 text-white font-bold px-4 py-2 rounded-xl text-xs">+ שמור הוצאה</button>
+        </div>
+        <div class="card p-4 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-sm font-black">היסטוריית הוצאות</h3>
+            <div class="flex items-center gap-2">
+              <select id="expensesFilterCat" onchange="renderExpensesTable()" class="input-dark !w-auto px-2.5 py-1 text-xs font-bold">
+                <option value="all">סינון: הכל</option>
+                <option value="מזומן">מזומן</option>
+                <option value="אשראי">אשראי</option>
+                <option value="העברה בנקאית">העברה בנקאית</option>
+              </select>
+              <span id="expensesTotalBadge" class="text-xs font-black text-rose-400">סה״כ: 0 ₪</span>
+            </div>
+          </div>
+          <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>סוג</th><th>קטגוריה</th><th>תשלום</th><th>סכום</th></tr></thead><tbody id="expensesTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
+        </div>
       </div>
     </section>
 
-    <!-- 3. עובדים: יומן משמרות חודשי (היום/מחר + דוח שעות מתוכננות + טלפונים + פעיל/סגור) + דוח שעות מהקופה (OCR) -->
-    <section id="osec-hours" class="owner-section hidden space-y-4">
+    <!-- ================================================= -->
+    <!-- 2. עובדים וציוד (4 תתי-טאבים: משמרות, שעות עובדים, עובדים וקטגוריות, ציוד ומפתחות) -->
+    <!-- ================================================= -->
+    <section id="osec-staff" class="owner-section hidden space-y-4">
       <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
-          <button type="button" id="hoursSubBtn-calendar" onclick="switchHoursSubTab('calendar')" class="seg-btn active">יומן משמרות חודשי וטלפונים</button>
-          <button type="button" id="hoursSubBtn-ocr" onclick="switchHoursSubTab('ocr')" class="seg-btn">דוח שעות מהקופה (OCR) וגרפים</button>
+        <div class="flex flex-wrap items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
+          <button type="button" id="staffSubBtn-calendar" onclick="switchStaffSubTab('calendar')" class="seg-btn active">משמרות</button>
+          <button type="button" id="staffSubBtn-ocr" onclick="switchStaffSubTab('ocr')" class="seg-btn">שעות עובדים</button>
+          <button type="button" id="staffSubBtn-directory" onclick="switchStaffSubTab('directory')" class="seg-btn">עובדים וקטגוריות</button>
+          <button type="button" id="staffSubBtn-equipment" onclick="switchStaffSubTab('equipment')" class="seg-btn">ציוד ומפתחות</button>
         </div>
         <select id="ownerCalMonthSelect" onchange="renderOwnerScheduleCalendar()" class="input-dark px-3 py-1.5 text-xs font-bold">
           <option value="01">ינואר</option><option value="02">פברואר</option><option value="03">מרץ</option><option value="04">אפריל</option>
@@ -292,7 +375,8 @@
         </select>
       </div>
 
-      <div id="hoursPane-calendar" class="space-y-4">
+      <!-- תת-טאב 2א: משמרות (רק מוכרים + פעיל/סגור) -->
+      <div id="staffPane-calendar" class="space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="card p-4 border-emerald-500/40">
             <div class="text-xs font-bold text-slate-400">מי עובד היום (<span id="lblTodayDate"></span>)</div>
@@ -305,14 +389,14 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 text-center">
-          <div class="card p-3 border-orange-500/40"><div class="text-[11px] text-slate-400">סה״כ שעות מתוכננות החודש (לפי היומן)</div><div id="ownerPlannedHoursKpi" class="text-xl font-black text-orange-400 tabular-nums mt-0.5">0 שע׳</div></div>
-          <div class="card p-3 border-rose-500/40"><div class="text-[11px] text-slate-400">ימים פעילים ללא שיבוץ עובד</div><div id="ownerMissingStaffKpi" class="text-xl font-black text-rose-400 tabular-nums mt-0.5">0</div></div>
+          <div class="card p-3 border-orange-500/40"><div class="text-[11px] text-slate-400">סה״כ שעות מתוכננות החודש (מוכרים)</div><div id="ownerPlannedHoursKpi" class="text-xl font-black text-orange-400 tabular-nums mt-0.5">0 שע׳</div></div>
+          <div class="card p-3 border-rose-500/40"><div class="text-[11px] text-slate-400">ימים פעילים ללא שיבוץ מוכר</div><div id="ownerMissingStaffKpi" class="text-xl font-black text-rose-400 tabular-nums mt-0.5">0</div></div>
         </div>
 
         <div class="card p-4 space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <h3 class="text-sm font-black">יומן משמרות חודשי (לחץ על יום לעדכון פעיל/סגור וטלפונים)</h3>
-            <div class="flex gap-3 text-[11px]"><span class="text-rose-400 font-bold">■ חסר עובד</span><span class="text-emerald-400 font-bold">■ משובץ</span><span class="text-slate-400 font-bold">■ סגור</span></div>
+            <h3 class="text-sm font-black">יומן משמרות חודשי — מוכרים בלבד (לחץ על יום לעדכון פעיל/סגור וטלפונים)</h3>
+            <div class="flex gap-3 text-[11px]"><span class="text-rose-400 font-bold">■ חסר מוכר</span><span class="text-emerald-400 font-bold">■ משובץ</span><span class="text-slate-400 font-bold">■ סגור</span></div>
           </div>
           <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-slate-400"><div>א׳</div><div>ב׳</div><div>ג׳</div><div>ד׳</div><div>ה׳</div><div>ו׳</div><div>ש׳</div></div>
           <div id="ownerMonthCalendarGrid" class="grid grid-cols-7 gap-1.5"></div>
@@ -330,25 +414,14 @@
           <div id="ownerDayAvailableList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          <div class="card p-4 space-y-2.5">
-            <h3 class="text-sm font-black">דוח שעות מתוכננות החודש לפי עובד</h3>
-            <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">עובד</th><th>משמרות מתוכננות</th><th>סה״כ שעות מתוכננות</th></tr></thead><tbody id="ownerPlannedByEmpBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
-          </div>
-
-          <div class="card p-4 space-y-3">
-            <h3 class="text-sm font-black">רשימת עובדים וטלפונים (מסונכרן עם המנהל)</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input id="ownerStaffNameInput" type="text" placeholder="שם עובד" class="input-dark px-2.5 text-xs font-bold" />
-              <input id="ownerStaffPhoneInput" type="tel" placeholder="טלפון (050...)" class="input-dark px-2.5 text-xs" />
-              <button type="button" onclick="saveOwnerStaffPhone()" class="bg-emerald-600 text-white font-bold rounded-xl text-xs py-2">+ שמור</button>
-            </div>
-            <div id="ownerStaffPhonesList" class="space-y-1.5 text-xs max-h-56 overflow-y-auto"></div>
-          </div>
+        <div class="card p-4 space-y-2.5">
+          <h3 class="text-sm font-black">דוח שעות מתוכננות החודש לפי מוכר</h3>
+          <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">מוכר</th><th>משמרות מתוכננות</th><th>סה״כ שעות מתוכננות</th></tr></thead><tbody id="ownerPlannedByEmpBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
         </div>
       </div>
 
-      <div id="hoursPane-ocr" class="hidden space-y-4">
+      <!-- תת-טאב 2ב: שעות עובדים -->
+      <div id="staffPane-ocr" class="hidden space-y-4">
         <div class="card p-4 space-y-3 border-orange-500/40">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div><h2 class="text-base font-black">קליטת דוח שעות עובדים מהקופה (תמונה)</h2><p class="text-xs text-slate-400">מזהה שם עובד, ימים וסה״כ שעות בלבד — עם חלוקה למוכרים / ניקיון / מזדמנים (+ הסבר)</p></div>
@@ -390,40 +463,112 @@
           <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">חודש</th><th>עובד</th><th>קבוצה</th><th>ימים</th><th>סה״כ שעות</th><th>הסבר</th><th></th></tr></thead><tbody id="savedHoursTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
         </div>
       </div>
-    </section>
 
-    <!-- 4. הוצאות -->
-    <section id="osec-expenses" class="owner-section hidden space-y-3">
-      <div class="card p-4 space-y-3">
-        <h2 class="text-base font-black text-white">רישום הוצאות</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          <input id="expDate" type="date" class="input-dark p-2 text-xs" />
-          <select id="expType" class="input-dark p-2 text-xs"><option value="הוצאה משתנה">הוצאה משתנה</option><option value="הוצאה קבועה">הוצאה קבועה</option></select>
-          <select id="expCat" class="input-dark p-2 text-xs"><option value="שכירות וארנונה">שכירות וארנונה</option><option value="חשמל ותקשורת">חשמל ותקשורת</option><option value="משכורות מוכרים">משכורות מוכרים</option><option value="ציוד סוני וסנוקר">ציוד סוני וסנוקר</option><option value="ניקיון ותחזוקה">ניקיון ותחזוקה</option><option value="אחר">אחר</option></select>
-          <select id="expPaymentMethod" class="input-dark p-2 text-xs"><option value="מזומן">מזומן</option><option value="אשראי">אשראי</option><option value="העברה בנקאית">העברה בנקאית</option></select>
-          <input id="expAmount" type="number" placeholder="סכום (₪)" class="input-dark p-2 text-xs" />
-          <input id="expNote" type="text" placeholder="פירוט הוצאה" class="input-dark p-2 text-xs" />
+      <!-- תת-טאב 2ג: עובדים וקטגוריות (מוכרים / ניקיון / מזדמנים) -->
+      <div id="staffPane-directory" class="hidden space-y-3">
+        <div class="card p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-sm font-black">ניהול עובדים, קטגוריות וטלפונים (מסונכרן עם המנהל)</h3>
+            <select id="ownerStaffCatFilter" onchange="renderOwnerStaffPhonesList()" class="input-dark !w-auto px-3 py-1 text-xs font-bold">
+              <option value="all">סינון: הכל</option>
+              <option value="מוכרים">מוכרים</option>
+              <option value="ניקיון">ניקיון</option>
+              <option value="מזדמנים">מזדמנים</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <input id="ownerStaffNameInput" type="text" placeholder="שם עובד" class="input-dark px-2.5 text-xs font-bold" />
+            <select id="ownerStaffCategorySelect" class="input-dark px-2.5 text-xs font-bold">
+              <option value="מוכרים">מוכרים</option>
+              <option value="ניקיון">ניקיון</option>
+              <option value="מזדמנים">מזדמנים</option>
+            </select>
+            <input id="ownerStaffPhoneInput" type="tel" placeholder="טלפון (050...)" class="input-dark px-2.5 text-xs" />
+            <button type="button" onclick="saveOwnerStaffPhone()" class="bg-emerald-600 text-white font-bold rounded-xl text-xs py-2">+ שמור עובד</button>
+          </div>
+          <div id="ownerStaffPhonesList" class="space-y-1.5 text-xs"></div>
         </div>
-        <button type="button" onclick="saveExpense()" class="bg-orange-600 text-white font-bold px-4 py-2 rounded-xl text-xs">+ שמור הוצאה</button>
       </div>
-      <div class="card p-4 space-y-2.5">
-        <div class="flex justify-between"><h3 class="text-sm font-black">היסטוריית הוצאות</h3><span id="expensesTotalBadge" class="text-xs font-black text-rose-400">סה״כ: 0 ₪</span></div>
-        <div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>סוג</th><th>קטגוריה</th><th>תשלום</th><th>סכום</th></tr></thead><tbody id="expensesTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div>
+
+      <!-- תת-טאב 2ד: ציוד ומפתחות -->
+      <div id="staffPane-equipment" class="hidden space-y-3">
+        <div class="card p-4 space-y-3 border-amber-500/40">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-sm font-black text-amber-300">ציוד ומפתחות אצל עובדים</h3>
+            <select id="ownerEquipFilter" onchange="renderOwnerEquipmentList()" class="input-dark !w-auto px-3 py-1 text-xs font-bold">
+              <option value="all">סינון: הכל</option>
+              <option value="אצל העובד">אצל העובד</option>
+              <option value="הוחזר">הוחזר</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <input id="ownerEqItemInput" type="text" placeholder="שם הפריט (מפתח ראשי, מפתח מחסן...)" class="input-dark px-2.5 text-xs font-bold" />
+            <input id="ownerEqHolderInput" type="text" list="ownerAllStaffDatalist" placeholder="אצל מי נמצא" class="input-dark px-2.5 text-xs font-bold" />
+            <input id="ownerEqNoteInput" type="text" placeholder="הערה" class="input-dark px-2.5 text-xs" />
+            <button type="button" onclick="addOwnerEquipmentItem()" class="bg-orange-600 text-white font-bold rounded-xl text-xs py-2">+ מסור פריט</button>
+          </div>
+          <datalist id="ownerAllStaffDatalist"></datalist>
+          <div id="ownerEquipmentListBox" class="space-y-2 text-xs"></div>
+        </div>
       </div>
     </section>
 
-    <!-- 5. תורים -->
-    <section id="osec-queues" class="owner-section hidden space-y-3">
-      <div class="grid grid-cols-3 gap-2.5">
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="text-lg font-black text-sky-400">0</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסנוקר</div><div id="qSnookerTotal" class="text-lg font-black text-emerald-400">0</div></div>
-        <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">ממוצע המתנה</div><div id="qAvgWait" class="text-lg font-black text-orange-400">0 דק׳</div></div>
+    <!-- ================================================= -->
+    <!-- 3. תפעול ומשימות (3 תתי-טאבים: משימות למנהל, תקלות, חוסרים במלאי + תורים) -->
+    <!-- ================================================= -->
+    <section id="osec-ops" class="owner-section hidden space-y-4">
+      <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
+          <button type="button" id="opsSubBtn-tasks" onclick="switchOpsSubTab('tasks')" class="seg-btn active">משימות למנהל</button>
+          <button type="button" id="opsSubBtn-faults" onclick="switchOpsSubTab('faults')" class="seg-btn">תקלות</button>
+          <button type="button" id="opsSubBtn-shortages" onclick="switchOpsSubTab('shortages')" class="seg-btn">חוסרים במלאי</button>
+          <button type="button" id="opsSubBtn-queues" onclick="switchOpsSubTab('queues')" class="seg-btn">תורים</button>
+        </div>
+        <select id="ownerOpsStatusFilter" onchange="renderOwnerOpsAll()" class="input-dark !w-auto px-3 py-1 text-xs font-bold">
+          <option value="all">סינון: הכל</option>
+          <option value="open">פתוח</option>
+          <option value="done">טופל</option>
+        </select>
       </div>
-      <div class="card p-4 space-y-3"><h2 class="text-base font-black">סיכום תורים לפי ימים</h2><div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>סוני</th><th>סנוקר</th><th>ממוצע</th><th>מקסימום</th></tr></thead><tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div></div>
-      <div class="card p-4 space-y-2"><h3 class="text-sm font-black">פירוט נרשמים</h3><div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>תחום</th><th>שם</th><th>רישום</th><th>כניסה</th><th>המתנה</th><th>סטטוס</th></tr></thead><tbody id="qAllTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div></div>
+
+      <!-- תת-טאב 3א: משימות למנהל -->
+      <div id="opsPane-tasks" class="card p-4 space-y-3">
+        <div class="flex justify-between items-center"><h2 class="text-base font-black text-white">שליחת משימה למנהל</h2><button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs">הפעל תזכורת יומית</button></div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="mgrTaskTitle" type="text" placeholder="נושא המשימה" class="input-dark p-2.5 text-xs" />
+          <input id="mgrTaskDetails" type="text" placeholder="פירוט..." class="input-dark p-2.5 text-xs" />
+          <div class="flex gap-1.5"><button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח</button><button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 text-white font-bold px-3 py-2 rounded-xl text-xs">ווצאפ</button></div>
+        </div>
+        <div id="mgrTasksList" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- תת-טאב 3ב: תקלות -->
+      <div id="opsPane-faults" class="hidden card p-4 space-y-2.5 border-rose-500/40">
+        <div class="flex justify-between"><h2 class="text-base font-black text-rose-300">תקלות והודעות מהמתחם</h2><span id="ownerFaultsCount" class="text-xs font-bold text-slate-400">0</span></div>
+        <div id="ownerFaultsList" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- תת-טאב 3ג: חוסרים במלאי -->
+      <div id="opsPane-shortages" class="hidden card p-4 space-y-2.5 border-amber-500/40">
+        <div class="flex justify-between"><h2 class="text-base font-black text-amber-300">חוסרים במלאי מהמוכרים</h2><span id="ownerShortagesCount" class="text-xs font-bold text-slate-400">0</span></div>
+        <div id="ownerShortagesList" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- תת-טאב 3ד: תורים -->
+      <div id="opsPane-queues" class="hidden space-y-3">
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסוני</div><div id="qSonyTotal" class="text-lg font-black text-sky-400">0</div></div>
+          <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">תורים לסנוקר</div><div id="qSnookerTotal" class="text-lg font-black text-emerald-400">0</div></div>
+          <div class="card p-3 text-center"><div class="text-[11px] text-slate-400">ממוצע המתנה</div><div id="qAvgWait" class="text-lg font-black text-orange-400">0 דק׳</div></div>
+        </div>
+        <div class="card p-4 space-y-3"><h2 class="text-base font-black">סיכום תורים לפי ימים</h2><div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>סוני</th><th>סנוקר</th><th>ממוצע</th><th>מקסימום</th></tr></thead><tbody id="qDailyTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div></div>
+        <div class="card p-4 space-y-2"><h3 class="text-sm font-black">פירוט נרשמים</h3><div class="overflow-x-auto"><table class="w-full text-xs text-right"><thead class="text-slate-400 border-b border-[#1e3a5f]"><tr><th class="py-2">תאריך</th><th>תחום</th><th>שם</th><th>רישום</th><th>כניסה</th><th>המתנה</th><th>סטטוס</th></tr></thead><tbody id="qAllTableBody" class="divide-y divide-[#1e3a5f]"></tbody></table></div></div>
+      </div>
     </section>
 
-    <!-- 6. מלגות שערי עתיד -->
+    <!-- ================================================= -->
+    <!-- 4. מלגות שערי עתיד (נפרד ונקי כולל נספח ב׳ בעמוד אחד) -->
+    <!-- ================================================= -->
     <section id="osec-scholarships" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -449,35 +594,34 @@
       </div>
     </section>
 
-    <!-- 7. תקלות, חוסרים והתראות -->
-    <section id="osec-ops" class="owner-section hidden space-y-3">
-      <div class="card p-4 space-y-2.5 border-amber-500/40">
-        <div class="flex justify-between"><h2 class="text-base font-black text-amber-300">חוסרים במלאי מהמוכרים</h2><span id="ownerShortagesCount" class="text-xs font-bold text-slate-400">0</span></div>
-        <div id="ownerShortagesList" class="space-y-2 text-xs"></div>
-      </div>
-
+    <!-- ================================================= -->
+    <!-- 5. הגדרות מערכת (סף אזהרת הפרש, יעד חודשי, קופה קטנה, ניהול שנים + התראות ומדריכים) -->
+    <!-- ================================================= -->
+    <section id="osec-settings" class="owner-section hidden space-y-3">
       <div class="card p-4 space-y-3 border-emerald-500/40">
-        <h2 class="text-base font-black text-emerald-400">הגדרות קופה, יעד, החלפת יום והתראות חוסר מזומן</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-          <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-1.5"><label class="block font-bold text-slate-300">פתיחת קופה (₪)</label><input id="sysOpeningFloatInput" type="number" value="500" class="input-dark px-3 py-1.5 text-sm font-black text-center" /></div>
+        <h2 class="text-base font-black text-emerald-400">הגדרות קופה, סף אזהרת הפרש, יעד חודשי והתראות</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+          <div class="bg-[#091322] p-3 rounded-xl border border-amber-500/50 space-y-2">
+            <label class="flex items-center gap-2 font-bold text-amber-300 cursor-pointer"><input id="sysDiscWarnToggle" type="checkbox" checked class="w-4 h-4 accent-amber-500" /><span>אזהרת הפרש בקופה</span></label>
+            <div class="flex items-center gap-2"><span class="text-[11px] text-slate-400">סף:</span><input id="sysDiscWarnThresholdInput" type="number" value="20" min="0" class="input-dark !w-20 !min-h-[32px] text-center font-bold text-xs" /><span class="text-[11px] text-slate-400">₪</span></div>
+          </div>
           <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-1.5"><label class="block font-bold text-slate-300">יעד חודשי (₪)</label><input id="sysMonthlyTargetInput" type="number" value="75000" class="input-dark px-3 py-1.5 text-sm font-black text-center" /></div>
+          <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-1.5"><label class="block font-bold text-slate-300">קופה קטנה / דמי מחזור (₪)</label><input id="sysOpeningFloatInput" type="number" value="500" class="input-dark px-3 py-1.5 text-sm font-black text-center" /></div>
           <div class="bg-[#091322] p-3 rounded-xl border border-[#26466d] space-y-1.5"><label class="block font-bold text-slate-300">החלפת יום עסקים (שעה)</label><input id="sysCutoffHourInput" type="number" min="0" max="12" value="8" class="input-dark px-3 py-1.5 text-sm font-black text-center" /></div>
           <div class="bg-[#091322] p-3 rounded-xl border border-rose-500/40 space-y-2">
-            <label class="flex items-center gap-2 font-bold text-rose-300 cursor-pointer"><input id="sysShortageAlertToggle" type="checkbox" checked class="w-4 h-4 accent-rose-500" /><span>התראה על חוסר מזומן</span></label>
+            <label class="flex items-center gap-2 font-bold text-rose-300 cursor-pointer"><input id="sysShortageAlertToggle" type="checkbox" checked class="w-4 h-4 accent-rose-500" /><span>התראת מייל חוסר</span></label>
             <div class="flex items-center gap-2"><span class="text-[11px] text-slate-400">סף:</span><input id="sysShortageThresholdInput" type="number" value="0" min="0" class="input-dark !w-20 !min-h-[32px] text-center font-bold text-xs" /><span class="text-[11px] text-slate-400">₪</span></div>
           </div>
         </div>
-        <button type="button" onclick="saveSystemSettingsFromOwner()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות קופה והתראות ✓</button>
+        <button type="button" onclick="saveSystemSettingsFromOwner()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">שמור הגדרות מערכת ✓</button>
       </div>
 
-      <div class="card p-4 space-y-3">
-        <div class="flex justify-between items-center"><h2 class="text-base font-black text-white">שליחת משימה למנהל</h2><button type="button" onclick="setupDailyTrigger()" class="bg-amber-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs">הפעל תזכורת יומית</button></div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <input id="mgrTaskTitle" type="text" placeholder="נושא המשימה" class="input-dark p-2.5 text-xs" />
-          <input id="mgrTaskDetails" type="text" placeholder="פירוט..." class="input-dark p-2.5 text-xs" />
-          <div class="flex gap-1.5"><button type="button" onclick="sendManagerTask(false)" class="flex-1 bg-orange-600 text-white font-bold px-3 py-2 rounded-xl text-xs">שלח</button><button type="button" onclick="sendManagerTask(true)" class="bg-emerald-600 text-white font-bold px-3 py-2 rounded-xl text-xs">ווצאפ</button></div>
+      <div class="card p-4 space-y-3 border-sky-500/40">
+        <h2 class="text-base font-black text-sky-400">ניהול שנים (הקמת גיליון שנתי חדש)</h2>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <input id="newYearInput" type="number" min="2026" max="2040" placeholder="למשל 2028" class="input-dark !w-36 px-3 py-1.5 font-bold text-center" />
+          <button type="button" onclick="createNewYearFromSettings()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">+ צור גיליון שנה חדשה</button>
         </div>
-        <div id="mgrTasksList" class="space-y-2 text-xs"></div>
       </div>
 
       <div class="card p-4 space-y-3">
@@ -544,10 +688,10 @@
     const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let SCRIPT_URL = safeGet("friends_gas_url") || DEFAULT_SCRIPT_URL;
 
-    let allShifts = [], allBankDeposits = [], allExpenses = [], allQueues = [], allShortages = [], allSchedule = [], allEmployeeHours = [];
-    let dayStatuses = {}, staffContacts = {}, sellersList = ["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"];
+    let allShifts = [], allBankDeposits = [], allExpenses = [], allQueues = [], allShortages = [], allFaults = [], allSchedule = [], allEmployeeHours = [], allEquipment = [];
+    let dayStatuses = {}, staffContacts = {}, staffCategories = {}, staffList = [], sellersList = ["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"];
     let managerTasks = [], schDirectory = [], scholarships = [], hoursDraftRows = [];
-    let systemSettings = { openingFloat: 500, monthlyTarget: 75000, shortageAlertEnabled: true, shortageThreshold: 0, businessDayCutoffHour: Number(safeGet("friends_cutoff_hour", "8")) || 8 };
+    let systemSettings = { openingFloat: 500, monthlyTarget: 75000, shortageAlertEnabled: true, shortageThreshold: 0, discrepancyWarningEnabled: true, discrepancyWarningThreshold: 20, businessDayCutoffHour: Number(safeGet("friends_cutoff_hour", "8")) || 8 };
     let analyticsScope = 'month', momChartMode = 'mix', lastOwnerBizStr = '', selectedOwnerCalDate = '';
 
     const HEB_MONTHS = { "ינואר":"01","פברואר":"02","מרץ":"03","אפריל":"04","מאי":"05","יוני":"06","יולי":"07","אוגוסט":"08","ספטמבר":"09","אוקטובר":"10","נובמבר":"11","דצמבר":"12" };
@@ -609,22 +753,35 @@
       document.querySelectorAll('.owner-tab').forEach(b => b.classList.remove('active'));
       document.getElementById('osec-' + tabName)?.classList.remove('hidden');
       document.getElementById('otab-' + tabName)?.classList.add('active');
-      if (tabName === 'analytics') renderAnalyticsTab();
-      if (tabName === 'hours') { renderOwnerScheduleCalendar(); renderHoursDashboard(); }
+      if (tabName === 'income') renderAnalyticsTab();
+      if (tabName === 'staff') { renderOwnerScheduleCalendar(); renderHoursDashboard(); renderOwnerStaffPhonesList(); renderOwnerEquipmentList(); }
+      if (tabName === 'ops') renderOwnerOpsAll();
     }
-    function switchAnalyticsSubTab(sub) {
-      ['goals', 'charts', 'accuracy'].forEach(k => {
-        document.getElementById('aPane-' + k).classList.toggle('hidden', k !== sub);
-        document.getElementById('aSubBtn-' + k).classList.toggle('active', k === sub);
+    function switchIncomeSubTab(sub) {
+      ['daily', 'goals', 'charts', 'accuracy', 'expenses'].forEach(k => {
+        document.getElementById('incPane-' + k).classList.toggle('hidden', k !== sub);
+        document.getElementById('incSubBtn-' + k).classList.toggle('active', k === sub);
       });
+      document.getElementById('analyticsScopeWrap').classList.toggle('hidden', sub === 'daily' || sub === 'expenses');
+      if (sub === 'expenses') renderExpensesTable();
+      else renderAnalyticsTab();
     }
-    function switchHoursSubTab(sub) {
-      document.getElementById('hoursPane-calendar').classList.toggle('hidden', sub !== 'calendar');
-      document.getElementById('hoursPane-ocr').classList.toggle('hidden', sub !== 'ocr');
-      document.getElementById('hoursSubBtn-calendar').classList.toggle('active', sub === 'calendar');
-      document.getElementById('hoursSubBtn-ocr').classList.toggle('active', sub === 'ocr');
+    function switchStaffSubTab(sub) {
+      ['calendar', 'ocr', 'directory', 'equipment'].forEach(k => {
+        document.getElementById('staffPane-' + k).classList.toggle('hidden', k !== sub);
+        document.getElementById('staffSubBtn-' + k).classList.toggle('active', k === sub);
+      });
       if (sub === 'calendar') renderOwnerScheduleCalendar();
-      else renderHoursDashboard();
+      if (sub === 'ocr') renderHoursDashboard();
+      if (sub === 'directory') renderOwnerStaffPhonesList();
+      if (sub === 'equipment') renderOwnerEquipmentList();
+    }
+    function switchOpsSubTab(sub) {
+      ['tasks', 'faults', 'shortages', 'queues'].forEach(k => {
+        document.getElementById('opsPane-' + k).classList.toggle('hidden', k !== sub);
+        document.getElementById('opsSubBtn-' + k).classList.toggle('active', k === sub);
+      });
+      renderOwnerOpsAll();
     }
 
     function parseDateInfo(raw, sheetName) {
@@ -649,6 +806,11 @@
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getOwnerData&year=${yr}`);
         const data = await res.json();
+        if (Array.isArray(data.availableYears) && data.availableYears.length) {
+          const yrSel = document.getElementById('yearSelect');
+          const mergedY = [...new Set(['2026', '2027', ...data.availableYears, yr])].sort();
+          yrSel.innerHTML = mergedY.map(y => `<option value="${y}" ${y === yr ? 'selected' : ''}>${y}</option>`).join('');
+        }
         allShifts = (data.shifts || []).map(r => {
           const info = parseDateInfo(r.date, r.sheetName);
           const cash = parseFloat(r.cash) || 0, credit = parseFloat(r.credit) || 0;
@@ -658,12 +820,16 @@
         }).filter(r => (!r.yearNum || r.yearNum === yr) && (r.cash > 0 || r.credit > 0));
 
         dayStatuses = data.dayStatuses || {};
-        if (Array.isArray(data.sellers) && data.sellers.length) sellersList = data.sellers;
+        if (Array.isArray(data.sellers)) sellersList = data.sellers;
+        staffList = data.staffList || [];
+        staffCategories = data.staffCategories || {};
         staffContacts = data.staffContacts || {};
+        allEquipment = data.equipment || [];
         allBankDeposits = data.bankDeposits || [];
         allExpenses = data.expenses || [];
         allQueues = data.queues || [];
         allShortages = data.shortages || [];
+        allFaults = data.faults || [];
         allSchedule = data.schedule || [];
         allEmployeeHours = data.employeeHours || [];
         managerTasks = data.managerTasks || [];
@@ -678,6 +844,8 @@
           document.getElementById('quickMonthlyTargetInput').value = systemSettings.monthlyTarget;
           document.getElementById('sysShortageAlertToggle').checked = systemSettings.shortageAlertEnabled !== false;
           document.getElementById('sysShortageThresholdInput').value = systemSettings.shortageThreshold || 0;
+          document.getElementById('sysDiscWarnToggle').checked = systemSettings.discrepancyWarningEnabled !== false;
+          document.getElementById('sysDiscWarnThresholdInput').value = systemSettings.discrepancyWarningThreshold ?? 20;
         }
         if (data.notifySettings) {
           const ns = data.notifySettings;
@@ -690,13 +858,23 @@
           scholarships = data.scholarships.map(s => ({ id: s.rowNumber || Date.now()+Math.random(), rowNumber: s.rowNumber, month: s.month, name: s.fullName, tz: s.idNumber, amount: Number(s.amount)||2500, verifiedMenachem: (s.received && s.verifier === 'מנחם רובינשטיין'), verifiedGura: (s.received && s.verifier === 'יהודה גורא') }));
         }
 
-        renderIncomeTable(); renderExpensesTable(); renderAnalyticsTab(); renderOwnerScheduleCalendar(); renderHoursDashboard(); renderQueuesTab(); renderDirectoryList(); renderDirManageList(); renderScholarships(); renderManagerTasks(); renderOwnerShortages();
+        renderIncomeTable(); renderExpensesTable(); renderAnalyticsTab(); renderOwnerScheduleCalendar(); renderHoursDashboard(); renderOwnerStaffPhonesList(); renderOwnerEquipmentList(); renderOwnerOpsAll(); renderDirectoryList(); renderDirManageList(); renderScholarships();
       } catch (e) {} finally { setDataLoading(false); }
     }
 
     // ========================
-    // OWNER SCHEDULE CALENDAR + TODAY/TOMORROW + PLANNED HOURS + PHONES + פעיל/סגור
+    // OWNER SCHEDULE CALENDAR (רק מוכרים + פעיל/סגור) + עובדים וקטגוריות + ציוד ומפתחות
     // ========================
+    function getAllStaffNamesOwner() {
+      const fromList = (staffList || []).map(x => x.name).filter(Boolean);
+      return [...new Set([...fromList, ...sellersList, ...Object.keys(staffContacts || {})])];
+    }
+    function getStaffCategoryOwner(name) {
+      if (staffCategories && staffCategories[name]) return staffCategories[name];
+      const f = (staffList || []).find(x => x.name === name);
+      return f ? (f.category || 'מוכרים') : 'מוכרים';
+    }
+
     function calcShiftHours(start, end) {
       if (!start || !end) return 0;
       const [sh, sm] = start.split(':').map(Number), [eh, em] = end.split(':').map(Number);
@@ -711,20 +889,22 @@
       const daysInMonth = new Date(yr, mIdx + 1, 0).getDate();
       const firstWd = new Date(yr, mIdx, 1).getDay();
 
+      // משמרות מושכות רק מוכרים
+      const sellersSet = new Set(sellersList);
       const todayBiz = getBizDate(0), tomBiz = getBizDate(1);
       const todayStr = formatIsraeliDate(todayBiz), tomStr = formatIsraeliDate(tomBiz);
       document.getElementById('lblTodayDate').textContent = todayStr;
       document.getElementById('lblTomorrowDate').textContent = tomStr;
-      const todayShifts = allSchedule.filter(s => s.date === todayStr);
-      const tomShifts = allSchedule.filter(s => s.date === tomStr);
+      const todayShifts = allSchedule.filter(s => s.date === todayStr && sellersSet.has(s.sellerName));
+      const tomShifts = allSchedule.filter(s => s.date === tomStr && sellersSet.has(s.sellerName));
       document.getElementById('whoWorksTodayBox').innerHTML = todayShifts.length
         ? todayShifts.map(s => `<div>${s.sellerName} <span class="text-xs font-normal text-slate-300">(${s.startTime}–${s.endTime})</span></div>`).join('')
-        : '<span class="text-rose-400">לא שובץ עובד להיום</span>';
+        : '<span class="text-rose-400">לא שובץ מוכר להיום</span>';
       document.getElementById('whoWorksTomorrowBox').innerHTML = tomShifts.length
         ? tomShifts.map(s => `<div>${s.sellerName} <span class="text-xs font-normal text-slate-300">(${s.startTime}–${s.endTime})</span></div>`).join('')
-        : '<span class="text-amber-300">לא שובץ עובד למחר</span>';
+        : '<span class="text-amber-300">לא שובץ מוכר למחר</span>';
 
-      const monthShifts = allSchedule.filter(s => String(s.date).includes(`/${mStr}/${yr}`));
+      const monthShifts = allSchedule.filter(s => String(s.date).includes(`/${mStr}/${yr}`) && sellersSet.has(s.sellerName));
       const byDate = {}, byEmp = {}; let totalHrs = 0;
       monthShifts.forEach(s => {
         if (!byDate[s.date]) byDate[s.date] = [];
@@ -759,24 +939,21 @@
       document.getElementById('ownerPlannedByEmpBody').innerHTML = !empRows.length
         ? '<tr><td colspan="3" class="py-4 text-center text-slate-400">אין משמרות משובצות לחודש זה</td></tr>'
         : empRows.map(([n, st]) => `<tr><td class="py-2 font-bold">${n}</td><td class="tabular-nums">${st.cnt}</td><td class="text-orange-400 font-black tabular-nums">${Math.round(st.hrs*10)/10} שע׳</td></tr>`).join('');
-
-      renderOwnerStaffPhonesList();
     }
 
     function openOwnerDayAvailable(dateStr) {
       selectedOwnerCalDate = dateStr;
       const curSt = dayStatuses[dateStr] || 'פעיל';
       const assigned = allSchedule.filter(s => s.date === dateStr).map(s => s.sellerName);
-      const allNames = [...new Set([...sellersList, ...Object.keys(staffContacts || {})])];
-      const avail = allNames.filter(n => !assigned.includes(n));
+      const avail = sellersList.filter(n => !assigned.includes(n));
       document.getElementById('ownerDayAvailableBox').classList.remove('hidden');
-      document.getElementById('ownerDayAvailableTitle').textContent = `תאריך ${dateStr} (${curSt}) — עובדים פנויים:`;
+      document.getElementById('ownerDayAvailableTitle').textContent = `תאריך ${dateStr} (${curSt}) — מוכרים פנויים:`;
       document.getElementById('ownerDayAvailableList').innerHTML = !avail.length
-        ? '<div class="text-slate-400">כל העובדים משובצים</div>'
+        ? '<div class="text-slate-400">כל המוכרים משובצים</div>'
         : avail.map(name => {
             const ph = (staffContacts[name] || '').replace(/[^0-9]/g, '');
             const wa = ph.startsWith('0') ? '972' + ph.slice(1) : ph;
-            const msg = encodeURIComponent(`היי ${name}, חסר לנו עובד ב-Friends בתאריך ${dateStr}. תוכל לעבוד?`);
+            const msg = encodeURIComponent(`היי ${name}, חסר לנו מוכר ב-Friends בתאריך ${dateStr}. תוכל לעבוד?`);
             return `<div class="flex items-center justify-between p-2.5 rounded-xl bg-[#091322] border border-[#26466d]">
               <div><strong>${name}</strong><div class="text-[11px] text-slate-400">${ph || 'ללא מספר'}</div></div>
               <div class="flex gap-1.5">
@@ -792,43 +969,136 @@
       dayStatuses[selectedOwnerCalDate] = newStatus;
       renderOwnerScheduleCalendar();
       renderAnalyticsTab();
-      document.getElementById('ownerDayAvailableTitle').textContent = `תאריך ${selectedOwnerCalDate} (${newStatus}) — עובדים פנויים:`;
+      document.getElementById('ownerDayAvailableTitle').textContent = `תאריך ${selectedOwnerCalDate} (${newStatus}) — מוכרים פנויים:`;
       await sendToGas({ action: 'setDayStatus', year: document.getElementById('yearSelect').value, date: selectedOwnerCalDate, status: newStatus });
       showOwnerToast(`התאריך ${selectedOwnerCalDate} עודכן ל-${newStatus} ✓`);
     }
 
     function renderOwnerStaffPhonesList() {
-      const names = [...new Set([...sellersList, ...Object.keys(staffContacts || {})])];
-      document.getElementById('ownerStaffPhonesList').innerHTML = names.map(name => {
-        const ph = staffContacts[name] || '', clean = ph.replace(/[^0-9]/g, ''), wa = clean.startsWith('0') ? '972' + clean.slice(1) : clean;
-        return `<div class="flex justify-between items-center p-2 rounded-xl bg-[#091322] border border-[#26466d]">
-          <div><strong>${name}</strong> <span class="text-slate-400 mr-2">${ph || 'ללא טלפון'}</span></div>
+      const box = document.getElementById('ownerStaffPhonesList');
+      if (!box) return;
+      const catFilter = document.getElementById('ownerStaffCatFilter')?.value || 'all';
+      const names = getAllStaffNamesOwner().filter(n => catFilter === 'all' || getStaffCategoryOwner(n) === catFilter);
+      const dl = document.getElementById('ownerAllStaffDatalist');
+      if (dl) dl.innerHTML = getAllStaffNamesOwner().map(n => `<option value="${n}"></option>`).join('');
+
+      box.innerHTML = names.length ? names.map(name => {
+        const ph = staffContacts[name] || '', cat = getStaffCategoryOwner(name), clean = ph.replace(/[^0-9]/g, ''), wa = clean.startsWith('0') ? '972' + clean.slice(1) : clean;
+        return `<div class="flex flex-wrap justify-between items-center gap-2 p-2.5 rounded-xl bg-[#091322] border border-[#26466d]">
+          <div>
+            <strong>${name}</strong>
+            <span class="mr-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-500/15 text-sky-300 border border-sky-500/30">${cat}</span>
+            <span class="text-slate-400 mr-2">${ph || 'ללא טלפון'}</span>
+          </div>
           <div class="flex gap-1.5">
             ${clean ? `<a href="tel:${clean}" class="px-2 py-0.5 rounded bg-sky-600/20 text-sky-300 font-bold">חייג</a>` : ''}
             ${wa ? `<a href="https://wa.me/${wa}" target="_blank" class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold">וואטסאפ</a>` : ''}
-            <button type="button" onclick="document.getElementById('ownerStaffNameInput').value='${name}';document.getElementById('ownerStaffPhoneInput').value='${ph}';" class="px-2 py-0.5 rounded bg-slate-700 text-white font-bold">ערוך</button>
+            <button type="button" onclick="document.getElementById('ownerStaffNameInput').value='${name}';document.getElementById('ownerStaffCategorySelect').value='${cat}';document.getElementById('ownerStaffPhoneInput').value='${ph}';" class="px-2 py-0.5 rounded bg-slate-700 text-white font-bold">ערוך</button>
+            <button type="button" onclick="deleteOwnerStaffMember('${name}')" class="px-2 py-0.5 rounded bg-rose-600/20 text-rose-300 font-bold">מחק</button>
           </div>
         </div>`;
-      }).join('');
+      }).join('') : '<div class="text-slate-400">אין עובדים בקטגוריה זו</div>';
     }
 
     async function saveOwnerStaffPhone() {
-      const name = document.getElementById('ownerStaffNameInput').value.trim(), phone = document.getElementById('ownerStaffPhoneInput').value.trim();
+      const name = document.getElementById('ownerStaffNameInput').value.trim();
+      const category = document.getElementById('ownerStaffCategorySelect').value || 'מוכרים';
+      const phone = document.getElementById('ownerStaffPhoneInput').value.trim();
       if (!name) return;
       staffContacts[name] = phone;
-      if (!sellersList.includes(name)) sellersList.push(name);
+      staffCategories[name] = category;
+      const idx = staffList.findIndex(x => x.name === name);
+      if (idx >= 0) staffList[idx] = { name, category, phone };
+      else staffList.push({ name, category, phone });
+      if (category === 'מוכרים' && !sellersList.includes(name)) sellersList.push(name);
+      if (category !== 'מוכרים') sellersList = sellersList.filter(s => s !== name);
       document.getElementById('ownerStaffNameInput').value = ''; document.getElementById('ownerStaffPhoneInput').value = '';
       renderOwnerStaffPhonesList();
-      await sendToGas({ action: 'saveStaffContacts', contacts: staffContacts });
-      showOwnerToast(`נשמר הטלפון של ${name} ✓`);
+      renderOwnerScheduleCalendar();
+      await sendToGas({ action: 'saveStaffMember', name, category, phone });
+      showOwnerToast(`נשמר: ${name} (${category}) ✓`);
+    }
+
+    async function deleteOwnerStaffMember(name) {
+      if (!confirm(`להסיר את ${name} מרשימת העובדים?`)) return;
+      staffList = staffList.filter(x => x.name !== name);
+      sellersList = sellersList.filter(s => s !== name);
+      delete staffContacts[name];
+      delete staffCategories[name];
+      renderOwnerStaffPhonesList();
+      renderOwnerScheduleCalendar();
+      await sendToGas({ action: 'deleteStaffMember', name });
+      showOwnerToast(`העובד ${name} הוסר ✓`);
+    }
+
+    function renderOwnerEquipmentList() {
+      const box = document.getElementById('ownerEquipmentListBox');
+      if (!box) return;
+      const flt = document.getElementById('ownerEquipFilter')?.value || 'all';
+      const rows = (allEquipment || []).filter(eq => flt === 'all' || (eq.status || 'אצל העובד') === flt);
+      box.innerHTML = rows.length ? rows.map(eq => {
+        const isHeld = (eq.status || 'אצל העובד') !== 'הוחזר';
+        return `<div class="p-3 rounded-xl bg-[#091322] border ${isHeld ? 'border-amber-500/40' : 'border-emerald-500/30'} flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <strong class="text-white">${eq.itemName}</strong>
+            <span class="mr-2 text-amber-300 font-bold">אצל: ${eq.holderName || '-'}</span>
+            <span class="mr-2 text-slate-400">נמסר: ${eq.handoverDate || '-'}</span>
+            ${eq.returnDate ? `<span class="mr-2 text-emerald-400">הוחזר: ${eq.returnDate}</span>` : ''}
+            ${eq.note ? `<span class="mr-2 text-slate-400">• ${eq.note}</span>` : ''}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${isHeld ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}">${isHeld ? 'אצל העובד' : 'הוחזר'}</span>
+            ${isHeld ? `<button type="button" onclick="ownerMarkEquipmentReturned('${eq.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[11px]">סמן כהוחזר</button>` : ''}
+          </div>
+        </div>`;
+      }).join('') : '<div class="text-slate-400">אין פריטי ציוד או מפתחות רשומים</div>';
+    }
+
+    async function addOwnerEquipmentItem() {
+      const itemName = document.getElementById('ownerEqItemInput').value.trim();
+      const holderName = document.getElementById('ownerEqHolderInput').value.trim();
+      const note = document.getElementById('ownerEqNoteInput').value.trim();
+      if (!itemName || !holderName) return;
+      const today = formatIsraeliDate(new Date());
+      const newEq = { id: 'EQ' + Date.now(), itemName, holderName, handoverDate: today, status: 'אצל העובד', returnDate: '', note };
+      allEquipment.unshift(newEq);
+      document.getElementById('ownerEqItemInput').value = '';
+      document.getElementById('ownerEqHolderInput').value = '';
+      document.getElementById('ownerEqNoteInput').value = '';
+      renderOwnerEquipmentList();
+      await sendToGas({ action: 'addEquipment', year: document.getElementById('yearSelect').value, ...newEq });
+      showOwnerToast('נמסר ונרשם ✓');
+    }
+
+    async function ownerMarkEquipmentReturned(id) {
+      const today = formatIsraeliDate(new Date());
+      const eq = allEquipment.find(x => x.id === id);
+      if (eq) { eq.status = 'הוחזר'; eq.returnDate = today; }
+      renderOwnerEquipmentList();
+      await sendToGas({ action: 'returnEquipment', year: document.getElementById('yearSelect').value, id, status: 'הוחזר', returnDate: today });
+      showOwnerToast('סומן כהוחזר ✓');
     }
 
     // ========================
-    // INCOME, ANALYTICS (+ DAILY TARGET), OCR HOURS, EXPENSES, QUEUES, SCHOLARSHIPS, OPS
+    // INCOME, ANALYTICS (+ DAILY TARGET + UPGRADED CHARTS), OCR HOURS, EXPENSES, QUEUES, SCHOLARSHIPS, OPS
     // ========================
+    function syncSharedMonth(m) {
+      document.getElementById('analyticsMonthSelect').value = m;
+      document.getElementById('monthFilter').value = m;
+      renderIncomeTable();
+      renderAnalyticsTab();
+    }
     function onIncomeMonthChange() { const m = document.getElementById('monthFilter').value; if (m !== 'ALL') document.getElementById('analyticsMonthSelect').value = m; renderIncomeTable(); }
     function renderIncomeTable() {
-      const m = document.getElementById('monthFilter').value, filtered = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
+      const m = document.getElementById('monthFilter').value;
+      const flt = document.getElementById('incomeTableFilter')?.value || 'all';
+      const byMonth = allShifts.filter(r => m === 'ALL' || r.monthNum === m);
+      const filtered = byMonth.filter(r => {
+        if (flt === 'approved') return r.approved;
+        if (flt === 'pending') return !r.approved;
+        if (flt === 'diff') return Math.round(Number(r.envelopeDiff) || 0) !== 0;
+        return true;
+      });
       let c = 0, cr = 0, t = 0; filtered.forEach(r => { c += r.cash; cr += r.credit; t += r.total; });
       document.getElementById('kpiCashTotal').textContent = Math.round(c).toLocaleString() + ' ₪';
       document.getElementById('kpiCreditTotal').textContent = Math.round(cr).toLocaleString() + ' ₪';
@@ -838,12 +1108,15 @@
         const prev = allShifts.filter(r => r.monthNum === String(Number(m)-1).padStart(2,'0')).reduce((a,b)=>a+b.total,0);
         if (prev > 0) { const p = Math.round(((t-prev)/prev)*100); mb.textContent = `${p>=0?'▲ +':'▼ '}${p}% מחודש קודם`; mb.className = `text-[10px] font-bold mt-0.5 ${p>=0?'text-emerald-400':'text-rose-400'}`; } else mb.textContent = '';
       } else mb.textContent = '';
-      document.getElementById('incomeTableBody').innerHTML = !filtered.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים</td></tr>'
-        : filtered.map(r => `<tr><td class="py-2 font-bold">${r.date}</td><td class="text-emerald-400 font-bold tabular-nums">${r.cash.toLocaleString()} ₪</td><td class="text-sky-400 font-bold tabular-nums">${r.credit.toLocaleString()} ₪</td><td class="text-orange-400 font-black tabular-nums">${r.total.toLocaleString()} ₪</td><td class="text-center">${r.approved?'<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400">✓ אושר</span>':'<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300">ממתין</span>'}</td></tr>`).join('');
+      document.getElementById('incomeTableBody').innerHTML = !filtered.length ? '<tr><td colspan="7" class="py-4 text-center text-slate-400">אין נתונים</td></tr>'
+        : filtered.map(r => {
+            const df = Math.round(Number(r.envelopeDiff) || 0);
+            return `<tr><td class="py-2 font-bold">${r.date}</td><td>${r.sellerName||'-'}</td><td class="text-emerald-400 font-bold tabular-nums">${r.cash.toLocaleString()} ₪</td><td class="text-sky-400 font-bold tabular-nums">${r.credit.toLocaleString()} ₪</td><td class="text-orange-400 font-black tabular-nums">${r.total.toLocaleString()} ₪</td><td class="font-bold tabular-nums ${df===0?'text-emerald-400':(df>0?'text-sky-400':'text-rose-400')}">${df===0?'0 ₪':(df>0?'+':'')+df.toLocaleString()+' ₪'}</td><td class="text-center">${r.approved?'<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400">✓ אושר</span>':'<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300">ממתין</span>'}</td></tr>`;
+          }).join('');
     }
     function exportIncomeCSV() {
       const m = document.getElementById('monthFilter').value, f = allShifts.filter(r => m === 'ALL' || r.monthNum === m); if (!f.length) return;
-      const csv = '\uFEFF' + [['תאריך','מזומן','אשראי','סה"כ','אישור'], ...f.map(r=>[r.date,r.cash,r.credit,r.total,r.approved?'אושר':'ממתין'])].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+      const csv = '\uFEFF' + [['תאריך','מוכר','מזומן','אשראי','סה"כ','הפרש','אישור'], ...f.map(r=>[r.date,r.sellerName||'',r.cash,r.credit,r.total,r.envelopeDiff||0,r.approved?'אושר':'ממתין'])].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
       const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); a.download = `friends_${m}.csv`; a.click();
     }
 
@@ -851,6 +1124,12 @@
     function setMomChartMode(m) { momChartMode = m; document.getElementById('momModeMix').classList.toggle('active', m==='mix'); document.getElementById('momModePnl').classList.toggle('active', m==='pnl'); renderMonthOverMonthChart(); }
     function getExpenseMonthNum(e) { if (e.month) for (const [h,n] of Object.entries(HEB_MONTHS)) if (String(e.month).includes(h)) return n; return parseDateInfo(e.date,'').month; }
     async function saveQuickMonthlyTarget() { const v = Number(document.getElementById('quickMonthlyTargetInput').value)||0; systemSettings.monthlyTarget = v; document.getElementById('sysMonthlyTargetInput').value = v; renderAnalyticsTab(); await sendToGas({action:'saveSystemSettings', monthlyTarget:v}); showOwnerToast('יעד עודכן ✓'); }
+
+    function isShiftActiveDay(s) {
+      const st = dayStatuses[String(s.date).trim()] || '';
+      if (String(st).includes('סגור')) return false;
+      return (Number(s.total) || 0) > 0;
+    }
 
     function renderAnalyticsTab() {
       const yr = document.getElementById('yearSelect').value, sm = document.getElementById('analyticsMonthSelect').value, isY = analyticsScope === 'year';
@@ -861,7 +1140,8 @@
       document.getElementById('kpiTotalDeposited').textContent = Math.round(depY).toLocaleString() + ' ₪';
       document.getElementById('depositProgressPct').textContent = pct + '%'; document.getElementById('depositProgressBar').style.width = pct + '%';
 
-      const scS = isY ? allShifts : allShifts.filter(s => s.monthNum === sm), scE = isY ? allExpenses : allExpenses.filter(e => getExpenseMonthNum(e) === sm);
+      const scS = (isY ? allShifts : allShifts.filter(s => s.monthNum === sm)).filter(isShiftActiveDay);
+      const scE = isY ? allExpenses : allExpenses.filter(e => getExpenseMonthNum(e) === sm);
       const rev = scS.reduce((a,b)=>a+b.total,0), exp = scE.reduce((a,b)=>a+(Number(b.amount)||0),0);
       const tgt = isY ? (Number(systemSettings.monthlyTarget)||75000)*12 : (Number(systemSettings.monthlyTarget)||75000);
       document.getElementById('targetScopeText').textContent = isY ? 'שנתי' : 'חודשי';
@@ -908,32 +1188,239 @@
       }
 
       const net = rev - exp; document.getElementById('kpiNetProfit').textContent = Math.round(net).toLocaleString() + ' ₪'; document.getElementById('kpiProfitMargin').textContent = `רווחיות: ${rev?Math.round(net/rev*100):0}%`;
-      document.getElementById('kpiDailyAvg').textContent = Math.round(curAvg).toLocaleString() + ' ₪'; document.getElementById('kpiDailyAvgDelta').textContent = `${scS.length} ימים`;
+      document.getElementById('kpiDailyAvg').textContent = Math.round(curAvg).toLocaleString() + ' ₪'; document.getElementById('kpiDailyAvgDelta').textContent = `${scS.length} ימים פעילים`;
       document.getElementById('kpiForecastLabel').textContent = isY ? 'ממוצע חודשי' : (isCur ? 'תחזית סוף חודש' : 'סיכום חודש');
       document.getElementById('kpiForecast').textContent = (isCur ? Math.round((rev/Math.max(1,biz.getDate()))*dim) : (isY ? Math.round(rev/Math.max(1,new Set(allShifts.map(s=>s.monthNum)).size)) : Math.round(rev))).toLocaleString() + ' ₪';
-      if (scS.length) { const sr = [...scS].sort((a,b)=>b.total-a.total); document.getElementById('kpiBestDay').textContent = `שיא: ${sr[0].date.slice(0,5)} (${Math.round(sr[0].total).toLocaleString()} ₪)`; document.getElementById('kpiWorstDay').textContent = `שפל: ${sr[sr.length-1].date.slice(0,5)} (${Math.round(sr[sr.length-1].total).toLocaleString()} ₪)`; }
-      else { document.getElementById('kpiBestDay').textContent = 'שיא: -'; document.getElementById('kpiWorstDay').textContent = 'שפל: -'; }
+      if (scS.length) {
+        const sr = [...scS].sort((a,b)=>b.total-a.total);
+        document.getElementById('kpiBestDay').textContent = `שיא: ${sr[0].date.slice(0,5)} (${Math.round(sr[0].total).toLocaleString()} ₪)`;
+        document.getElementById('kpiWorstDay').textContent = `שפל: ${sr[sr.length-1].date.slice(0,5)} (${Math.round(sr[sr.length-1].total).toLocaleString()} ₪)`;
+      } else {
+        document.getElementById('kpiBestDay').textContent = 'שיא: -';
+        document.getElementById('kpiWorstDay').textContent = 'שפל: -';
+      }
       document.getElementById('kpiPendingApprovals').textContent = scS.filter(s=>!s.approved).length; document.getElementById('kpiPendingSub').textContent = `מתוך ${scS.length}`;
 
-      renderSameDaysChart(sm); renderMonthOverMonthChart(); renderCashCreditDonut(scS); renderWeekdayAvgChart(scS); renderDailyTrendChart(scS, isY); renderExpenseCategoriesChart(scE); renderSellerAccuracyTable(scS); renderDepositsTable();
+      renderSameDaysChart(sm); renderMonthOverMonthChart(); renderCashCreditDonut(scS); renderWeekdayAvgChart(scS); renderDailyTrendChart(scS); renderExpenseCategoriesChart(scE); renderSellerAccuracyTable(scS); renderDepositsTable();
     }
 
     function renderSellerAccuracyTable(shifts) {
+      const flt = document.getElementById('accuracySellerFilter')?.value || 'all';
       const byS = {}; shifts.forEach(s => { const n = (s.sellerName||'').trim(); if(!n) return; if(!byS[n]) byS[n]={c:0,e:0,d:0}; byS[n].c++; const df = Math.round(Number(s.envelopeDiff)||0); if(df===0) byS[n].e++; byS[n].d += df; });
-      const rows = Object.entries(byS);
+      const rows = Object.entries(byS).filter(([,st]) => flt === 'all' || Math.round(st.d) !== 0);
       document.getElementById('sellerAccuracyBody').innerHTML = !rows.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים</td></tr>' : rows.map(([n,st])=>`<tr><td class="py-2 font-bold">${n}</td><td>${st.c}</td><td class="text-emerald-400 font-bold">${st.e}</td><td class="font-black">${Math.round(st.e/st.c*100)}%</td><td class="${st.d<0?'text-rose-400':'text-emerald-400'} font-bold">${st.d} ₪</td></tr>`).join('');
     }
-    function renderSameDaysChart(sm) {
-      const box = document.getElementById('chartSameDays'), badge = document.getElementById('sameDaysDeltaBadge'), curM = Number(sm);
-      if (curM <= 1) { badge.textContent = ''; box.innerHTML = '<div class="py-8 text-center text-xs text-slate-400">אין חודש קודם</div>'; return; }
-      const cS = allShifts.filter(s=>s.monthNum===sm), pS = allShifts.filter(s=>s.monthNum===String(curM-1).padStart(2,'0')), maxD = Math.max(cS.reduce((m,s)=>Math.max(m,s.dayNum||0),0),1);
-      const cc=[], pc=[]; let cr=0, pr=0; for(let d=1;d<=maxD;d++){ cr+=cS.filter(s=>s.dayNum===d).reduce((a,b)=>a+b.total,0); pr+=pS.filter(s=>s.dayNum===d).reduce((a,b)=>a+b.total,0); cc.push(cr); pc.push(pr); }
-      const df = cr-pr, pct = pr?Math.round(df/pr*100):0; document.getElementById('sameDaysSubtitle').textContent = `1–${maxD} ב${MONTH_FULL_HEB[curM-1]} מול ${MONTH_FULL_HEB[curM-2]}`;
-      badge.textContent = `${df>=0?'+':''}${Math.round(df).toLocaleString()} ₪ (${pct}%)`;
-      const W=440, H=170, pL=36, pR=12, pT=14, pB=20, pw=W-pL-pR, ph=H-pT-pB, mv=Math.max(100,...cc,...pc);
-      const pts = arr => arr.map((v,i)=>`${(pL+(maxD>1?i/(maxD-1)*pw:pw/2)).toFixed(1)},${(pT+ph-v/mv*ph).toFixed(1)}`).join(' ');
-      box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" dir="ltr"><polyline points="${pts(pc)}" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,4"/><polyline points="${pts(cc)}" fill="none" stroke="#f97316" stroke-width="2.5"/></svg>`;
+
+    // =========================================================================
+    // שדרוג גרף "אותם ימים מול חודש קודם":
+    // פס סיכום בראש הגרף, מקרא ברור, תאריכים על הציר, ולחיצה/ריחוף להשוואה מדויקת
+    // =========================================================================
+    let _sameDaysPointsData = [];
+    function inspectSameDaysIndex(idx) {
+      const item = _sameDaysPointsData[idx];
+      const box = document.getElementById('sameDaysHoverBox');
+      if (!item || !box) return;
+      const diff = Math.round(item.curCum - item.prevCum);
+      const pct = item.prevCum > 0 ? Math.round((diff / item.prevCum) * 100) : 0;
+      box.innerHTML = `
+        <span><strong>יום ${item.day} בחודש (${item.curDateStr})</strong></span>
+        <span class="text-orange-400 font-bold">${item.curMonthName}: ${Math.round(item.curCum).toLocaleString()} ₪ (יומי: ${Math.round(item.curDayVal).toLocaleString()} ₪)</span>
+        <span class="text-sky-400 font-bold">${item.prevMonthName}: ${Math.round(item.prevCum).toLocaleString()} ₪ (יומי: ${Math.round(item.prevDayVal).toLocaleString()} ₪)</span>
+        <span class="font-black ${diff>=0?'text-emerald-400':'text-rose-400'}">הפרש מצטבר: ${diff>=0?'+':''}${diff.toLocaleString()} ₪ (${pct>=0?'+':''}${pct}%)</span>
+      `;
     }
+
+    function renderSameDaysChart(sm) {
+      const box = document.getElementById('chartSameDays'), badge = document.getElementById('sameDaysDeltaBadge'), strip = document.getElementById('sameDaysSummaryStrip'), hoverBox = document.getElementById('sameDaysHoverBox'), curM = Number(sm);
+      if (curM <= 1) {
+        badge.textContent = '';
+        if (strip) strip.textContent = 'אין חודש קודם להשוואה בחודש ינואר.';
+        box.innerHTML = '<div class="py-8 text-center text-xs text-slate-400">אין חודש קודם</div>';
+        return;
+      }
+      const prevM = curM - 1;
+      const prevMStr = String(prevM).padStart(2, '0');
+      const curName = MONTH_FULL_HEB[curM - 1], prevName = MONTH_FULL_HEB[prevM - 1];
+      const cS = allShifts.filter(s => s.monthNum === sm), pS = allShifts.filter(s => s.monthNum === prevMStr);
+      const maxD = Math.max(cS.reduce((m, s) => Math.max(m, s.dayNum || 0), 0), 1);
+
+      const cc = [], pc = [], meta = [];
+      let cr = 0, pr = 0;
+      for (let d = 1; d <= maxD; d++) {
+        const cDay = cS.filter(s => s.dayNum === d).reduce((a, b) => a + b.total, 0);
+        const pDay = pS.filter(s => s.dayNum === d).reduce((a, b) => a + b.total, 0);
+        cr += cDay; pr += pDay;
+        cc.push(cr); pc.push(pr);
+        meta.push({
+          day: d,
+          curDateStr: `${String(d).padStart(2,'0')}/${sm}`,
+          curMonthName: curName,
+          prevMonthName: prevName,
+          curCum: cr,
+          prevCum: pr,
+          curDayVal: cDay,
+          prevDayVal: pDay
+        });
+      }
+      _sameDaysPointsData = meta;
+
+      const df = cr - pr, pct = pr ? Math.round(df / pr * 100) : 0;
+      document.getElementById('sameDaysSubtitle').textContent = `השוואה מצטברת של ימים 1–${maxD}`;
+      badge.textContent = `${df >= 0 ? '+' : ''}${Math.round(df).toLocaleString()} ₪ (${pct >= 0 ? '+' : ''}${pct}%)`;
+      badge.className = `text-xs font-black px-2.5 py-1 rounded-full bg-[#091322] border border-[#26466d] ${df >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+
+      if (strip) {
+        strip.innerHTML = `עד יום <strong>${maxD}</strong>: <span class="text-orange-400">${curName} (${Math.round(cr).toLocaleString()} ₪)</span> מול <span class="text-sky-400">${prevName} (${Math.round(pr).toLocaleString()} ₪)</span> • הפרש: <span class="${df>=0?'text-emerald-400':'text-rose-400'}">${df>=0?'+':''}${Math.round(df).toLocaleString()} ₪ (${pct>=0?'+':''}${pct}%)</span>`;
+      }
+      if (hoverBox && meta.length) inspectSameDaysIndex(meta.length - 1);
+
+      const W = 500, H = 205, pL = 52, pR = 16, pT = 26, pB = 28, pw = W - pL - pR, ph = H - pT - pB;
+      const mv = Math.max(100, ...cc, ...pc);
+      const xAt = i => pL + (maxD > 1 ? (i / (maxD - 1)) * pw : pw / 2);
+      const yAt = v => pT + ph - (v / mv) * ph;
+
+      const gridLines = [0, 0.5, 1].map(t => {
+        const val = Math.round(mv * t);
+        const y = yAt(val).toFixed(1);
+        return `<line x1="${pL}" y1="${y}" x2="${W - pR}" y2="${y}" stroke="rgba(148,163,184,0.18)" stroke-width="1"/>
+                <text x="${pL - 6}" y="${Number(y) + 3}" text-anchor="end" font-size="9" fill="#94a3b8">${val >= 1000 ? Math.round(val/1000) + 'k' : val}</text>`;
+      }).join('');
+
+      const xLabels = meta.map((m, i) => {
+        const step = Math.max(1, Math.ceil(maxD / 8));
+        if (i !== 0 && i !== maxD - 1 && i % step !== 0) return '';
+        return `<text x="${xAt(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="#94a3b8">${m.day}/${sm}</text>`;
+      }).join('');
+
+      const ptsPrev = pc.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join(' ');
+      const ptsCur = cc.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join(' ');
+
+      const dotsHtml = meta.map((m, i) => {
+        const cx = xAt(i).toFixed(1);
+        const cyCur = yAt(m.curCum).toFixed(1);
+        const cyPrev = yAt(m.prevCum).toFixed(1);
+        return `<g class="cursor-pointer" onclick="inspectSameDaysIndex(${i})" onmouseenter="inspectSameDaysIndex(${i})">
+          <rect x="${Number(cx) - 8}" y="${pT}" width="16" height="${ph}" fill="transparent"/>
+          <circle cx="${cx}" cy="${cyPrev}" r="3" fill="#38bdf8"/>
+          <circle cx="${cx}" cy="${cyCur}" r="3.8" fill="#f97316" stroke="#0b192c" stroke-width="1"/>
+        </g>`;
+      }).join('');
+
+      box.innerHTML = `
+        <div class="flex items-center gap-4 text-[11px] font-bold mb-1">
+          <span class="inline-flex items-center gap-1.5 text-orange-400"><span class="w-3 h-1 bg-orange-500 inline-block rounded"></span>${curName} (נוכחי)</span>
+          <span class="inline-flex items-center gap-1.5 text-sky-400"><span class="w-3 h-0.5 border-t-2 border-dashed border-sky-400 inline-block"></span>${prevName} (קודם)</span>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" dir="ltr">
+          ${gridLines}
+          ${xLabels}
+          <polyline points="${ptsPrev}" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,4"/>
+          <polyline points="${ptsCur}" fill="none" stroke="#f97316" stroke-width="2.6"/>
+          ${dotsHtml}
+        </svg>`;
+    }
+
+    // =========================================================================
+    // שדרוג גרף "מגמת הכנסה יומית":
+    // ציר תאריכים וסכומים ברורים, סימון בולט של יום השיא ויום השפל (ימים פעילים בלבד),
+    // קו ממוצע יומי מקווקו, ולחיצה/ריחוף להצגת תאריך, יום בשבוע, סה״כ ומזומן/אשראי
+    // =========================================================================
+    let _dailyTrendPointsData = [];
+    function inspectDailyTrendIndex(idx) {
+      const s = _dailyTrendPointsData[idx];
+      const box = document.getElementById('dailyTrendHoverBox');
+      if (!s || !box) return;
+      const wdName = s.weekdayIdx >= 0 ? WEEKDAY_HEB[s.weekdayIdx] : '';
+      box.innerHTML = `
+        <span><strong>${s.date}</strong> ${wdName ? `(${wdName})` : ''}</span>
+        <span class="text-orange-400 font-black">סה״כ: ${Math.round(s.total).toLocaleString()} ₪</span>
+        <span class="text-emerald-400 font-bold">מזומן: ${Math.round(s.cash).toLocaleString()} ₪</span>
+        <span class="text-sky-400 font-bold">אשראי: ${Math.round(s.credit).toLocaleString()} ₪</span>
+      `;
+    }
+
+    function renderDailyTrendChart(s) {
+      const box = document.getElementById('chartDailyTrend');
+      const avgBadge = document.getElementById('dailyTrendAvgBadge');
+      const hoverBox = document.getElementById('dailyTrendHoverBox');
+      const activeOnly = (s || []).filter(isShiftActiveDay);
+
+      if (!activeOnly.length) {
+        if (avgBadge) avgBadge.textContent = '';
+        box.innerHTML = '<div class="py-8 text-center text-xs text-slate-400">אין נתונים לימים פעילים</div>';
+        return;
+      }
+
+      const ord = [...activeOnly].sort((a, b) => (Number(a.monthNum) - Number(b.monthNum)) || (a.dayNum - b.dayNum));
+      _dailyTrendPointsData = ord;
+
+      const avgVal = ord.reduce((a, b) => a + b.total, 0) / ord.length;
+      if (avgBadge) avgBadge.textContent = `ממוצע יומי: ${Math.round(avgVal).toLocaleString()} ₪`;
+
+      let bestIdx = 0, worstIdx = 0;
+      ord.forEach((x, i) => {
+        if (x.total > ord[bestIdx].total) bestIdx = i;
+        if (x.total < ord[worstIdx].total) worstIdx = i;
+      });
+      if (hoverBox) inspectDailyTrendIndex(bestIdx);
+
+      const W = 500, H = 215, pL = 52, pR = 22, pT = 30, pB = 30, pw = W - pL - pR, ph = H - pT - pB;
+      const mv = Math.max(100, ...ord.map(x => x.total));
+      const n = ord.length;
+      const xAt = i => pL + (n > 1 ? (i / (n - 1)) * pw : pw / 2);
+      const yAt = v => pT + ph - (v / mv) * ph;
+
+      const gridLines = [0, 0.5, 1].map(t => {
+        const val = Math.round(mv * t);
+        const y = yAt(val).toFixed(1);
+        return `<line x1="${pL}" y1="${y}" x2="${W - pR}" y2="${y}" stroke="rgba(148,163,184,0.18)" stroke-width="1"/>
+                <text x="${pL - 6}" y="${Number(y) + 3}" text-anchor="end" font-size="9" fill="#94a3b8">${val >= 1000 ? Math.round(val/1000) + 'k' : val}</text>`;
+      }).join('');
+
+      const xLabels = ord.map((x, i) => {
+        const step = Math.max(1, Math.ceil(n / 8));
+        if (i !== 0 && i !== n - 1 && i % step !== 0) return '';
+        return `<text x="${xAt(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="#94a3b8">${x.date.slice(0, 5)}</text>`;
+      }).join('');
+
+      const avgY = yAt(avgVal).toFixed(1);
+      const avgLine = `<line x1="${pL}" y1="${avgY}" x2="${W - pR}" y2="${avgY}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5,4"/>
+                       <text x="${W - pR}" y="${Number(avgY) - 4}" text-anchor="end" font-size="9" font-weight="bold" fill="#fbbf24">ממוצע ${Math.round(avgVal).toLocaleString()} ₪</text>`;
+
+      const pts = ord.map((x, i) => `${xAt(i).toFixed(1)},${yAt(x.total).toFixed(1)}`).join(' ');
+
+      const bestX = xAt(bestIdx), bestY = yAt(ord[bestIdx].total);
+      const worstX = xAt(worstIdx), worstY = yAt(ord[worstIdx].total);
+
+      const peakCallout = `<g>
+        <circle cx="${bestX.toFixed(1)}" cy="${bestY.toFixed(1)}" r="5.5" fill="#10b981" stroke="#ffffff" stroke-width="1.5"/>
+        <text x="${Math.min(W - 45, Math.max(pL + 45, bestX)).toFixed(1)}" y="${Math.max(13, bestY - 9).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="900" fill="#34d399">שיא ${ord[bestIdx].date.slice(0,5)}: ${Math.round(ord[bestIdx].total).toLocaleString()} ₪</text>
+      </g>`;
+
+      const troughCallout = (n > 1 && worstIdx !== bestIdx) ? `<g>
+        <circle cx="${worstX.toFixed(1)}" cy="${worstY.toFixed(1)}" r="5.5" fill="#f43f5e" stroke="#ffffff" stroke-width="1.5"/>
+        <text x="${Math.min(W - 45, Math.max(pL + 45, worstX)).toFixed(1)}" y="${Math.min(pT + ph + 12, worstY + 15).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="900" fill="#fb7185">שפל ${ord[worstIdx].date.slice(0,5)}: ${Math.round(ord[worstIdx].total).toLocaleString()} ₪</text>
+      </g>` : '';
+
+      const dots = ord.map((x, i) => {
+        const cx = xAt(i).toFixed(1), cy = yAt(x.total).toFixed(1);
+        return `<g class="cursor-pointer" onclick="inspectDailyTrendIndex(${i})" onmouseenter="inspectDailyTrendIndex(${i})">
+          <rect x="${Number(cx) - 8}" y="${pT}" width="16" height="${ph}" fill="transparent"/>
+          <circle cx="${cx}" cy="${cy}" r="3.5" fill="#10b981" stroke="#0b192c" stroke-width="1"/>
+        </g>`;
+      }).join('');
+
+      box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" dir="ltr">
+        ${gridLines}
+        ${xLabels}
+        ${avgLine}
+        <polyline points="${pts}" fill="none" stroke="#10b981" stroke-width="2.4"/>
+        ${dots}
+        ${peakCallout}
+        ${troughCallout}
+      </svg>`;
+    }
+
     function renderMonthOverMonthChart() {
       const ms = []; for(let m=1;m<=12;m++){ const k=String(m).padStart(2,'0'), s=allShifts.filter(x=>x.monthNum===k), c=s.reduce((a,b)=>a+b.cash,0), cr=s.reduce((a,b)=>a+b.credit,0), e=allExpenses.filter(x=>getExpenseMonthNum(x)===k).reduce((a,b)=>a+(Number(b.amount)||0),0); ms.push({l:MONTH_SHORT_HEB[m-1],c,cr,r:c+cr,e}); }
       const mv = Math.max(100, ...ms.map(x=>momChartMode==='mix'?x.r:Math.max(x.r,x.e))), W=460, H=175, pL=30, pR=10, pT=14, pB=24, pw=W-pL-pR, ph=H-pT-pB, sw=pw/12;
@@ -954,12 +1441,6 @@
       const sm=[0,0,0,0,0,0,0], cn=[0,0,0,0,0,0,0]; s.forEach(x=>{ if(x.weekdayIdx>=0){ sm[x.weekdayIdx]+=x.total; cn[x.weekdayIdx]++; } });
       const av=sm.map((v,i)=>cn[i]?Math.round(v/cn[i]):0), mv=Math.max(100,...av), pk=Math.max(...av), W=420, H=170, pL=20, pR=10, pT=18, pB=24, sw=(W-pL-pR)/7, ph=H-pT-pB;
       document.getElementById('chartWeekdayAvg').innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto text-slate-300" dir="ltr">${av.map((v,i)=>{ const bw=26, x=pL+i*sw+(sw-bw)/2, h=v/mv*ph, y=pT+ph-h; return `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${v===pk&&v>0?'#f97316':'#38bdf8'}"/>${v?`<text x="${x+bw/2}" y="${y-4}" text-anchor="middle" font-size="9" fill="currentColor">${v.toLocaleString()}</text>`:''}<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" font-size="10" fill="currentColor">${WEEKDAY_HEB[i]}</text>`; }).join('')}</svg>`;
-    }
-    function renderDailyTrendChart(s) {
-      if(!s.length) { document.getElementById('chartDailyTrend').innerHTML='<div class="py-8 text-center text-xs text-slate-400">אין נתונים</div>'; return; }
-      const ord=[...s].sort((a,b)=>(Number(a.monthNum)-Number(b.monthNum))||(a.dayNum-b.dayNum)), W=440, H=170, pL=30, pR=12, pT=14, pB=20, pw=W-pL-pR, ph=H-pT-pB, mv=Math.max(100,...ord.map(x=>x.total)), n=ord.length;
-      const pts=ord.map((x,i)=>`${(pL+(n>1?i/(n-1)*pw:pw/2)).toFixed(1)},${(pT+ph-x.total/mv*ph).toFixed(1)}`).join(' ');
-      document.getElementById('chartDailyTrend').innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" dir="ltr"><polyline points="${pts}" fill="none" stroke="#10b981" stroke-width="2.3"/></svg>`;
     }
     function renderExpenseCategoriesChart(e) {
       const box = document.getElementById('chartExpenseCategories'); if(!e.length) { box.innerHTML='<div class="py-8 text-center text-xs text-slate-400">אין הוצאות</div>'; return; }
@@ -1022,24 +1503,82 @@
       document.getElementById('savedHoursTableBody').innerHTML = !flt.length ? '<tr><td colspan="7" class="py-4 text-center text-slate-400">אין שעות שמורות</td></tr>' : flt.map(h=>`<tr><td class="py-2 font-bold">${h.month}</td><td class="font-bold">${h.employeeName}</td><td>${h.group}</td><td>${h.days}</td><td class="font-mono font-bold text-orange-400">${h.hoursText}</td><td class="text-slate-400">${h.note||'-'}</td><td><button onclick="deleteSavedHourRow('${h.id}')" class="text-rose-400 font-bold">✕</button></td></tr>`).join('');
     }
 
-    function renderOwnerShortages() { const o = allShortages.filter(s=>s.status!=='טופל'); document.getElementById('ownerShortagesCount').textContent = o.length; document.getElementById('ownerShortagesList').innerHTML = !o.length ? '<div class="text-emerald-400 font-bold">אין חוסרים ✓</div>' : o.map(s=>`<div class="p-2.5 rounded-xl bg-[#091322] border border-amber-500/40 flex justify-between items-center"><div><strong class="text-amber-300">[${s.category}]</strong> <strong>${s.item}</strong></div><div class="flex gap-1.5"><button onclick="ownerUpdateShortage('${s.id}','הוזמן')" class="px-2 py-1 rounded bg-sky-600/20 text-sky-300 font-bold">הוזמן</button><button onclick="ownerUpdateShortage('${s.id}','טופל')" class="px-2 py-1 rounded bg-emerald-600 text-white font-bold">טופל ✓</button></div></div>`).join(''); }
-    async function ownerUpdateShortage(id, status) { const s = allShortages.find(x=>x.id===id); if(s)s.status=status; renderOwnerShortages(); await sendToGas({action:'resolveShortage', year:document.getElementById('yearSelect').value, id, status}); }
+    function renderOwnerOpsAll() {
+      const stFlt = document.getElementById('ownerOpsStatusFilter')?.value || 'all';
+      const matchSt = (st) => {
+        if (stFlt === 'open') return st !== 'טופל' && st !== 'תוקן';
+        if (stFlt === 'done') return st === 'טופל' || st === 'תוקן';
+        return true;
+      };
+
+      const tasks = (managerTasks || []).filter(t => matchSt(t.status));
+      document.getElementById('mgrTasksList').innerHTML = tasks.map(t=>`<div class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] flex justify-between items-center"><div><strong class="text-orange-400">[${t.status}]</strong> <strong>${t.title}</strong> ${t.details||''}</div>${t.status!=='טופל'?`<button onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-[11px] font-bold">טופל ✓</button>`:'✓'}</div>`).join('') || '<div class="text-slate-400">אין משימות לתצוגה</div>';
+
+      const faults = (allFaults || []).filter(f => matchSt(f.status));
+      document.getElementById('ownerFaultsCount').textContent = faults.length;
+      document.getElementById('ownerFaultsList').innerHTML = faults.length ? faults.map(f=>`<div class="p-2.5 rounded-xl bg-[#091322] border border-rose-500/40 flex justify-between items-center"><div><strong class="text-rose-400">${f.unit}</strong>: ${f.description||''} <span class="text-slate-400">(${f.reporter||'-'}) [${f.status||'פתוח'}]</span></div>${f.status!=='תוקן'?`<button onclick="ownerResolveFault('${f.id}')" class="px-2.5 py-1 rounded bg-emerald-600 text-white font-bold text-[11px]">תוקן ✓</button>`:'✓'}</div>`).join('') : '<div class="text-emerald-400 font-bold">אין תקלות לתצוגה ✓</div>';
+
+      const shorts = (allShortages || []).filter(s => matchSt(s.status));
+      document.getElementById('ownerShortagesCount').textContent = shorts.length;
+      document.getElementById('ownerShortagesList').innerHTML = shorts.length ? shorts.map(s=>`<div class="p-2.5 rounded-xl bg-[#091322] border border-amber-500/40 flex justify-between items-center"><div><strong class="text-amber-300">[${s.category}]</strong> <strong>${s.item}</strong> <span class="text-slate-400">[${s.status||'פתוח'}]</span></div>${s.status!=='טופל'?`<div class="flex gap-1.5"><button onclick="ownerUpdateShortage('${s.id}','הוזמן')" class="px-2 py-1 rounded bg-sky-600/20 text-sky-300 font-bold">הוזמן</button><button onclick="ownerUpdateShortage('${s.id}','טופל')" class="px-2 py-1 rounded bg-emerald-600 text-white font-bold">טופל ✓</button></div>`:'✓'}</div>`).join('') : '<div class="text-emerald-400 font-bold">אין חוסרים לתצוגה ✓</div>';
+
+      renderQueuesTab();
+    }
+
+    async function ownerResolveFault(id) {
+      const f = allFaults.find(x => x.id === id);
+      if (f) f.status = 'תוקן';
+      renderOwnerOpsAll();
+      await sendToGas({ action: 'resolveFault', year: document.getElementById('yearSelect').value, id, status: 'תוקן' });
+      showOwnerToast('התקלה סומנה כתוקנה ✓');
+    }
+
+    async function ownerUpdateShortage(id, status) { const s = allShortages.find(x=>x.id===id); if(s)s.status=status; renderOwnerOpsAll(); await sendToGas({action:'resolveShortage', year:document.getElementById('yearSelect').value, id, status}); }
+
     async function saveSystemSettingsFromOwner() {
       systemSettings = {
         openingFloat: Number(document.getElementById('sysOpeningFloatInput').value)||0,
         monthlyTarget: Number(document.getElementById('sysMonthlyTargetInput').value)||0,
         businessDayCutoffHour: Math.max(0, Math.min(12, Number(document.getElementById('sysCutoffHourInput').value)||8)),
         shortageAlertEnabled: document.getElementById('sysShortageAlertToggle').checked,
-        shortageThreshold: Math.max(0, Number(document.getElementById('sysShortageThresholdInput').value)||0)
+        shortageThreshold: Math.max(0, Number(document.getElementById('sysShortageThresholdInput').value)||0),
+        discrepancyWarningEnabled: document.getElementById('sysDiscWarnToggle').checked,
+        discrepancyWarningThreshold: Math.max(0, Number(document.getElementById('sysDiscWarnThresholdInput').value)||0)
       };
       safeSet("friends_cutoff_hour", String(systemSettings.businessDayCutoffHour));
       document.getElementById('quickMonthlyTargetInput').value = systemSettings.monthlyTarget; renderAnalyticsTab();
-      await sendToGas(Object.assign({action:'saveSystemSettings'}, systemSettings)); showOwnerToast('הגדרות נשמרו ✓');
+      await sendToGas(Object.assign({action:'saveSystemSettings'}, systemSettings)); showOwnerToast('הגדרות מערכת נשמרו ✓');
+    }
+
+    async function createNewYearFromSettings() {
+      const ny = String(document.getElementById('newYearInput').value || '').trim();
+      if (!/^20\d{2}$/.test(ny)) return showOwnerToast('הזן שנה תקינה (למשל 2028)');
+      setDataLoading(true, `יוצר גיליון עבור שנת ${ny}...`);
+      try {
+        const res = await sendToGas({ action: 'createNewYear', newYear: ny });
+        if (res && res.ok) {
+          const yrSel = document.getElementById('yearSelect');
+          if (![...yrSel.options].some(o => o.value === ny)) {
+            const opt = document.createElement('option');
+            opt.value = ny; opt.textContent = ny;
+            yrSel.appendChild(opt);
+          }
+          yrSel.value = ny;
+          document.getElementById('newYearInput').value = '';
+          showOwnerToast(`נוצר גיליון שנת ${ny} בהצלחה ✓`);
+          refreshOwnerData();
+        }
+      } finally { setDataLoading(false); }
     }
 
     async function saveBankDeposit() { const d=document.getElementById('bankDepositDate').value, a=parseFloat(document.getElementById('bankDepositAmount').value)||0, n=document.getElementById('bankDepositNote').value.trim(); if(!a) return; await sendToGas({action:'saveBankDeposit',year:document.getElementById('yearSelect').value,date:d,amount:a,note:n}); allBankDeposits.push({date:parseDateInfo(d,'').display,amount:a,note:n}); document.getElementById('bankDepositAmount').value=''; document.getElementById('bankDepositNote').value=''; renderAnalyticsTab(); showOwnerToast('הפקדה נרשמה ✓'); }
     async function saveExpense() { const d=document.getElementById('expDate').value, t=document.getElementById('expType').value, c=document.getElementById('expCat').value, pm=document.getElementById('expPaymentMethod').value, a=parseFloat(document.getElementById('expAmount').value)||0, n=document.getElementById('expNote').value.trim(); if(!a) return; const inf=parseDateInfo(d,''), mn=inf.month?MONTH_FULL_HEB[Number(inf.month)-1]:''; await sendToGas({action:'saveExpense',year:document.getElementById('yearSelect').value,date:d,month:mn,type:t,category:c,paymentMethod:pm,amount:a,note:n}); allExpenses.push({date:inf.display,month:mn,type:t,category:c+(n?' - '+n:''),amount:a,paymentMethod:pm}); document.getElementById('expAmount').value=''; document.getElementById('expNote').value=''; renderExpensesTable(); renderAnalyticsTab(); showOwnerToast('הוצאה נשמרה ✓'); }
-    function renderExpensesTable() { document.getElementById('expensesTotalBadge').textContent = `סה״כ: ${Math.round(allExpenses.reduce((a,b)=>a+(Number(b.amount)||0),0)).toLocaleString()} ₪`; document.getElementById('expensesTableBody').innerHTML = !allExpenses.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין הוצאות</td></tr>' : [...allExpenses].reverse().map(e=>`<tr><td class="py-2 font-bold">${e.date}</td><td class="text-slate-400">${e.type||'-'}</td><td>${e.category||'-'}</td><td class="text-slate-400">${e.paymentMethod||'-'}</td><td class="text-rose-400 font-black">${Number(e.amount||0).toLocaleString()} ₪</td></tr>`).join(''); }
+    function renderExpensesTable() {
+      const flt = document.getElementById('expensesFilterCat')?.value || 'all';
+      const rows = allExpenses.filter(e => flt === 'all' || (e.paymentMethod || '') === flt);
+      document.getElementById('expensesTotalBadge').textContent = `סה״כ: ${Math.round(rows.reduce((a,b)=>a+(Number(b.amount)||0),0)).toLocaleString()} ₪`;
+      document.getElementById('expensesTableBody').innerHTML = !rows.length ? '<tr><td colspan="5" class="py-4 text-center text-slate-400">אין הוצאות</td></tr>' : [...rows].reverse().map(e=>`<tr><td class="py-2 font-bold">${e.date}</td><td class="text-slate-400">${e.type||'-'}</td><td>${e.category||'-'}</td><td class="text-slate-400">${e.paymentMethod||'-'}</td><td class="text-rose-400 font-black">${Number(e.amount||0).toLocaleString()} ₪</td></tr>`).join('');
+    }
     function renderQueuesTab() { document.getElementById('qSonyTotal').textContent = allQueues.filter(q=>q.category==='סוני').length; document.getElementById('qSnookerTotal').textContent = allQueues.filter(q=>q.category==='סנוקר').length; const c=allQueues.filter(q=>q.completed&&q.waitMinutes>0); document.getElementById('qAvgWait').textContent = (c.length?Math.round(c.reduce((a,b)=>a+Number(b.waitMinutes||0),0)/c.length):0)+' דק׳'; const bd={}; allQueues.forEach(q=>{const k=`${q.date} (${q.dayOfWeek||''})`;if(!bd[k])bd[k]={s:0,sn:0,w:[]};q.category==='סנוקר'?bd[k].sn++:bd[k].s++;if(q.completed&&q.waitMinutes>0)bd[k].w.push(Number(q.waitMinutes));}); document.getElementById('qDailyTableBody').innerHTML = Object.entries(bd).map(([k,d])=>`<tr><td class="py-2 font-bold">${k}</td><td>${d.s}</td><td>${d.sn}</td><td>${d.w.length?Math.round(d.w.reduce((a,b)=>a+b,0)/d.w.length):0}</td><td>${d.w.length?Math.max(...d.w):0}</td></tr>`).join('')||'<tr><td colspan="5" class="py-4 text-center text-slate-400">אין נתונים</td></tr>'; document.getElementById('qAllTableBody').innerHTML = allQueues.map(q=>`<tr><td class="py-2">${q.date}</td><td>${q.category}</td><td>${q.customerName}</td><td>${q.startTime}</td><td>${q.enteredTime||'-'}</td><td>${q.completed?q.waitMinutes+' דק׳':'ממתין'}</td><td>${q.completed?'✓':'בתור'}</td></tr>`).join(''); }
 
     function renderDirectoryList() { document.getElementById('schDirectoryList').innerHTML = !schDirectory.length ? '<div class="text-xs text-slate-400">המאגר ריק</div>' : schDirectory.map((d,i)=>`<label class="flex justify-between p-2 rounded-lg bg-[#13253e] border border-[#1e3a5f] text-xs cursor-pointer"><span><input type="checkbox" class="dir-chk ml-2" data-idx="${i}" ${d.active?'checked':''}/><strong>${d.fullName}</strong> (${d.idNumber||'-'})</span><span class="text-emerald-400 font-bold">${Number(d.defaultAmount||2500).toLocaleString()} ₪</span></label>`).join(''); }
@@ -1103,9 +1642,8 @@
     function openAppendixModal() { const iso=new Date().toISOString().split('T')[0]; document.getElementById('protocolDateInput').value=iso; renderAppendixSheet(iso); document.getElementById('protocolModal').classList.remove('hidden'); }
     function closeAppendixModal() { document.getElementById('protocolModal').classList.add('hidden'); }
 
-    async function sendManagerTask(wa) { const t=document.getElementById('mgrTaskTitle').value.trim(), d=document.getElementById('mgrTaskDetails').value.trim(); if(!t) return; managerTasks.unshift({id:'T'+Date.now(),title:t,details:d,status:'פתוח'}); document.getElementById('mgrTaskTitle').value=''; document.getElementById('mgrTaskDetails').value=''; renderManagerTasks(); if(wa){ let p=(document.getElementById('managerPhoneInput').value||'972503265609').replace(/[^0-9]/g,''); if(p.startsWith('0'))p='972'+p.slice(1); window.open(`https://wa.me/${p}?text=${encodeURIComponent('📌 משימה: '+t+'\n'+d)}`,'_blank'); } await sendToGas({action:'addManagerTask',title:t,details:d}); showOwnerToast('נשלח ✓'); }
-    async function closeOwnerTask(id) { const t=managerTasks.find(x=>x.id===id); if(t)t.status='טופל'; renderManagerTasks(); await sendToGas({action:'completeManagerTask',id}); }
-    function renderManagerTasks() { document.getElementById('mgrTasksList').innerHTML = managerTasks.map(t=>`<div class="p-2.5 rounded-xl bg-[#091322] border border-[#26466d] flex justify-between items-center"><div><strong class="text-orange-400">[${t.status}]</strong> <strong>${t.title}</strong> ${t.details||''}</div>${t.status!=='טופל'?`<button onclick="closeOwnerTask('${t.id}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-[11px] font-bold">טופל ✓</button>`:'✓'}</div>`).join('') || '<div class="text-slate-400">אין משימות</div>'; }
+    async function sendManagerTask(wa) { const t=document.getElementById('mgrTaskTitle').value.trim(), d=document.getElementById('mgrTaskDetails').value.trim(); if(!t) return; managerTasks.unshift({id:'T'+Date.now(),title:t,details:d,status:'פתוח'}); document.getElementById('mgrTaskTitle').value=''; document.getElementById('mgrTaskDetails').value=''; renderOwnerOpsAll(); if(wa){ let p=(document.getElementById('managerPhoneInput').value||'972503265609').replace(/[^0-9]/g,''); if(p.startsWith('0'))p='972'+p.slice(1); window.open(`https://wa.me/${p}?text=${encodeURIComponent('📌 משימה: '+t+'\n'+d)}`,'_blank'); } await sendToGas({action:'addManagerTask',title:t,details:d}); showOwnerToast('נשלח ✓'); }
+    async function closeOwnerTask(id) { const t=managerTasks.find(x=>x.id===id); if(t)t.status='טופל'; renderOwnerOpsAll(); await sendToGas({action:'completeManagerTask',id}); }
     async function setupDailyTrigger() { await sendToGas({action:'setupDailyTrigger'}); showOwnerToast('הופעלה תזכורת יומית ✓'); }
     async function saveNotifySettings() { const u=document.getElementById('gasUrlOwnerInput').value.trim(); if(u){SCRIPT_URL=u;safeSet('friends_gas_url',u);} const cw=document.getElementById('chatWebhookInput').value.trim(), me=document.getElementById('managerEmailInput').value.trim(), oe=document.getElementById('ownerEmailsInput').value.trim(), en=document.getElementById('emailNotifyToggle').checked; let mp=document.getElementById('managerPhoneInput').value.replace(/[^0-9]/g,''); if(mp.startsWith('0'))mp='972'+mp.slice(1); await sendToGas({action:'saveNotifySettings',chatWebhookUrl:cw,managerEmail:me,managerPhone:mp,ownerEmails:oe,emailNotify:en}); showOwnerToast('נשמר ✓'); }
     async function addNewGuide() { const t=document.getElementById('newGuideTitle').value.trim(), s=document.getElementById('newGuideSteps').value.trim(); if(!t||!s) return; await sendToGas({action:'saveGuide',title:t,steps:s}); document.getElementById('newGuideTitle').value=''; document.getElementById('newGuideSteps').value=''; showOwnerToast('פורסם ✓'); }
