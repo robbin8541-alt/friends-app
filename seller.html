@@ -422,7 +422,7 @@
     </section>
 
     <!-- ================================================= -->
-    <!-- אזור מנהל נפרד לחלוטין — 4 טאבים ראשיים עם תתי-טאבים וסינונים -->
+    <!-- אזור מנהל נפרד לחלוטין -->
     <!-- ================================================= -->
     <section id="panelManagerOnly" class="hidden space-y-4">
       <div class="card p-5 space-y-4 border-emerald-500/50">
@@ -482,7 +482,7 @@
           </div>
         </div>
 
-        <!-- ראשי 2: עובדים וציוד (חודש ושנה מפוצלים + טאב לפי שנה) -->
+        <!-- ראשי 2: עובדים וציוד -->
         <div id="mgrMainPane-staffEquip" class="mgr-main-pane hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-2.5">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
@@ -625,101 +625,187 @@
           </div>
         </div>
 
-        <!-- ספקים והזמנות (מנהל בלבד + הוספת ספק ומוצר + צבעים מותאמים למצב בהיר) -->
+        <!-- ספקים והזמנות (3 תתי-טאבים נקיים: 1. הזמנה חדשה / עדכון מלאי, 2. מוצרים וספקים, 3. המלצות ומתכנן הזמנה) -->
         <div id="mgrMainPane-suppliers" class="mgr-main-pane hidden space-y-4">
-          <div class="p-3.5 rounded-xl bg-[#07192b] border border-[#1b3a5c] flex flex-wrap items-center justify-between gap-2">
+          <div class="p-3 rounded-xl bg-[#07192b] border border-[#1b3a5c] flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
-              <button type="button" id="mgrSupCatBtn-שתייה" onclick="selectMgrSupplierCategory('שתייה')" class="sub-pill active">שתייה</button>
-              <button type="button" id="mgrSupCatBtn-חטיף" onclick="selectMgrSupplierCategory('חטיף')" class="sub-pill">חטיף</button>
-              <button type="button" id="mgrSupCatBtn-שונות" onclick="selectMgrSupplierCategory('שונות')" class="sub-pill">שונות</button>
-              <button type="button" id="mgrSupCatBtn-הכל" onclick="selectMgrSupplierCategory('הכל')" class="sub-pill">כל הקטגוריות</button>
+              <button type="button" id="mgrSupTabBtn-order" onclick="switchMgrSupSubTab('order')" class="sub-pill active">1. הזמנה / עדכון מלאי</button>
+              <button type="button" id="mgrSupTabBtn-catalog" onclick="switchMgrSupSubTab('catalog')" class="sub-pill">2. מוצרים וספקים (והוספה)</button>
+              <button type="button" id="mgrSupTabBtn-planner" onclick="switchMgrSupSubTab('planner')" class="sub-pill">3. המלצות ומתכנן הזמנה</button>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <input id="mgrSupSearchInput" type="text" oninput="renderMgrSupplierModule()" placeholder="חיפוש מוצר..." class="input-dark !w-36 text-xs py-1 !min-h-[34px]" />
+            <div class="flex flex-wrap items-center gap-1.5">
+              <select id="mgrSupGlobalCatFilter" onchange="renderMgrSupplierModule()" class="input-dark !w-auto text-xs font-bold py-1 !min-h-[34px]">
+                <option value="הכל">כל הקטגוריות</option>
+                <option value="שתייה">שתייה</option>
+                <option value="חטיף">חטיף</option>
+                <option value="שונות">שונות</option>
+              </select>
               <select id="mgrSupProductFilter" onchange="renderMgrSupplierModule()" class="input-dark !w-auto text-xs font-bold py-1 !min-h-[34px]"><option value="">כל המוצרים</option></select>
               <select id="mgrSupVendorFilter" onchange="renderMgrSupplierModule()" class="input-dark !w-auto text-xs font-bold py-1 !min-h-[34px]"><option value="">כל הספקים</option></select>
             </div>
           </div>
 
-          <!-- הוספת ספק חדש והוספת מוצר חדש -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="p-3.5 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2">
-              <h4 class="text-xs font-extrabold text-sky-400">+ הוספת ספק חדש</h4>
-              <div class="flex gap-2">
-                <input id="newMgrVendorName" type="text" placeholder="שם ספק חדש..." class="input-dark text-xs font-bold flex-1" />
-                <button type="button" onclick="registerNewVendor('mgr')" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shrink-0">הוסף ספק</button>
+          <div id="mgrSupLowStockAlerts" class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs space-y-1.5"></div>
+
+          <!-- תת-טאב 1: הזמנה חדשה / עדכון מלאי -->
+          <div id="mgrSupPane-order" class="space-y-4">
+            <div class="p-4 rounded-xl bg-[#07192b] border border-orange-500/40 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h3 class="text-xs font-extrabold text-orange-400">הזמנה חדשה או ספירת מלאי באמצע שבוע</h3>
+                <span id="supOrderRuleBadge" class="text-[11px] font-bold text-slate-300"></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">תאריך (ניתן לשינוי גם להזמנות קודמות)</label>
+                  <input id="supOrderDateInput" type="date" class="input-dark text-xs font-bold" />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">סוג פעולה</label>
+                  <select id="supEntryType" onchange="onSupEntryTypeChange()" class="input-dark text-xs font-bold">
+                    <option value="">-- בחר פעולה --</option>
+                    <option value="הזמנה">הזמנה מספק</option>
+                    <option value="ספירת ביניים">ספירת מלאי באמצע שבוע</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר</label>
+                  <select id="supItemNameSelect" onchange="onSupProductOrVendorChange()" class="input-dark text-xs font-bold">
+                    <option value="">-- בחר מוצר --</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">ספק</label>
+                  <select id="supVendorSelect" onchange="onSupProductOrVendorChange()" class="input-dark text-xs font-bold">
+                    <option value="">-- בחר ספק --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">כמות בקרטון</label>
+                  <input id="supPackSizeInput" type="number" min="1" placeholder="ריק" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה (₪)</label>
+                  <input id="supUnitPriceInput" type="number" min="0" step="0.01" placeholder="ריק" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
+                </div>
+                <div id="supOrderedCartonsWrap">
+                  <label class="block text-[10px] text-emerald-400 font-bold mb-0.5">קרטונים שלמים להזמנה</label>
+                  <input id="supOrderedCartonsInput" type="number" min="0" step="1" placeholder="0" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
+                </div>
+                <div id="supOrderedLooseWrap" class="hidden">
+                  <label class="block text-[10px] text-sky-400 font-bold mb-0.5">יחידות בודדות (חלק מקרטון)</label>
+                  <input id="supOrderedLooseInput" type="number" min="0" step="1" placeholder="0" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-300 font-extrabold mb-0.5">שארית שנספרה כעת (חתיכות)</label>
+                  <input id="supRemainingQtyInput" type="number" min="0" placeholder="ריק" class="input-dark text-xs font-bold text-center border-amber-500/50" />
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <input id="supNoteInput" type="text" placeholder="הערה (לא חובה)..." class="input-dark text-xs flex-1 min-w-[180px]" />
+                <div id="supOrderCalcPreview" class="text-xs font-bold text-slate-300 tabular-nums"></div>
+                <button type="button" onclick="saveMgrSupplierEntry()" class="px-5 py-2 rounded-xl btn-friends font-extrabold text-xs">+ שמור רשומה</button>
               </div>
             </div>
-            <div class="p-3.5 rounded-xl bg-[#07192b] border border-emerald-500/40 space-y-2">
-              <h4 class="text-xs font-extrabold text-emerald-400">+ הוספת מוצר חדש</h4>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <input id="newMgrProdName" type="text" placeholder="שם מוצר..." class="input-dark text-xs font-bold" />
-                <select id="newMgrProdCat" class="input-dark text-xs font-bold">
-                  <option value="שתייה">שתייה</option>
-                  <option value="חטיף">חטיף</option>
-                  <option value="שונות">שונות</option>
-                </select>
-                <div class="flex gap-1.5">
-                  <input id="newMgrProdPack" type="number" min="1" value="48" title="כמות בקרטון" class="input-dark text-xs font-bold text-center !w-20" />
-                  <button type="button" onclick="registerNewProduct('mgr')" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex-1">הוסף</button>
+
+            <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2">
+              <h3 class="text-xs font-extrabold text-slate-200">היסטוריית הזמנות וספירות ביניים</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs text-right">
+                  <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">תאריך</th><th class="px-2">סוג</th><th class="px-2">ספק</th><th class="px-2">מוצר</th><th class="px-2">הוזמן</th><th class="px-2">שארית</th><th class="px-2">ליחידה / קרטון</th><th class="px-2"></th></tr></thead>
+                  <tbody id="mgrSupplierHistoryBody" class="divide-y divide-[#1b3a5c]"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- תת-טאב 2: מוצרים וספקים (והוספה) -->
+          <div id="mgrSupPane-catalog" class="hidden space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
+                <h4 class="text-xs font-extrabold text-sky-400">+ הוספת ספק חדש</h4>
+                <div class="flex gap-2">
+                  <input id="newMgrVendorName" type="text" placeholder="שם ספק חדש..." class="input-dark text-xs font-bold flex-1" />
+                  <button type="button" onclick="registerNewVendor()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shrink-0">הוסף ספק</button>
+                </div>
+                <div id="mgrVendorsChips" class="flex flex-wrap gap-1.5 pt-1 text-[11px]"></div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#07192b] border border-emerald-500/40 space-y-2.5">
+                <h4 class="text-xs font-extrabold text-emerald-400">+ הוספת מוצר חדש / עדכון מחיר מספק</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <input id="newMgrProdName" type="text" placeholder="שם מוצר..." class="input-dark text-xs font-bold" />
+                  <select id="newMgrProdCat" class="input-dark text-xs font-bold">
+                    <option value="">-- קטגוריה --</option>
+                    <option value="שתייה">שתייה</option>
+                    <option value="חטיף">חטיף</option>
+                    <option value="שונות">שונות</option>
+                  </select>
+                  <input id="newMgrProdPack" type="number" min="1" placeholder="יחידות בקרטון" class="input-dark text-xs font-bold text-center" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <select id="newMgrProdVendor" class="input-dark text-xs font-bold">
+                    <option value="">-- בחר ספק --</option>
+                  </select>
+                  <input id="newMgrProdUnitPrice" type="number" min="0" step="0.01" placeholder="מחיר ליחידה בודדת (₪)" class="input-dark text-xs font-bold text-center" />
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                  <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
+                    <input id="newMgrProdAllowPartial" type="checkbox" class="w-4 h-4 accent-orange-500" />
+                    <span>אפשר להזמין חלק מקרטון אצל ספק זה</span>
+                  </label>
+                  <button type="button" onclick="registerNewProduct()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">שמור מוצר ✓</button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div id="mgrSupLowStockAlerts" class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs space-y-1.5"></div>
-
-          <div class="p-4 rounded-xl bg-[#07192b] border border-orange-500/40 space-y-3">
-            <h3 class="text-xs font-extrabold text-orange-400">רישום הזמנה מספק או ספירת מלאי באמצע שבוע</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-              <select id="supEntryType" onchange="onSupEntryTypeChange()" class="input-dark text-xs font-bold">
-                <option value="הזמנה">הזמנה מספק</option>
-                <option value="ספירת ביניים">ספירת מלאי באמצע שבוע</option>
-              </select>
-              <select id="supCategoryInput" class="input-dark text-xs font-bold">
-                <option value="שתייה">שתייה</option>
-                <option value="חטיף">חטיף</option>
-                <option value="שונות">שונות</option>
-              </select>
-              <input id="supItemNameInput" type="text" list="supProductsDatalist" onchange="onSupProductPicked()" placeholder="שם מוצר (למשל פופס, קולה)" class="input-dark text-xs font-bold" />
-              <input id="supVendorInput" type="text" list="supVendorsDatalist" placeholder="שם ספק (ספק 1 / ספק 2...)" class="input-dark text-xs font-bold" />
-            </div>
-            <datalist id="supProductsDatalist"></datalist>
-            <datalist id="supVendorsDatalist"></datalist>
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">כמות בקרטון</label><input id="supPackSizeInput" type="number" min="1" value="48" class="input-dark text-xs font-bold text-center" /></div>
-              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר לקרטון (₪)</label><input id="supPackPriceInput" type="number" min="0" step="0.1" placeholder="0" class="input-dark text-xs font-bold text-center" /></div>
-              <div id="supOrderedQtyWrap"><label class="block text-[10px] text-emerald-400 font-bold mb-0.5">כמה הוזמן (חתיכות)</label><input id="supOrderedQtyInput" type="number" min="0" placeholder="0" class="input-dark text-xs font-bold text-center" /></div>
-              <div><label class="block text-[10px] text-slate-300 font-extrabold mb-0.5">שארית שנספרה כעת (חתיכות)</label><input id="supRemainingQtyInput" type="number" min="0" placeholder="0" class="input-dark text-xs font-bold text-center border-amber-500/50" /></div>
-              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">הערה</label><input id="supNoteInput" type="text" placeholder="הערה..." class="input-dark text-xs" /></div>
-            </div>
-            <div class="flex justify-end">
-              <button type="button" onclick="saveMgrSupplierEntry()" class="px-5 py-2 rounded-xl btn-friends font-extrabold text-xs">+ שמור רשומה</button>
+            <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2">
+              <h3 class="text-xs font-extrabold text-white">מאגר מוצרים והשוואת מחירים בין ספקים</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs text-right">
+                  <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">מוצר</th><th class="px-2">קטגוריה</th><th class="px-2">יח׳ בקרטון</th><th class="px-2">ספקים ומחירים (ליחידה / קרטון)</th><th class="px-2">חלק מקרטון</th><th class="px-2"></th></tr></thead>
+                  <tbody id="mgrCatalogTableBody" class="divide-y divide-[#1b3a5c]"></tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2">
-            <h3 class="text-xs font-extrabold text-sky-400">ממוצעים, המלצת הזמנה והשוואת מחירים בין ספקים</h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs text-right">
-                <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">מוצר</th><th class="px-2">קטגוריה</th><th class="px-2">מלאי אחרון</th><th class="px-2">צריכה משוערת/חודש</th><th class="px-2">המלצה להזמנה</th><th class="px-2">השוואת מחירים (ספקים)</th></tr></thead>
-                <tbody id="mgrSupplierSummaryBody" class="divide-y divide-[#1b3a5c]"></tbody>
-              </table>
+          <!-- תת-טאב 3: המלצות ומתכנן הזמנה -->
+          <div id="mgrSupPane-planner" class="hidden space-y-4">
+            <div class="p-4 rounded-xl bg-[#07192b] border border-emerald-500/40 space-y-2.5">
+              <h3 class="text-xs font-extrabold text-emerald-400">המלצות המערכת החכמות (מתעדכנות אוטומטית מהנתונים)</h3>
+              <div id="mgrSystemRecommendationsBox" class="space-y-2 text-xs"></div>
             </div>
-          </div>
 
-          <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2">
-            <h3 class="text-xs font-extrabold text-slate-200">היסטוריית הזמנות וספירות ביניים</h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs text-right">
-                <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">תאריך</th><th class="px-2">סוג</th><th class="px-2">ספק</th><th class="px-2">מוצר</th><th class="px-2">הוזמן</th><th class="px-2">שארית</th><th class="px-2">מחיר/קרטון</th><th class="px-2"></th></tr></thead>
-                <tbody id="mgrSupplierHistoryBody" class="divide-y divide-[#1b3a5c]"></tbody>
-              </table>
+            <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-xs font-extrabold text-sky-400">בדיקה לפני הזמנה ותכנון לפי מחזור קבוע</h3>
+                  <p class="text-[11px] text-slate-400">הזן כמות קרטונים לבדיקה ותראה מיד לכמה ימים תספיק ועד איזה תאריך</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-xs">
+                  <span class="text-slate-300 font-bold">מחזור הזמנה:</span>
+                  <input id="mgrCycleDaysInput" type="number" min="1" value="30" onchange="renderMgrSupplierModule()" class="input-dark !w-16 text-center font-black !min-h-[34px] text-xs" />
+                  <span class="text-slate-300">ימים</span>
+                  <button type="button" onclick="fillMgrPlannerWithRecommended()" class="px-3 py-1.5 rounded-xl bg-sky-600 text-white font-bold text-xs">מלא לפי המלצת המערכת</button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs text-right">
+                  <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">מוצר</th><th class="px-2">מלאי משוער</th><th class="px-2">ייגמר בעוד</th><th class="px-2">המלצה למחזור</th><th class="px-2">קרטונים לבדיקה</th><th class="px-2">יספיק ל...</th><th class="px-2">עלות (ספק זול)</th></tr></thead>
+                  <tbody id="mgrPlannerTableBody" class="divide-y divide-[#1b3a5c]"></tbody>
+                </table>
+              </div>
+              <div id="mgrPlannerSummaryFooter" class="p-3 rounded-xl bg-[#051321] border border-[#23476e] flex flex-wrap items-center justify-between gap-2 text-xs font-bold"></div>
             </div>
           </div>
         </div>
 
-        <!-- ראשי 3: תפעול ומשימות (ברירת מחדל בתקלות: פתוח בלבד) -->
+        <!-- ראשי 3: תפעול ומשימות (ברירת מחדל: פתוח) -->
         <div id="mgrMainPane-ops" class="mgr-main-pane hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-2.5">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
@@ -731,8 +817,8 @@
             <div class="flex items-center gap-2 text-xs">
               <span class="text-slate-400">סינון:</span>
               <select id="mgrOpsStatusFilter" onchange="renderMgrOpsPane()" class="input-dark !w-auto text-xs font-bold py-1">
+                <option value="open" selected>פתוח</option>
                 <option value="all">הכל</option>
-                <option value="open">פתוח</option>
                 <option value="done">טופל</option>
               </select>
             </div>
@@ -861,7 +947,6 @@
   </div>
 
   <div id="sellerToast" role="status" aria-live="polite" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border backdrop-blur-md"></div>
-
   <script>
     const _memStore = {};
     function safeGet(k, defVal) { try { const v = window.localStorage.getItem(k); return v !== null ? v : defVal; } catch (e) { return _memStore[k] !== undefined ? _memStore[k] : defVal; } }
@@ -891,7 +976,7 @@
     const ALL_DENOMS_ASC = [0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200];
 
     let pendingWhatsAppSend = false, userPickedDay = false, lastCalcNet = 0;
-    let activeSellerTab = "closing", lastBizDateStr = _initBiz.dateStr, selectedCalDateStr = "", activeMgrSupCat = "שתייה";
+    let activeSellerTab = "closing", lastBizDateStr = _initBiz.dateStr, selectedCalDateStr = "", activeMgrSupSub = "order";
 
     let state = {
       mode: "seller", year: _initBiz.year, activeTab: _initBiz.monthTab, queueFilter: "all",
@@ -900,6 +985,8 @@
       openingFloat: Number(safeGet("friends_opening_float", "500")) || 500,
       discrepancyWarningEnabled: safeGet("friends_disc_warn_enabled", "true") !== "false",
       discrepancyWarningThreshold: Number(safeGet("friends_disc_warn_threshold", "20")) || 0,
+      supplierAlertDays: Number(safeGet("friends_sup_alert_days", "5")) || 5,
+      supplierOrderCycleDays: Number(safeGet("friends_sup_cycle_days", "30")) || 30,
       businessDayCutoffHour: Number(safeGet("friends_cutoff_hour", "8")) || 8,
       sellers: JSON.parse(safeGet("friends_sellers") || '["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"]'),
       staffList: JSON.parse(safeGet("friends_staff_list") || '[]'),
@@ -907,8 +994,9 @@
       staffContacts: JSON.parse(safeGet("friends_staff_contacts") || '{"ארי קארפ":"0503265609"}'),
       equipment: JSON.parse(safeGet("friends_equipment") || '[]'),
       supplierOrders: JSON.parse(safeGet("friends_supplier_orders") || '[]'),
-      customVendors: JSON.parse(safeGet("friends_custom_vendors") || '[]'),
-      customProducts: JSON.parse(safeGet("friends_custom_products") || '[]'),
+      supplierCatalog: JSON.parse(safeGet("friends_supplier_catalog") || '[]'),
+      supplierVendors: JSON.parse(safeGet("friends_supplier_vendors") || '[]'),
+      plannerSimCartons: {},
       teamChat: JSON.parse(safeGet("friends_team_chat") || '[]'),
       dailyRows: [], faults: JSON.parse(safeGet("friends_faults") || "[]"),
       shortages: JSON.parse(safeGet("friends_shortages") || "[]"),
@@ -960,6 +1048,10 @@
       buildDemoDaysIfEmpty();
       const sd = document.getElementById("schedDate");
       if (sd) sd.value = _initBiz.isoDate;
+      const sod = document.getElementById("supOrderDateInput");
+      if (sod) sod.value = _initBiz.isoDate;
+      const cyc = document.getElementById("mgrCycleDaysInput");
+      if (cyc) cyc.value = state.supplierOrderCycleDays || 30;
       syncSettingsInputs();
       renderAll();
       restoreEodDraft();
@@ -1393,6 +1485,8 @@
           if (data.staffContacts) { state.staffContacts = data.staffContacts; safeSet("friends_staff_contacts", JSON.stringify(state.staffContacts)); }
           if (data.equipment) { state.equipment = data.equipment; safeSet("friends_equipment", JSON.stringify(state.equipment)); }
           if (data.supplierOrders) { state.supplierOrders = data.supplierOrders; safeSet("friends_supplier_orders", JSON.stringify(state.supplierOrders)); }
+          if (data.supplierCatalog) { state.supplierCatalog = data.supplierCatalog; safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog)); }
+          if (data.supplierVendors) { state.supplierVendors = data.supplierVendors; safeSet("friends_supplier_vendors", JSON.stringify(state.supplierVendors)); }
           if (data.teamChat) { state.teamChat = data.teamChat; safeSet("friends_team_chat", JSON.stringify(state.teamChat)); }
           if (data.managerTasks) { state.managerTasks = data.managerTasks; safeSet("friends_manager_tasks", JSON.stringify(state.managerTasks)); }
           if (data.queues) { state.queues = data.queues; safeSet("friends_queues", JSON.stringify(state.queues)); }
@@ -1416,6 +1510,16 @@
             if (data.systemSettings.discrepancyWarningThreshold !== undefined) {
               state.discrepancyWarningThreshold = Number(data.systemSettings.discrepancyWarningThreshold) || 0;
               safeSet("friends_disc_warn_threshold", String(state.discrepancyWarningThreshold));
+            }
+            if (data.systemSettings.supplierAlertDays !== undefined) {
+              state.supplierAlertDays = Number(data.systemSettings.supplierAlertDays) || 5;
+              safeSet("friends_sup_alert_days", String(state.supplierAlertDays));
+            }
+            if (data.systemSettings.supplierOrderCycleDays !== undefined) {
+              state.supplierOrderCycleDays = Number(data.systemSettings.supplierOrderCycleDays) || 30;
+              safeSet("friends_sup_cycle_days", String(state.supplierOrderCycleDays));
+              const cyc = document.getElementById("mgrCycleDaysInput");
+              if (cyc && !cyc.dataset.userTouched) cyc.value = state.supplierOrderCycleDays;
             }
             syncSettingsInputs();
           }
@@ -1445,7 +1549,6 @@
       if (tab === "staffEquip") renderSchedulePane();
       if (tab === "suppliers") renderMgrSupplierModule();
       if (tab === "ops") {
-        // ברירת מחדל בתקלות: פתוח בלבד
         const opsFlt = document.getElementById("mgrOpsStatusFilter");
         if (opsFlt && !opsFlt.dataset.userTouched) opsFlt.value = "open";
         renderMgrOpsPane();
@@ -1470,10 +1573,17 @@
         document.getElementById("mgrOpsBtn-" + s).classList.toggle("active", s === sub);
       });
       const opsFlt = document.getElementById("mgrOpsStatusFilter");
-      if (sub === "faults" && opsFlt && !opsFlt.dataset.userTouched) {
-        opsFlt.value = "open";
-      }
+      if (sub === "faults" && opsFlt && !opsFlt.dataset.userTouched) opsFlt.value = "open";
       renderMgrOpsPane();
+    }
+
+    function switchMgrSupSubTab(sub) {
+      activeMgrSupSub = sub;
+      ["order", "catalog", "planner"].forEach(s => {
+        document.getElementById("mgrSupPane-" + s)?.classList.toggle("hidden", s !== sub);
+        document.getElementById("mgrSupTabBtn-" + s)?.classList.toggle("active", s === sub);
+      });
+      renderMgrSupplierModule();
     }
 
     function calcShiftHours(start, end) {
@@ -1509,75 +1619,151 @@
     }
 
     // =========================================================================
-    // מודול ספקים והזמנות (מנהל בלבד + הוספת ספק ומוצר)
+    // ספקים והזמנות — תתי-טאבים, מוצר אחיד בין ספקים, קרטונים שלמים / חלק מקרטון,
+    // המלצות מערכת, חיזוי ימים ותאריך הזמנה, ובדיקת "לכמה זמן יספיק"
     // =========================================================================
-    function selectMgrSupplierCategory(cat) {
-      activeMgrSupCat = cat;
-      ["שתייה", "חטיף", "שונות", "הכל"].forEach(c => {
-        document.getElementById("mgrSupCatBtn-" + c)?.classList.toggle("active", c === cat);
-      });
-      renderMgrSupplierModule();
-    }
-
-    function registerNewVendor(prefix) {
-      const inp = document.getElementById("newMgrVendorName");
-      const name = String(inp?.value || "").trim();
-      if (!name) return showSellerToast("הזן שם ספק", "error");
-      if (!state.customVendors.includes(name)) {
-        state.customVendors.push(name);
-        safeSet("friends_custom_vendors", JSON.stringify(state.customVendors));
-      }
-      inp.value = "";
-      document.getElementById("supVendorInput").value = name;
-      renderMgrSupplierModule();
-      showSellerToast(`הספק "${name}" נוסף ✓`);
-    }
-
-    function registerNewProduct(prefix) {
-      const nameInp = document.getElementById("newMgrProdName");
-      const catSel = document.getElementById("newMgrProdCat");
-      const packInp = document.getElementById("newMgrProdPack");
-      const name = String(nameInp?.value || "").trim();
-      const cat = catSel?.value || "חטיף";
-      const pack = Math.max(1, Number(packInp?.value) || 1);
-      if (!name) return showSellerToast("הזן שם מוצר", "error");
-      const existing = state.customProducts.find(p => p.name === name);
-      if (existing) { existing.category = cat; existing.packSize = pack; }
-      else state.customProducts.push({ name, category: cat, packSize: pack });
-      safeSet("friends_custom_products", JSON.stringify(state.customProducts));
-      nameInp.value = "";
-      document.getElementById("supItemNameInput").value = name;
-      document.getElementById("supCategoryInput").value = cat;
-      document.getElementById("supPackSizeInput").value = pack;
-      renderMgrSupplierModule();
-      showSellerToast(`המוצר "${name}" נוסף ✓`);
-    }
-
-    function onSupEntryTypeChange() {
-      const isMid = document.getElementById("supEntryType").value === "ספירת ביניים";
-      document.getElementById("supOrderedQtyWrap").classList.toggle("hidden", isMid);
-    }
-
-    function onSupProductPicked() {
-      const prod = document.getElementById("supItemNameInput").value.trim();
-      if (!prod) return;
-      const cProd = (state.customProducts || []).find(p => p.name === prod);
-      if (cProd) {
-        document.getElementById("supCategoryInput").value = cProd.category;
-        document.getElementById("supPackSizeInput").value = cProd.packSize;
-        return;
-      }
-      const prev = (state.supplierOrders || []).find(o => o.itemName === prod);
-      if (prev) {
-        if (prev.category) document.getElementById("supCategoryInput").value = prev.category;
-        if (prev.packSize) document.getElementById("supPackSizeInput").value = prev.packSize;
-      }
-    }
-
     function parseDMY(dStr) {
       const m = String(dStr || "").match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
       if (!m) return null;
       return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+    }
+
+    function formatDMYFromDate(dt) {
+      const dd = String(dt.getDate()).padStart(2, "0");
+      const mm = String(dt.getMonth() + 1).padStart(2, "0");
+      return `${dd}/${mm}/${dt.getFullYear()}`;
+    }
+
+    function registerNewVendor() {
+      const inp = document.getElementById("newMgrVendorName");
+      const name = String(inp?.value || "").trim();
+      if (!name) return showSellerToast("הזן שם ספק", "error");
+      if (!state.supplierVendors.includes(name)) {
+        state.supplierVendors.push(name);
+        safeSet("friends_supplier_vendors", JSON.stringify(state.supplierVendors));
+      }
+      inp.value = "";
+      renderMgrSupplierModule();
+      const vSel = document.getElementById("supVendorSelect");
+      if (vSel) vSel.value = name;
+      const pvSel = document.getElementById("newMgrProdVendor");
+      if (pvSel) pvSel.value = name;
+      sendToGas({ action: "addSupplierVendor", vendor: name });
+      showSellerToast(`הספק "${name}" נוסף ✓`);
+    }
+
+    async function registerNewProduct() {
+      const itemName = String(document.getElementById("newMgrProdName")?.value || "").trim();
+      const category = document.getElementById("newMgrProdCat")?.value || "";
+      const packSize = Math.max(1, Number(document.getElementById("newMgrProdPack")?.value) || 0);
+      const supplier = document.getElementById("newMgrProdVendor")?.value || "";
+      const unitPrice = Math.max(0, Number(document.getElementById("newMgrProdUnitPrice")?.value) || 0);
+      const allowPartial = Boolean(document.getElementById("newMgrProdAllowPartial")?.checked);
+
+      if (!itemName || !category || !packSize) return showSellerToast("יש להזין שם מוצר, קטגוריה וכמות בקרטון", "error");
+
+      // עדכון קרטון אחיד לכל רשומות המוצר הקיימות
+      state.supplierCatalog.forEach(c => {
+        if (c.itemName === itemName) {
+          c.category = category;
+          c.packSize = packSize;
+        }
+      });
+
+      const existingIdx = state.supplierCatalog.findIndex(c => c.itemName === itemName && c.supplier === supplier);
+      const entry = {
+        id: existingIdx >= 0 ? state.supplierCatalog[existingIdx].id : ("CAT" + Date.now()),
+        itemName,
+        category,
+        packSize,
+        supplier,
+        unitPrice,
+        allowPartial,
+        updatedAt: formatDMYFromDate(new Date())
+      };
+      if (existingIdx >= 0) state.supplierCatalog[existingIdx] = entry;
+      else state.supplierCatalog.push(entry);
+
+      if (supplier && !state.supplierVendors.includes(supplier)) state.supplierVendors.push(supplier);
+      safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog));
+      safeSet("friends_supplier_vendors", JSON.stringify(state.supplierVendors));
+
+      document.getElementById("newMgrProdName").value = "";
+      document.getElementById("newMgrProdCat").value = "";
+      document.getElementById("newMgrProdPack").value = "";
+      document.getElementById("newMgrProdVendor").value = "";
+      document.getElementById("newMgrProdUnitPrice").value = "";
+      document.getElementById("newMgrProdAllowPartial").checked = false;
+
+      renderMgrSupplierModule();
+      await sendToGas({ action: "saveSupplierCatalogItem", year: state.year, ...entry });
+      showSellerToast(`המוצר "${itemName}" נשמר ✓`);
+    }
+
+    async function deleteMgrCatalogEntry(idx) {
+      const it = state.supplierCatalog[idx];
+      if (!it) return;
+      state.supplierCatalog.splice(idx, 1);
+      safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog));
+      renderMgrSupplierModule();
+      await sendToGas({ action: "deleteSupplierCatalogItem", year: state.year, id: it.id, itemName: it.itemName, supplier: it.supplier });
+    }
+
+    function onSupEntryTypeChange() {
+      const isMid = document.getElementById("supEntryType").value === "ספירת ביניים";
+      document.getElementById("supOrderedCartonsWrap").classList.toggle("hidden", isMid);
+      document.getElementById("supOrderedLooseWrap").classList.toggle("hidden", isMid);
+      recalcMgrSupplierOrderPreview();
+    }
+
+    function onSupProductOrVendorChange() {
+      const prod = document.getElementById("supItemNameSelect")?.value || "";
+      const vend = document.getElementById("supVendorSelect")?.value || "";
+
+      const prodEntries = (state.supplierCatalog || []).filter(c => c.itemName === prod);
+      const exactEntry = prodEntries.find(c => c.supplier === vend) || prodEntries[0];
+      const orderEntry = (state.supplierOrders || []).find(o => o.itemName === prod && (!vend || o.supplier === vend)) || (state.supplierOrders || []).find(o => o.itemName === prod);
+
+      const packVal = exactEntry?.packSize || orderEntry?.packSize || "";
+      const unitVal = exactEntry?.unitPrice || orderEntry?.unitPrice || "";
+      const allowPartial = Boolean(exactEntry?.allowPartial);
+
+      const packInp = document.getElementById("supPackSizeInput");
+      const unitInp = document.getElementById("supUnitPriceInput");
+      if (packInp && packVal) packInp.value = packVal;
+      if (unitInp && unitVal) unitInp.value = unitVal;
+
+      const isMid = document.getElementById("supEntryType")?.value === "ספירת ביניים";
+      document.getElementById("supOrderedLooseWrap").classList.toggle("hidden", isMid || !allowPartial);
+      if (!allowPartial) {
+        const looseInp = document.getElementById("supOrderedLooseInput");
+        if (looseInp) looseInp.value = "";
+      }
+
+      const badge = document.getElementById("supOrderRuleBadge");
+      if (badge) {
+        if (!prod) badge.textContent = "";
+        else badge.textContent = allowPartial
+          ? "מותר חלק מקרטון אצל ספק זה"
+          : "קרטונים שלמים בלבד (ברירת מחדל)";
+      }
+      recalcMgrSupplierOrderPreview();
+    }
+
+    function recalcMgrSupplierOrderPreview() {
+      const type = document.getElementById("supEntryType")?.value || "";
+      const prevEl = document.getElementById("supOrderCalcPreview");
+      if (!prevEl || type !== "הזמנה") { if (prevEl) prevEl.textContent = ""; return; }
+      const packSize = Math.max(1, Number(document.getElementById("supPackSizeInput")?.value) || 0);
+      const unitPrice = Math.max(0, Number(document.getElementById("supUnitPriceInput")?.value) || 0);
+      const cartons = Math.max(0, parseInt(document.getElementById("supOrderedCartonsInput")?.value || "0", 10) || 0);
+      const loose = Math.max(0, parseInt(document.getElementById("supOrderedLooseInput")?.value || "0", 10) || 0);
+      const totalPieces = cartons * packSize + loose;
+      const totalCost = Math.round(totalPieces * unitPrice * 100) / 100;
+      const packPrice = Math.round(packSize * unitPrice * 100) / 100;
+      prevEl.textContent = totalPieces > 0
+        ? `סה״כ להזמנה: ${totalPieces} יח׳ (${cartons} קרטון${loose ? ` + ${loose} יח׳` : ''}) • מחיר קרטון: ${packPrice.toLocaleString()} ₪ • עלות: ${totalCost.toLocaleString()} ₪`
+        : "";
     }
 
     function computeSupplierAnalytics() {
@@ -1587,38 +1773,55 @@
         return da - db;
       });
 
-      const byProd = {};
-      const vendorsSet = new Set(state.customVendors || []);
+      const cycleDays = Math.max(1, Number(document.getElementById("mgrCycleDaysInput")?.value || state.supplierOrderCycleDays || 30));
+      const alertDays = Math.max(1, Number(state.supplierAlertDays || 5));
+      const now = new Date();
+      const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      (state.customProducts || []).forEach(cp => {
-        if (!cp || !cp.name) return;
-        byProd[cp.name] = {
-          itemName: cp.name,
-          category: cp.category || "חטיף",
-          packSize: Number(cp.packSize) || 1,
-          events: [],
-          pricesByVendor: {}
-        };
+      const byProd = {};
+      const vendorsSet = new Set(state.supplierVendors || []);
+
+      (state.supplierCatalog || []).forEach(c => {
+        if (!c || !c.itemName) return;
+        if (!byProd[c.itemName]) {
+          byProd[c.itemName] = {
+            itemName: c.itemName,
+            category: c.category || "חטיף",
+            packSize: Number(c.packSize) || 1,
+            events: [],
+            vendorSpecs: {}
+          };
+        }
+        if (c.category) byProd[c.itemName].category = c.category;
+        if (Number(c.packSize) > 0) byProd[c.itemName].packSize = Number(c.packSize);
+        if (c.supplier) {
+          vendorsSet.add(c.supplier);
+          byProd[c.itemName].vendorSpecs[c.supplier] = {
+            unitPrice: Number(c.unitPrice) || 0,
+            allowPartial: Boolean(c.allowPartial)
+          };
+        }
       });
 
       orders.forEach(o => {
         const prod = String(o.itemName || "").trim();
         if (!prod) return;
-        const vend = String(o.supplier || "ספק כללי").trim() || "ספק כללי";
-        vendorsSet.add(vend);
+        const vend = String(o.supplier || "").trim();
+        if (vend) vendorsSet.add(vend);
         if (!byProd[prod]) {
           byProd[prod] = {
             itemName: prod,
             category: o.category || "חטיף",
             packSize: Number(o.packSize) || 1,
             events: [],
-            pricesByVendor: {}
+            vendorSpecs: {}
           };
         }
         if (o.category) byProd[prod].category = o.category;
         if (Number(o.packSize) > 0) byProd[prod].packSize = Number(o.packSize);
-        if (Number(o.packPrice) > 0) {
-          byProd[prod].pricesByVendor[vend] = Number(o.packPrice);
+        const uPrice = Number(o.unitPrice) || (Number(o.packSize) > 0 && Number(o.packPrice) > 0 ? Number(o.packPrice) / Number(o.packSize) : 0);
+        if (vend && uPrice > 0) {
+          byProd[prod].vendorSpecs[vend] = Object.assign({ allowPartial: false }, byProd[prod].vendorSpecs[vend], { unitPrice: uPrice });
         }
         byProd[prod].events.push(Object.assign({}, o, { supplier: vend }));
       });
@@ -1626,40 +1829,62 @@
       const summaries = Object.values(byProd).map(p => {
         const evs = p.events;
         const lastEv = evs[evs.length - 1];
-        const latestStock = lastEv ? (Number(lastEv.remainingQty) || 0) : 0;
+        const lastRem = lastEv ? (Number(lastEv.remainingQty) || 0) : 0;
 
-        let totalConsumed = 0;
-        let totalDaysSpan = 0;
+        let totalConsumed = 0, totalDaysSpan = 0;
         for (let i = 1; i < evs.length; i++) {
           const prev = evs[i - 1], cur = evs[i];
           const d1 = parseDMY(prev.date), d2 = parseDMY(cur.date);
           const daysDiff = (d1 && d2) ? Math.max(1, Math.round((d2 - d1) / 86400000)) : 14;
-          const startAvailable = (Number(prev.remainingQty) || 0) + (prev.entryType === "הזמנה" ? (Number(prev.orderedQty) || 0) : 0);
-          const endRemaining = Number(cur.remainingQty) || 0;
-          const consumed = Math.max(0, startAvailable - endRemaining);
-          totalConsumed += consumed;
+          const startAvail = (Number(prev.remainingQty) || 0) + (prev.entryType === "הזמנה" ? (Number(prev.orderedQty) || 0) : 0);
+          const endRem = Number(cur.remainingQty) || 0;
+          totalConsumed += Math.max(0, startAvail - endRem);
           totalDaysSpan += daysDiff;
         }
 
         const dailyRate = totalDaysSpan > 0 ? (totalConsumed / totalDaysSpan) : 0;
+        const elapsedSinceLast = lastEv && parseDMY(lastEv.date)
+          ? Math.max(0, Math.round((todayMid - parseDMY(lastEv.date)) / 86400000))
+          : 0;
+        const estStockToday = Math.max(0, Math.round((lastRem - dailyRate * elapsedSinceLast) * 10) / 10);
         const monthlyRate = Math.round(dailyRate * 30);
-        const daysLeft = dailyRate > 0 ? Math.round(latestStock / dailyRate) : (latestStock <= 6 ? 3 : 30);
-        const lowStockAlert = (evs.length >= 2 && daysLeft <= 7) || (evs.length === 1 && latestStock <= Math.max(4, Math.round(p.packSize * 0.2)));
-        const recPieces = monthlyRate > 0 ? Math.max(0, Math.round(monthlyRate - latestStock + dailyRate * 5)) : Math.max(0, p.packSize - latestStock);
-        const recPacks = p.packSize > 0 ? (Math.round((recPieces / p.packSize) * 10) / 10) : recPieces;
+        const daysLeft = dailyRate > 0 ? Math.max(0, Math.round(estStockToday / dailyRate)) : null;
+        const nextOrderDate = daysLeft !== null ? formatDMYFromDate(new Date(todayMid.getTime() + Math.max(0, daysLeft - 2) * 86400000)) : "-";
+        const lowStockAlert = daysLeft !== null && daysLeft <= alertDays;
+
+        const cycleNeededPieces = Math.max(0, Math.round(dailyRate * cycleDays - estStockToday));
+        const anyPartial = Object.values(p.vendorSpecs).some(v => v.allowPartial);
+        const recCartons = anyPartial
+          ? Math.round((cycleNeededPieces / Math.max(1, p.packSize)) * 10) / 10
+          : Math.ceil(cycleNeededPieces / Math.max(1, p.packSize));
+        const recPieces = anyPartial ? cycleNeededPieces : (recCartons * Math.max(1, p.packSize));
+
+        const vEntries = Object.entries(p.vendorSpecs).filter(([, sp]) => sp.unitPrice > 0);
+        const cheapest = vEntries.length ? vEntries.reduce((min, cur) => cur[1].unitPrice < min[1].unitPrice ? cur : min) : null;
+        const mostExpensive = vEntries.length > 1 ? vEntries.reduce((max, cur) => cur[1].unitPrice > max[1].unitPrice ? cur : max) : null;
+        const monthlySavings = (cheapest && mostExpensive)
+          ? Math.round((mostExpensive[1].unitPrice - cheapest[1].unitPrice) * (monthlyRate || recPieces))
+          : 0;
 
         return {
           itemName: p.itemName,
           category: p.category,
           packSize: p.packSize,
-          latestStock,
+          evsCount: evs.length,
+          lastRem,
+          estStockToday,
           dailyRate: Math.round(dailyRate * 100) / 100,
           monthlyRate,
           daysLeft,
+          nextOrderDate,
           lowStockAlert,
+          anyPartial,
+          recCartons,
           recPieces,
-          recPacks,
-          pricesByVendor: p.pricesByVendor
+          vendorSpecs: p.vendorSpecs,
+          cheapestVendor: cheapest ? cheapest[0] : "",
+          cheapestUnitPrice: cheapest ? cheapest[1].unitPrice : 0,
+          monthlySavings
         };
       });
 
@@ -1669,32 +1894,54 @@
     function renderMgrSupplierModule() {
       const { summaries, allProducts, allVendors } = computeSupplierAnalytics();
 
-      const prodSel = document.getElementById("mgrSupProductFilter");
-      if (prodSel) {
-        const prevP = prodSel.value;
-        prodSel.innerHTML = `<option value="">כל המוצרים</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
-        prodSel.value = allProducts.includes(prevP) ? prevP : "";
+      // עדכון רשימות בחירה (select) ריקות כברירת מחדל
+      const itemSel = document.getElementById("supItemNameSelect");
+      if (itemSel) {
+        const prev = itemSel.value;
+        itemSel.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
+        itemSel.value = allProducts.includes(prev) ? prev : "";
       }
-      const vendSel = document.getElementById("mgrSupVendorFilter");
+      const vendSel = document.getElementById("supVendorSelect");
       if (vendSel) {
-        const prevV = vendSel.value;
-        vendSel.innerHTML = `<option value="">כל הספקים</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
-        vendSel.value = allVendors.includes(prevV) ? prevV : "";
+        const prev = vendSel.value;
+        vendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
+        vendSel.value = allVendors.includes(prev) ? prev : "";
       }
-      const pDl = document.getElementById("supProductsDatalist");
-      if (pDl) pDl.innerHTML = allProducts.map(p => `<option value="${p}"></option>`).join("");
-      const vDl = document.getElementById("supVendorsDatalist");
-      if (vDl) vDl.innerHTML = allVendors.map(v => `<option value="${v}"></option>`).join("");
+      const newProdVendSel = document.getElementById("newMgrProdVendor");
+      if (newProdVendSel) {
+        const prev = newProdVendSel.value;
+        newProdVendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
+        newProdVendSel.value = allVendors.includes(prev) ? prev : "";
+      }
 
-      const qText = (document.getElementById("mgrSupSearchInput")?.value || "").trim().toLowerCase();
-      const chosenProd = prodSel?.value || "";
-      const chosenVend = vendSel?.value || "";
+      const prodFlt = document.getElementById("mgrSupProductFilter");
+      if (prodFlt) {
+        const prev = prodFlt.value;
+        prodFlt.innerHTML = `<option value="">כל המוצרים</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
+        prodFlt.value = allProducts.includes(prev) ? prev : "";
+      }
+      const vendFlt = document.getElementById("mgrSupVendorFilter");
+      if (vendFlt) {
+        const prev = vendFlt.value;
+        vendFlt.innerHTML = `<option value="">כל הספקים</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
+        vendFlt.value = allVendors.includes(prev) ? prev : "";
+      }
+
+      const vChips = document.getElementById("mgrVendorsChips");
+      if (vChips) {
+        vChips.innerHTML = allVendors.length
+          ? allVendors.map(v => `<span class="px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-bold">${v}</span>`).join("")
+          : '<span class="text-slate-400">טרם נוספו ספקים</span>';
+      }
+
+      const catF = document.getElementById("mgrSupGlobalCatFilter")?.value || "הכל";
+      const pF = prodFlt?.value || "";
+      const vF = vendFlt?.value || "";
 
       const filteredSummaries = summaries.filter(s => {
-        if (activeMgrSupCat !== "הכל" && s.category !== activeMgrSupCat) return false;
-        if (qText && !s.itemName.toLowerCase().includes(qText)) return false;
-        if (chosenProd && s.itemName !== chosenProd) return false;
-        if (chosenVend && !Object.prototype.hasOwnProperty.call(s.pricesByVendor, chosenVend)) return false;
+        if (catF !== "הכל" && s.category !== catF) return false;
+        if (pF && s.itemName !== pF) return false;
+        if (vF && !Object.prototype.hasOwnProperty.call(s.vendorSpecs, vF)) return false;
         return true;
       });
 
@@ -1702,76 +1949,163 @@
       const alertBox = document.getElementById("mgrSupLowStockAlerts");
       if (alertBox) {
         alertBox.innerHTML = alerts.length
-          ? `<div class="font-black text-amber-300">⚠️ התראות מלאי נמוך — מוצרים שמומלץ להזמין (${alerts.length}):</div>` +
-            `<div class="flex flex-wrap gap-2">${alerts.map(a => `<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 border border-rose-500/50 text-rose-200 font-bold">${a.itemName} (${a.category}) • נשארו ${a.latestStock} יח׳ • להזמין ~${a.recPacks} קרטון (${a.recPieces} יח׳)</span>`).join("")}</div>`
-          : '<div class="text-emerald-400 font-bold">✓ אין התראות חוסר מיידיות במלאי הספקים</div>';
+          ? `<div class="font-black text-amber-300">⚠️ התראות הזמנה — מוצרים שמתקרבים לסיום (סף: ${state.supplierAlertDays} ימים):</div>` +
+            `<div class="flex flex-wrap gap-2">${alerts.map(a => `<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 border border-rose-500/50 text-rose-200 font-bold">${a.itemName} • ייגמר בעוד ${a.daysLeft} ימים (להזמין עד ${a.nextOrderDate}) • מומלץ: ${a.recCartons} קרטון</span>`).join("")}</div>`
+          : '<div class="text-emerald-400 font-bold">✓ אין מוצרים שמתקרבים לסף ההתראה כרגע</div>';
       }
 
-      document.getElementById("mgrSupplierSummaryBody").innerHTML = filteredSummaries.length
-        ? filteredSummaries.map(s => {
-            const vEntries = Object.entries(s.pricesByVendor);
-            const minPrice = vEntries.length ? Math.min(...vEntries.map(([, pr]) => pr)) : 0;
-            const priceHtml = vEntries.length
-              ? vEntries.map(([vn, pr]) => {
-                  const isCheapest = pr === minPrice && vEntries.length > 1;
-                  const perUnit = s.packSize > 1 ? ` (${(pr / s.packSize).toFixed(2)} ₪/יח׳)` : "";
-                  return `<div class="${isCheapest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${pr.toLocaleString()} ₪/קרטון${perUnit}${isCheapest ? ' ★ זול' : ''}</div>`;
-                }).join("")
-              : '<span class="text-slate-400">-</span>';
-
-            return `<tr>
-              <td class="py-2 px-2 font-bold text-white">${s.itemName}</td>
-              <td class="px-2">${s.category}</td>
-              <td class="px-2 font-bold ${s.lowStockAlert ? 'text-rose-400' : 'text-emerald-400'} tabular-nums">${s.latestStock} יח׳</td>
-              <td class="px-2 tabular-nums">${s.monthlyRate ? s.monthlyRate + ' / חודש (' + s.dailyRate + '/יום)' : 'ממתין ל-2 ספירות+'}</td>
-              <td class="px-2 font-black text-orange-400 tabular-nums">${s.recPieces} יח׳ (~${s.recPacks} קרטון)</td>
-              <td class="px-2">${priceHtml}</td>
-            </tr>`;
-          }).join("")
-        : '<tr><td colspan="6" class="py-4 text-center text-slate-400">אין מוצרים התואמים לסינון</td></tr>';
-
+      // טבלת היסטוריה
       const histRows = [...(state.supplierOrders || [])].reverse().filter(o => {
-        if (activeMgrSupCat !== "הכל" && (o.category || "חטיף") !== activeMgrSupCat) return false;
-        if (qText && !String(o.itemName || "").toLowerCase().includes(qText)) return false;
-        if (chosenProd && o.itemName !== chosenProd) return false;
-        if (chosenVend && o.supplier !== chosenVend) return false;
+        if (catF !== "הכל" && (o.category || "חטיף") !== catF) return false;
+        if (pF && o.itemName !== pF) return false;
+        if (vF && o.supplier !== vF) return false;
         return true;
       });
-
       document.getElementById("mgrSupplierHistoryBody").innerHTML = histRows.length
-        ? histRows.map(o => `<tr>
-            <td class="py-2 px-2 font-bold">${o.date}</td>
-            <td class="px-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.entryType === 'ספירת ביניים' ? 'bg-sky-500/20 text-sky-300' : 'bg-emerald-500/20 text-emerald-300'}">${o.entryType || 'הזמנה'}</span></td>
-            <td class="px-2">${o.supplier || '-'}</td>
-            <td class="px-2 font-bold">${o.itemName} <span class="text-[10px] text-slate-400">(${o.category || 'חטיף'} • ${o.packSize || 1}/קרטון)</span></td>
-            <td class="px-2 text-emerald-400 font-bold tabular-nums">${o.entryType === 'ספירת ביניים' ? '-' : (o.orderedQty || 0)}</td>
-            <td class="px-2 text-amber-300 font-bold tabular-nums">${o.remainingQty || 0}</td>
-            <td class="px-2 tabular-nums">${o.packPrice ? Number(o.packPrice).toLocaleString() + ' ₪' : '-'}</td>
-            <td class="px-2 text-left"><button type="button" onclick="deleteMgrSupplierEntry('${o.id}')" class="text-rose-400 font-bold">✕</button></td>
-          </tr>`).join("")
+        ? histRows.map(o => {
+            const uPrice = Number(o.unitPrice) || 0;
+            const pPrice = Number(o.packPrice) || Math.round(uPrice * (Number(o.packSize) || 1) * 100) / 100;
+            return `<tr>
+              <td class="py-2 px-2 font-bold">${o.date}</td>
+              <td class="px-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.entryType === 'ספירת ביניים' ? 'bg-sky-500/20 text-sky-300' : 'bg-emerald-500/20 text-emerald-300'}">${o.entryType || 'הזמנה'}</span></td>
+              <td class="px-2">${o.supplier || '-'}</td>
+              <td class="px-2 font-bold">${o.itemName} <span class="text-[10px] text-slate-400">(${o.category || 'חטיף'} • ${o.packSize || 1}/קרטון)</span></td>
+              <td class="px-2 text-emerald-400 font-bold tabular-nums">${o.entryType === 'ספירת ביניים' ? '-' : (o.orderedQty || 0)}</td>
+              <td class="px-2 text-amber-300 font-bold tabular-nums">${o.remainingQty || 0}</td>
+              <td class="px-2 tabular-nums">${uPrice ? uPrice + ' ₪/יח׳ (' + pPrice + ' ₪/קרטון)' : '-'}</td>
+              <td class="px-2 text-left"><button type="button" onclick="deleteMgrSupplierEntry('${o.id}')" class="text-rose-400 font-bold">✕</button></td>
+            </tr>`;
+          }).join("")
         : '<tr><td colspan="8" class="py-4 text-center text-slate-400">אין רשומות</td></tr>';
+
+      // טבלת קטלוג והשוואת מחירים
+      const catBody = document.getElementById("mgrCatalogTableBody");
+      if (catBody) {
+        catBody.innerHTML = filteredSummaries.length
+          ? filteredSummaries.map(s => {
+              const vEntries = Object.entries(s.vendorSpecs).filter(([, sp]) => sp.unitPrice > 0);
+              const minP = vEntries.length ? Math.min(...vEntries.map(([, sp]) => sp.unitPrice)) : 0;
+              const vHtml = vEntries.length
+                ? vEntries.map(([vn, sp]) => {
+                    const isBest = sp.unitPrice === minP && vEntries.length > 1;
+                    const packCost = Math.round(sp.unitPrice * s.packSize * 100) / 100;
+                    return `<div class="${isBest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPrice} ₪/יח׳ (${packCost} ₪/קרטון)${sp.allowPartial ? ' • חלק מקרטון' : ''}${isBest ? ' ★ זול' : ''}</div>`;
+                  }).join("")
+                : '<span class="text-slate-400">לא הוזן מחיר</span>';
+              const cIdx = state.supplierCatalog.findIndex(c => c.itemName === s.itemName);
+              return `<tr>
+                <td class="py-2 px-2 font-bold">${s.itemName}</td>
+                <td class="px-2">${s.category}</td>
+                <td class="px-2 font-bold tabular-nums">${s.packSize}</td>
+                <td class="px-2">${vHtml}</td>
+                <td class="px-2">${s.anyPartial ? 'כן' : 'לא'}</td>
+                <td class="px-2 text-left">${cIdx >= 0 ? `<button type="button" onclick="deleteMgrCatalogEntry(${cIdx})" class="text-rose-400 font-bold">✕</button>` : ''}</td>
+              </tr>`;
+            }).join("")
+          : '<tr><td colspan="6" class="py-4 text-center text-slate-400">אין מוצרים במאגר</td></tr>';
+      }
+
+      // המלצות מערכת ומתכנן הזמנה
+      const recBox = document.getElementById("mgrSystemRecommendationsBox");
+      if (recBox) {
+        const recs = [];
+        filteredSummaries.forEach(s => {
+          if (s.daysLeft !== null && s.daysLeft <= 45 && s.daysLeft > 21) {
+            recs.push(`💡 <strong>${s.itemName}</strong>: צריכה ממוצעת של ${s.dailyRate} יח׳/יום (~${s.monthlyRate}/חודש). מומלץ להגדיר מחזור הזמנה של כ-21–30 יום ולהזמין עד <strong>${s.nextOrderDate}</strong>.`);
+          } else if (s.daysLeft !== null && s.daysLeft > 50) {
+            recs.push(`⏸️ <strong>${s.itemName}</strong>: המלאי המשוער (${s.estStockToday} יח׳) מספיק לכ-${s.daysLeft} ימים — מומלץ לדלג על הזמנה השבוע.`);
+          }
+          if (s.monthlySavings > 0) {
+            recs.push(`💰 <strong>${s.itemName}</strong>: מעבר לספק הזול (<strong>${s.cheapestVendor}</strong> ב-${s.cheapestUnitPrice} ₪/יח׳) חוסך כ-<strong>${s.monthlySavings.toLocaleString()} ₪</strong> לחודש.`);
+          }
+          if (s.recCartons > 0) {
+            recs.push(`📦 <strong>${s.itemName}</strong>: להזמנה למחזור הקרוב מומלץ <strong>${s.recCartons} קרטון</strong> (${s.recPieces} יח׳).`);
+          }
+        });
+        recBox.innerHTML = recs.length
+          ? recs.slice(0, 8).map(r => `<div class="p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c]">${r}</div>`).join("")
+          : '<div class="text-slate-400">ככל שייצטברו יותר הזמנות וספירות ביניים, המערכת תפיק המלצות מותאמות אישית.</div>';
+      }
+
+      const planBody = document.getElementById("mgrPlannerTableBody");
+      const planFoot = document.getElementById("mgrPlannerSummaryFooter");
+      if (planBody) {
+        let totalSimCost = 0;
+        let maxSimDays = 0;
+        planBody.innerHTML = filteredSummaries.length
+          ? filteredSummaries.map(s => {
+              const simCartons = state.plannerSimCartons[s.itemName] !== undefined ? Number(state.plannerSimCartons[s.itemName]) : s.recCartons;
+              const addedPieces = simCartons * s.packSize;
+              const totalAvail = s.estStockToday + addedPieces;
+              const simDays = s.dailyRate > 0 ? Math.round(totalAvail / s.dailyRate) : null;
+              if (simDays && simDays > maxSimDays) maxSimDays = simDays;
+              const cost = Math.round(addedPieces * (s.cheapestUnitPrice || 0));
+              totalSimCost += cost;
+              const endDtStr = simDays ? formatDMYFromDate(new Date(todayMid.getTime() + simDays * 86400000)) : "-";
+
+              return `<tr>
+                <td class="py-2 px-2 font-bold">${s.itemName}</td>
+                <td class="px-2 tabular-nums">${s.estStockToday} יח׳</td>
+                <td class="px-2 font-bold ${s.lowStockAlert ? 'text-rose-400' : 'text-slate-200'} tabular-nums">${s.daysLeft !== null ? `${s.daysLeft} ימים (${s.nextOrderDate})` : '-'}</td>
+                <td class="px-2 font-bold text-emerald-400 tabular-nums">${s.recCartons} קרטון (${s.recPieces} יח׳)</td>
+                <td class="px-2"><input type="number" min="0" step="${s.anyPartial ? '0.5' : '1'}" value="${simCartons}" onchange="onMgrSimCartonChange('${s.itemName}', this.value)" class="input-dark !w-20 !min-h-[32px] text-center font-black text-xs" /></td>
+                <td class="px-2 font-bold text-sky-300 tabular-nums">${simDays !== null ? `${simDays} ימים (עד ${endDtStr})` : '-'}</td>
+                <td class="px-2 font-bold tabular-nums">${cost ? cost.toLocaleString() + ' ₪' : '-'}</td>
+              </tr>`;
+            }).join("")
+          : '<tr><td colspan="7" class="py-4 text-center text-slate-400">אין מוצרים לתכנון</td></tr>';
+
+        if (planFoot) {
+          planFoot.innerHTML = `<span>עלות משוערת להזמנה המסומנת: <strong class="text-emerald-400">${totalSimCost.toLocaleString()} ₪</strong></span><span>טווח כיסוי מקסימלי: <strong class="text-sky-300">${maxSimDays ? maxSimDays + ' ימים' : '-'}</strong></span>`;
+        }
+      }
+    }
+
+    function onMgrSimCartonChange(prodName, val) {
+      state.plannerSimCartons[prodName] = Math.max(0, Number(val) || 0);
+      renderMgrSupplierModule();
+    }
+
+    function fillMgrPlannerWithRecommended() {
+      const { summaries } = computeSupplierAnalytics();
+      summaries.forEach(s => { state.plannerSimCartons[s.itemName] = s.recCartons; });
+      renderMgrSupplierModule();
+      showSellerToast("המתכנן מולא לפי המלצת המערכת ✓");
     }
 
     async function saveMgrSupplierEntry() {
-      const entryType = document.getElementById("supEntryType").value;
-      const category = document.getElementById("supCategoryInput").value;
-      const itemName = document.getElementById("supItemNameInput").value.trim();
-      const supplier = document.getElementById("supVendorInput").value.trim();
-      const packSize = Math.max(1, Number(document.getElementById("supPackSizeInput").value) || 1);
-      const packPrice = Math.max(0, Number(document.getElementById("supPackPriceInput").value) || 0);
-      const orderedQty = entryType === "ספירת ביניים" ? 0 : Math.max(0, Number(document.getElementById("supOrderedQtyInput").value) || 0);
-      const remainingQty = Math.max(0, Number(document.getElementById("supRemainingQtyInput").value) || 0);
-      const note = document.getElementById("supNoteInput").value.trim();
-      if (!itemName) return showSellerToast("יש להזין שם מוצר", "error");
+      const isoDate = document.getElementById("supOrderDateInput")?.value || "";
+      const entryType = document.getElementById("supEntryType")?.value || "";
+      const itemName = document.getElementById("supItemNameSelect")?.value || "";
+      const supplier = document.getElementById("supVendorSelect")?.value || "";
+      const packSize = Math.max(1, Number(document.getElementById("supPackSizeInput")?.value) || 1);
+      const unitPrice = Math.max(0, Number(document.getElementById("supUnitPriceInput")?.value) || 0);
+      const cartons = Math.max(0, parseInt(document.getElementById("supOrderedCartonsInput")?.value || "0", 10) || 0);
+      const loose = Math.max(0, parseInt(document.getElementById("supOrderedLooseInput")?.value || "0", 10) || 0);
+      const remainingQty = Math.max(0, Number(document.getElementById("supRemainingQtyInput")?.value) || 0);
+      const note = document.getElementById("supNoteInput")?.value.trim() || "";
 
-      const biz = getBusinessDateObj(state.businessDayCutoffHour);
+      if (!entryType || !itemName || !supplier) return showSellerToast("יש לבחור פעולה, מוצר וספק", "error");
+
+      const catEntry = (state.supplierCatalog || []).find(c => c.itemName === itemName);
+      const category = catEntry?.category || "חטיף";
+      const orderedQty = entryType === "ספירת ביניים" ? 0 : (cartons * packSize + loose);
+      const packPrice = Math.round(unitPrice * packSize * 100) / 100;
+
+      let dateStr = getBusinessDateObj(state.businessDayCutoffHour).dateStr;
+      if (isoDate && /^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+        const [yy, mm, dd] = isoDate.split("-");
+        dateStr = `${dd}/${mm}/${yy}`;
+      }
+
       const newRec = {
         id: "SO" + Date.now(),
-        date: biz.dateStr,
-        supplier: supplier || "ספק כללי",
+        date: dateStr,
+        supplier,
         category,
         itemName,
         packSize,
+        unitPrice,
         packPrice,
         entryType,
         orderedQty,
@@ -1779,12 +2113,22 @@
         reportedBy: "מנהל",
         note
       };
+
       state.supplierOrders.push(newRec);
       safeSet("friends_supplier_orders", JSON.stringify(state.supplierOrders));
-      document.getElementById("supItemNameInput").value = "";
-      document.getElementById("supOrderedQtyInput").value = "";
+
+      document.getElementById("supEntryType").value = "";
+      document.getElementById("supItemNameSelect").value = "";
+      document.getElementById("supVendorSelect").value = "";
+      document.getElementById("supPackSizeInput").value = "";
+      document.getElementById("supUnitPriceInput").value = "";
+      document.getElementById("supOrderedCartonsInput").value = "";
+      document.getElementById("supOrderedLooseInput").value = "";
       document.getElementById("supRemainingQtyInput").value = "";
       document.getElementById("supNoteInput").value = "";
+      document.getElementById("supOrderRuleBadge").textContent = "";
+      document.getElementById("supOrderCalcPreview").textContent = "";
+
       renderMgrSupplierModule();
       await sendToGas({ action: "addSupplierOrder", year: state.year, ...newRec });
       showSellerToast("הרשומה נשמרה ✓");
@@ -2307,7 +2651,7 @@
       const html = (s, mgr) => `<div class="p-3 rounded-xl bg-[#07192b] border border-amber-500/40 flex flex-wrap justify-between items-center gap-2 text-xs"><div><strong class="text-amber-300">[${s.category}]</strong> <strong>${s.item}</strong> <span class="text-slate-400">(${s.reporter||'-'})</span> <span class="text-[10px] text-slate-400">[${s.status||'פתוח'}]</span></div>${mgr?`<div class="flex gap-1.5"><button onclick="updateShortageStatus('${s.id}','הוזמן')" class="px-2 py-1 rounded-lg bg-sky-600/20 text-sky-300 font-bold">הוזמן</button><button onclick="updateShortageStatus('${s.id}','טופל')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white font-bold">טופל ✓</button></div>`:''}</div>`;
       document.getElementById("shortagesListSeller").innerHTML = open.length ? open.map(s => html(s, false)).join("") : '<div class="p-3 rounded-xl bg-[#07192b] text-xs text-emerald-400">אין חוסרים פתוחים ✓</div>';
 
-      const statusFilter = document.getElementById("mgrOpsStatusFilter")?.value || "all";
+      const statusFilter = document.getElementById("mgrOpsStatusFilter")?.value || "open";
       const mgrFiltered = state.shortages.filter(s => {
         if (statusFilter === "open") return s.status !== "טופל";
         if (statusFilter === "done") return s.status === "טופל";
@@ -2509,6 +2853,8 @@
     window.addEventListener("DOMContentLoaded", () => {
       const opsFlt = document.getElementById("mgrOpsStatusFilter");
       if (opsFlt) opsFlt.addEventListener("change", () => { opsFlt.dataset.userTouched = "1"; });
+      const cyc = document.getElementById("mgrCycleDaysInput");
+      if (cyc) cyc.addEventListener("change", () => { cyc.dataset.userTouched = "1"; });
       initApp();
     });
   </script>
