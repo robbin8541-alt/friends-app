@@ -634,7 +634,7 @@
               <button type="button" id="mgrSupTabBtn-planner" onclick="switchMgrSupSubTab('planner')" class="sub-pill">3. המלצות ומתכנן הזמנה</button>
             </div>
             <div class="flex flex-wrap items-center gap-1.5">
-              <input id="mgrSupSearchInput" type="text" oninput="renderMgrSupplierModule()" placeholder="חיפוש מוצר..." class="input-dark !w-32 text-xs py-1 !min-h-[34px]" />
+              <input id="mgrSupSearchInput" type="text" oninput="renderMgrSupplierModule()" placeholder="חיפוש מוצר (חלק ממילה)..." class="input-dark !w-40 text-xs py-1 !min-h-[34px]" />
               <select id="mgrSupGlobalCatFilter" onchange="renderMgrSupplierModule()" class="input-dark !w-auto text-xs font-bold py-1 !min-h-[34px]">
                 <option value="הכל">כל הקטגוריות</option>
                 <option value="שתייה">שתייה</option>
@@ -648,7 +648,7 @@
 
           <div id="mgrSupLowStockAlerts" class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs space-y-1.5"></div>
 
-          <!-- תת-טאב 1: הזמנה חדשה / עדכון מלאי (כולל הקלדה וחיפוש חופשי + בחירה + תאריך לשינוי) -->
+          <!-- תת-טאב 1: הזמנה חדשה / עדכון מלאי -->
           <div id="mgrSupPane-order" class="space-y-4">
             <div class="p-4 rounded-xl bg-[#07192b] border border-orange-500/40 space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -669,8 +669,8 @@
                   </select>
                 </div>
                 <div class="relative">
-                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר (הקלד לחיפוש או בחר מהרשימה)</label>
-                  <input id="supItemSearchInput" type="text" autocomplete="off" placeholder="הקלד שם מוצר..." onfocus="openSupProductDropdown()" oninput="onSupItemSearchTyped()" class="input-dark text-xs font-bold !mb-1.5" />
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר (הקלד חלק ממילה או בחר)</label>
+                  <input id="supItemSearchInput" type="text" autocomplete="off" placeholder="הקלד לחיפוש מוצר..." onfocus="openSupProductDropdown()" oninput="onSupItemSearchTyped()" class="input-dark text-xs font-bold !mb-1.5" />
                   <select id="supItemNameSelect" onchange="onSupProductOrVendorChange(true)" class="input-dark text-xs font-bold">
                     <option value="">-- בחר מוצר --</option>
                   </select>
@@ -690,7 +690,7 @@
                   <input id="supPackSizeInput" type="number" min="1" placeholder="ריק" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
                 </div>
                 <div>
-                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה (₪)</label>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה בודדת (₪)</label>
                   <input id="supUnitPriceInput" type="number" min="0" step="0.01" placeholder="ריק" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
                 </div>
                 <div id="supOrderedCartonsWrap">
@@ -725,7 +725,7 @@
             </div>
           </div>
 
-          <!-- תת-טאב 2: מוצרים וספקים (הוספה + מע״מ ברירת מחדל לפני מע״מ + תת-כמות במארז + עריכה + מחיקה + הערות + עדכון מחיר) -->
+          <!-- תת-טאב 2: מוצרים וספקים -->
           <div id="mgrSupPane-catalog" class="hidden space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
@@ -765,11 +765,17 @@
                   <select id="newMgrProdVendor" class="input-dark text-xs font-bold">
                     <option value="">-- בחר ספק --</option>
                   </select>
-                  <input id="newMgrProdPrice" type="number" min="0" step="0.01" placeholder="מחיר (₪)" oninput="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold text-center" />
-                  <select id="newMgrProdVatMode" onchange="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold">
-                    <option value="לפני מע&quot;מ" selected>לפני מע״מ (ברירת מחדל)</option>
-                    <option value="כולל מע&quot;מ">כולל מע״מ (18%)</option>
-                  </select>
+                  <div>
+                    <label id="newMgrProdPriceLabel" class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה בודדת (₪)</label>
+                    <input id="newMgrProdPrice" type="number" min="0" step="0.01" placeholder="מחיר (₪)" oninput="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold text-center" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מע״מ (18%)</label>
+                    <select id="newMgrProdVatMode" onchange="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold">
+                      <option value="לפני מע&quot;מ" selected>לפני מע״מ (ברירת מחדל)</option>
+                      <option value="כולל מע&quot;מ">כולל מע״מ (18%)</option>
+                    </select>
+                  </div>
                 </div>
                 <div id="newMgrProdVatCalcBox" class="text-[11px] font-bold text-sky-300 tabular-nums"></div>
                 <input id="newMgrProdNote" type="text" placeholder="הערה על המוצר (למשל: מארז 6 פחיות, מבצע ספק...)" class="input-dark text-xs" />
@@ -783,7 +789,6 @@
               </div>
             </div>
 
-            <!-- עדכון מחיר מהיר למוצר/ספק -->
             <div class="p-3.5 rounded-xl bg-[#07192b] border border-amber-500/40 space-y-2">
               <h4 id="quickPriceUpdateHeading" class="text-xs font-extrabold text-amber-300">עדכון מחיר מהיר ותיעוד בהיסטוריית מחירים</h4>
               <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
@@ -1093,6 +1098,7 @@
       const cyc = document.getElementById("mgrCycleDaysInput");
       if (cyc) cyc.value = state.supplierOrderCycleDays || 30;
       syncSettingsInputs();
+      recalcMgrCatalogVatPreview();
       renderAll();
       restoreEodDraft();
       fetchFromGas();
@@ -1662,8 +1668,8 @@
     }
 
     // =========================================================================
-    // ספקים והזמנות — מע״מ (ברירת מחדל לפני מע״מ), תת-כמות במארז,
-    // רשימת מוצרים עם סינון/עריכה/מחיקה/הערות/עדכון מחיר ומגמות, והקלדה בהזמנה
+    // ספקים והזמנות — תיקון מלא של תת-כמות (מחיר למארז / תת-כמות = מחיר ליחידה בודדת),
+    // הסתרה מוחלטת של "חלק מקרטון" כשלא הותר, חיפוש חלקי של מוצרים, מע״מ ומגמות
     // =========================================================================
     function parseDMY(dStr) {
       const m = String(dStr || "").match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
@@ -1677,12 +1683,18 @@
       return `${dd}/${mm}/${dt.getFullYear()}`;
     }
 
-    function computeVatPair(rawPrice, vatMode) {
-      const num = Math.max(0, Number(rawPrice) || 0);
+    function normalizeSearchStr(s) {
+      return String(s || "").toLowerCase().replace(/["״׳']/g, "").replace(/\s+/g, " ").trim();
+    }
+
+    function computeUnitAndVatFromInput(rawPrice, vatMode, subPackQty) {
+      const subP = Math.max(1, Number(subPackQty) || 1);
+      const inputNum = Math.max(0, Number(rawPrice) || 0);
+      const unitInput = inputNum / subP;
       const isInc = vatMode === "כולל מע\"מ";
-      const exVat = isInc ? Math.round((num / (1 + VAT_RATE)) * 100) / 100 : Math.round(num * 100) / 100;
-      const incVat = isInc ? Math.round(num * 100) / 100 : Math.round(num * (1 + VAT_RATE) * 100) / 100;
-      return { exVat, incVat };
+      const exVat = isInc ? Math.round((unitInput / (1 + VAT_RATE)) * 100) / 100 : Math.round(unitInput * 100) / 100;
+      const incVat = isInc ? Math.round(unitInput * 100) / 100 : Math.round(unitInput * (1 + VAT_RATE) * 100) / 100;
+      return { exVat, incVat, unitInput };
     }
 
     function recalcMgrCatalogVatPreview() {
@@ -1691,17 +1703,25 @@
       const totalInCarton = packCount > 0 ? Math.round(subPack * packCount) : 0;
       const rawPrice = Number(document.getElementById("newMgrProdPrice")?.value) || 0;
       const vatMode = document.getElementById("newMgrProdVatMode")?.value || "לפני מע\"מ";
+
+      const lblEl = document.getElementById("newMgrProdPriceLabel");
+      if (lblEl) {
+        lblEl.textContent = subPack > 1 ? `מחיר למארז של ${subPack} יח׳ (₪)` : "מחיר ליחידה בודדת (₪)";
+      }
+
       const box = document.getElementById("newMgrProdVatCalcBox");
       if (!box) return;
 
       const parts = [];
       if (totalInCarton > 0) parts.push(`סה״כ בקרטון: ${totalInCarton} יח׳ (${subPack} × ${packCount})`);
       if (rawPrice > 0) {
-        const pair = computeVatPair(rawPrice, vatMode);
-        parts.push(`לפני מע״מ: ${pair.exVat} ₪/יח׳ • כולל מע״מ (18%): ${pair.incVat} ₪/יח׳`);
-        if (totalInCarton > 0) parts.push(`קרטון כולל מע״מ: ${Math.round(pair.incVat * totalInCarton * 100) / 100} ₪`);
+        const pair = computeUnitAndVatFromInput(rawPrice, vatMode, subPack);
+        parts.push(`ליחידה בודדת: ${pair.exVat} ₪ לפני מע״מ | ${pair.incVat} ₪ כולל מע״מ`);
+        if (totalInCarton > 0) {
+          parts.push(`קרטון כולל מע״מ: ${Math.round(pair.incVat * totalInCarton * 100) / 100} ₪`);
+        }
       }
-      box.textContent = parts.join(" | ");
+      box.textContent = parts.join(" • ");
     }
 
     function resetMgrCatalogForm() {
@@ -1727,13 +1747,14 @@
       document.getElementById("mgrCatalogFormTitle").textContent = `עריכת מוצר: ${target.itemName}`;
       document.getElementById("newMgrProdName").value = target.itemName;
       document.getElementById("newMgrProdCat").value = target.category || "";
-      const subP = target.subPackQty || 1;
-      const pCnt = Math.max(1, Math.round((target.packSize || subP) / subP));
+      const subP = Math.max(1, Number(target.subPackQty) || 1);
+      const pCnt = Math.max(1, Math.round((Number(target.packSize) || subP) / subP));
       document.getElementById("newMgrProdSubPack").value = subP;
       document.getElementById("newMgrProdPackCount").value = pCnt;
       document.getElementById("newMgrProdVendor").value = target.supplier || "";
-      const shownPrice = target.vatMode === "כולל מע\"מ" ? (target.unitPriceIncVat || target.unitPrice) : (target.unitPriceExVat || target.unitPrice);
-      document.getElementById("newMgrProdPrice").value = shownPrice || "";
+      const unitShown = target.vatMode === "כולל מע\"מ" ? (target.unitPriceIncVat || target.unitPrice) : (target.unitPriceExVat || target.unitPrice);
+      const totalForPack = unitShown ? Math.round(unitShown * subP * 100) / 100 : "";
+      document.getElementById("newMgrProdPrice").value = totalForPack;
       document.getElementById("newMgrProdVatMode").value = target.vatMode || "לפני מע\"מ";
       document.getElementById("newMgrProdNote").value = target.note || "";
       document.getElementById("newMgrProdAllowPartial").checked = Boolean(target.allowPartial);
@@ -1772,7 +1793,7 @@
 
       if (!itemName || !category || !packCount) return showSellerToast("יש להזין שם מוצר, קטגוריה וכמות בקרטון", "error");
       const packSize = Math.round(subPackQty * packCount);
-      const pair = computeVatPair(rawPrice, vatMode);
+      const pair = computeUnitAndVatFromInput(rawPrice, vatMode, subPackQty);
       const today = formatDMYFromDate(new Date());
 
       if (editingCatalogKey) {
@@ -1831,7 +1852,12 @@
 
       resetMgrCatalogForm();
       renderMgrSupplierModule();
-      await sendToGas({ action: "saveSupplierCatalogItem", year: state.year, ...entry });
+      await sendToGas({
+        action: "saveSupplierCatalogItem",
+        year: state.year,
+        ...entry,
+        unitPrice: rawPrice
+      });
       showSellerToast(`המוצר "${itemName}" נשמר ✓`);
     }
 
@@ -1842,9 +1868,12 @@
       const vatMode = document.getElementById("quickPriceVatSel")?.value || "לפני מע\"מ";
       if (!itemName || !supplier || rawPrice <= 0) return showSellerToast("בחר מוצר, ספק ומחיר חדש", "error");
 
-      const pair = computeVatPair(rawPrice, vatMode);
-      const today = formatDMYFromDate(new Date());
       let entry = state.supplierCatalog.find(c => c.itemName === itemName && c.supplier === supplier);
+      const ref = entry || state.supplierCatalog.find(c => c.itemName === itemName);
+      const subPackQty = Math.max(1, Number(entry?.subPackQty || ref?.subPackQty || 1));
+      const pair = computeUnitAndVatFromInput(rawPrice, vatMode, subPackQty);
+      const today = formatDMYFromDate(new Date());
+
       if (entry) {
         entry.unitPrice = pair.exVat;
         entry.unitPriceExVat = pair.exVat;
@@ -1852,13 +1881,12 @@
         entry.vatMode = vatMode;
         entry.updatedAt = today;
       } else {
-        const ref = state.supplierCatalog.find(c => c.itemName === itemName);
         entry = {
           id: "CAT" + Date.now(),
           itemName,
           category: ref?.category || "חטיף",
-          subPackQty: ref?.subPackQty || 1,
-          packSize: ref?.packSize || 1,
+          subPackQty,
+          packSize: ref?.packSize || subPackQty,
           packCount: ref?.packCount || 1,
           supplier,
           unitPrice: pair.exVat,
@@ -1888,7 +1916,7 @@
       safeSet("friends_price_history", JSON.stringify(state.priceHistory));
       document.getElementById("quickPriceValInp").value = "";
       renderMgrSupplierModule();
-      await sendToGas({ action: "updateSupplierPrice", year: state.year, itemName, supplier, unitPrice: rawPrice, vatMode, date: today });
+      await sendToGas({ action: "updateSupplierPrice", year: state.year, itemName, supplier, unitPrice: rawPrice, subPackQty, vatMode, date: today });
       showSellerToast(`המחיר של ${itemName} אצל ${supplier} עודכן ✓`);
     }
 
@@ -1899,8 +1927,9 @@
       const found = state.supplierCatalog.find(c => c.itemName === itemName && (!supplier || c.supplier === supplier));
       if (found) {
         if (found.supplier && !supplier) document.getElementById("quickPriceVendSel").value = found.supplier;
-        const val = vatMode === "כולל מע\"מ" ? (found.unitPriceIncVat || found.unitPrice) : (found.unitPriceExVat || found.unitPrice);
-        if (val) document.getElementById("quickPriceValInp").value = val;
+        const subP = Math.max(1, Number(found.subPackQty) || 1);
+        const unitVal = vatMode === "כולל מע\"מ" ? (found.unitPriceIncVat || found.unitPrice) : (found.unitPriceExVat || found.unitPrice);
+        if (unitVal) document.getElementById("quickPriceValInp").value = Math.round(unitVal * subP * 100) / 100;
       }
     }
 
@@ -1915,7 +1944,7 @@
       showSellerToast("הרשומה נמחקה ✓");
     }
 
-    // הקלדה וחיפוש חופשי של מוצר בטופס ההזמנה
+    // חיפוש מוצר לפי חלק ממילה + רשימה נפתחת + סנכרון עם select
     function openSupProductDropdown() {
       renderSupProductDropdownList(document.getElementById("supItemSearchInput")?.value || "");
       document.getElementById("supProductDropdownList")?.classList.remove("hidden");
@@ -1925,53 +1954,97 @@
       const drop = document.getElementById("supProductDropdownList");
       if (!drop) return;
       const { allProducts } = computeSupplierAnalytics();
-      const q = String(query || "").trim().toLowerCase();
-      const matches = allProducts.filter(p => !q || p.toLowerCase().includes(q));
+      const q = normalizeSearchStr(query);
+      const matches = allProducts.filter(p => !q || normalizeSearchStr(p).includes(q));
       let html = matches.map(p => `<button type="button" onclick="pickSupplierOrderProduct('${p.replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 hover:bg-orange-500/20 font-bold text-white flex justify-between items-center"><span>${p}</span><span class="text-[10px] text-orange-400">בחר</span></button>`).join("");
-      if (q && !allProducts.some(p => p.toLowerCase() === q)) {
-        html += `<button type="button" onclick="pickSupplierOrderProduct('${query.replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 font-extrabold text-emerald-300">+ השתמש בשם המוקלד: "${query}"</button>`;
+      if (q && !allProducts.some(p => normalizeSearchStr(p) === q)) {
+        html += `<button type="button" onclick="pickSupplierOrderProduct('${String(query || '').trim().replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 font-extrabold text-emerald-300">+ השתמש בשם המוקלד: "${String(query || '').trim()}"</button>`;
       }
       drop.innerHTML = html || '<div class="px-3 py-2 text-slate-400">אין מוצרים תואמים</div>';
+    }
+
+    function syncProductSelectBySearchQuery(query) {
+      const sel = document.getElementById("supItemNameSelect");
+      if (!sel) return "";
+      const { allProducts } = computeSupplierAnalytics();
+      const q = normalizeSearchStr(query);
+      if (!q) {
+        sel.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
+        sel.value = "";
+        return "";
+      }
+      const matches = allProducts.filter(p => normalizeSearchStr(p).includes(q));
+      const exact = matches.find(p => normalizeSearchStr(p) === q);
+      sel.innerHTML = `<option value="">-- בחר מוצר (${matches.length} תואמים) --</option>` + matches.map(p => `<option value="${p}">${p}</option>`).join("");
+      if (exact) {
+        sel.value = exact;
+        return exact;
+      }
+      if (matches.length === 1) {
+        sel.value = matches[0];
+        return matches[0];
+      }
+      sel.value = "";
+      return "";
     }
 
     function onSupItemSearchTyped() {
       const typed = document.getElementById("supItemSearchInput")?.value || "";
       renderSupProductDropdownList(typed);
       document.getElementById("supProductDropdownList")?.classList.remove("hidden");
-      const sel = document.getElementById("supItemNameSelect");
-      if (sel) {
-        const exact = [...sel.options].find(o => o.value === typed.trim());
-        sel.value = exact ? exact.value : "";
-      }
+      syncProductSelectBySearchQuery(typed);
       onSupProductOrVendorChange(false);
     }
 
     function pickSupplierOrderProduct(prodName) {
-      document.getElementById("supItemSearchInput").value = prodName;
+      const clean = String(prodName || "").trim();
+      document.getElementById("supItemSearchInput").value = clean;
       const sel = document.getElementById("supItemNameSelect");
-      if (sel && ![...sel.options].some(o => o.value === prodName)) {
-        const opt = document.createElement("option");
-        opt.value = prodName; opt.textContent = prodName;
-        sel.appendChild(opt);
+      if (sel) {
+        if (![...sel.options].some(o => o.value === clean)) {
+          const opt = document.createElement("option");
+          opt.value = clean; opt.textContent = clean;
+          sel.appendChild(opt);
+        }
+        sel.value = clean;
       }
-      if (sel) sel.value = prodName;
       document.getElementById("supProductDropdownList")?.classList.add("hidden");
       onSupProductOrVendorChange(false);
+    }
+
+    function syncLooseCartonVisibility() {
+      const isMid = document.getElementById("supEntryType")?.value === "ספירת ביניים";
+      const prod = document.getElementById("supItemNameSelect")?.value || document.getElementById("supItemSearchInput")?.value.trim() || "";
+      const vend = document.getElementById("supVendorSelect")?.value || "";
+      const prodEntries = (state.supplierCatalog || []).filter(c => c.itemName === prod);
+      const exactEntry = vend ? prodEntries.find(c => c.supplier === vend) : null;
+      const allowPartial = Boolean(exactEntry ? exactEntry.allowPartial : false);
+
+      const looseWrap = document.getElementById("supOrderedLooseWrap");
+      const looseInp = document.getElementById("supOrderedLooseInput");
+      if (looseWrap) looseWrap.classList.toggle("hidden", isMid || !allowPartial);
+      if ((isMid || !allowPartial) && looseInp) looseInp.value = "";
+
+      const badge = document.getElementById("supOrderRuleBadge");
+      if (badge) {
+        if (!prod) badge.textContent = "";
+        else badge.textContent = allowPartial ? "מותר חלק מקרטון אצל ספק זה" : "קרטונים שלמים בלבד (ברירת מחדל)";
+      }
     }
 
     function onSupEntryTypeChange() {
       const isMid = document.getElementById("supEntryType").value === "ספירת ביניים";
       document.getElementById("supOrderedCartonsWrap").classList.toggle("hidden", isMid);
-      document.getElementById("supOrderedLooseWrap").classList.toggle("hidden", isMid);
+      syncLooseCartonVisibility();
       recalcMgrSupplierOrderPreview();
     }
 
     function onSupProductOrVendorChange(syncSearchFromSelect) {
       const sel = document.getElementById("supItemNameSelect");
-      const prod = sel?.value || "";
-      if (syncSearchFromSelect) {
+      const prod = sel?.value || document.getElementById("supItemSearchInput")?.value.trim() || "";
+      if (syncSearchFromSelect && sel?.value) {
         const sInp = document.getElementById("supItemSearchInput");
-        if (sInp) sInp.value = prod;
+        if (sInp) sInp.value = sel.value;
       }
       const vend = document.getElementById("supVendorSelect")?.value || "";
 
@@ -1981,25 +2054,13 @@
 
       const packVal = exactEntry?.packSize || orderEntry?.packSize || "";
       const unitVal = exactEntry?.unitPriceExVat || exactEntry?.unitPrice || orderEntry?.unitPrice || "";
-      const allowPartial = Boolean(exactEntry?.allowPartial);
 
       const packInp = document.getElementById("supPackSizeInput");
       const unitInp = document.getElementById("supUnitPriceInput");
       if (packInp && packVal) packInp.value = packVal;
       if (unitInp && unitVal) unitInp.value = unitVal;
 
-      const isMid = document.getElementById("supEntryType")?.value === "ספירת ביניים";
-      document.getElementById("supOrderedLooseWrap").classList.toggle("hidden", isMid || !allowPartial);
-      if (!allowPartial) {
-        const looseInp = document.getElementById("supOrderedLooseInput");
-        if (looseInp) looseInp.value = "";
-      }
-
-      const badge = document.getElementById("supOrderRuleBadge");
-      if (badge) {
-        if (!prod) badge.textContent = "";
-        else badge.textContent = allowPartial ? "מותר חלק מקרטון אצל ספק זה" : "קרטונים שלמים בלבד (ברירת מחדל)";
-      }
+      syncLooseCartonVisibility();
       recalcMgrSupplierOrderPreview();
     }
 
@@ -2010,7 +2071,8 @@
       const packSize = Math.max(1, Number(document.getElementById("supPackSizeInput")?.value) || 0);
       const unitPrice = Math.max(0, Number(document.getElementById("supUnitPriceInput")?.value) || 0);
       const cartons = Math.max(0, parseInt(document.getElementById("supOrderedCartonsInput")?.value || "0", 10) || 0);
-      const loose = Math.max(0, parseInt(document.getElementById("supOrderedLooseInput")?.value || "0", 10) || 0);
+      const looseWrapHidden = document.getElementById("supOrderedLooseWrap")?.classList.contains("hidden");
+      const loose = looseWrapHidden ? 0 : Math.max(0, parseInt(document.getElementById("supOrderedLooseInput")?.value || "0", 10) || 0);
       const totalPieces = cartons * packSize + loose;
       const totalCost = Math.round(totalPieces * unitPrice * 100) / 100;
       const packPrice = Math.round(packSize * unitPrice * 100) / 100;
@@ -2047,10 +2109,15 @@
         if (c.note) byProd[c.itemName].note = c.note;
         if (c.supplier) {
           vendorsSet.add(c.supplier);
-          const pair = computeVatPair(c.unitPriceExVat || c.unitPrice || 0, "לפני מע\"מ");
+          const subP = Math.max(1, Number(c.subPackQty) || 1);
+          const rawEx = Number(c.unitPriceExVat ?? c.unitPrice ?? 0) || 0;
+          const unitEx = rawEx > 0 ? Math.round((rawEx / subP) * 100) / 100 : 0;
+          const unitInc = Number(c.unitPriceIncVat) > 0
+            ? Math.round((Number(c.unitPriceIncVat) / subP) * 100) / 100
+            : Math.round(unitEx * (1 + VAT_RATE) * 100) / 100;
           byProd[c.itemName].vendorSpecs[c.supplier] = {
-            unitPriceExVat: c.unitPriceExVat || pair.exVat,
-            unitPriceIncVat: c.unitPriceIncVat || pair.incVat,
+            unitPriceExVat: unitEx,
+            unitPriceIncVat: unitInc,
             vatMode: c.vatMode || "לפני מע\"מ",
             allowPartial: Boolean(c.allowPartial)
           };
@@ -2077,13 +2144,13 @@
         if (Number(o.packSize) > 0 && !byProd[prod].packSize) byProd[prod].packSize = Number(o.packSize);
         const uPrice = Number(o.unitPrice) || (Number(o.packSize) > 0 && Number(o.packPrice) > 0 ? Number(o.packPrice) / Number(o.packSize) : 0);
         if (vend && uPrice > 0 && !byProd[prod].vendorSpecs[vend]) {
-          const pair = computeVatPair(uPrice, "לפני מע\"מ");
-          byProd[prod].vendorSpecs[vend] = { unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat, vatMode: "לפני מע\"מ", allowPartial: false };
+          const ex = Math.round(uPrice * 100) / 100;
+          const inc = Math.round(ex * (1 + VAT_RATE) * 100) / 100;
+          byProd[prod].vendorSpecs[vend] = { unitPriceExVat: ex, unitPriceIncVat: inc, vatMode: "לפני מע\"מ", allowPartial: false };
         }
         byProd[prod].events.push(Object.assign({}, o, { supplier: vend }));
       });
 
-      // מגמות מחיר לכל מוצר/ספק
       const priceTrendsByKey = {};
       const sortedHist = [...(state.priceHistory || [])].sort((a, b) => (parseDMY(a.date)?.getTime() || 0) - (parseDMY(b.date)?.getTime() || 0));
       sortedHist.forEach(h => {
@@ -2122,13 +2189,11 @@
           : Math.ceil(cycleNeededPieces / Math.max(1, p.packSize));
         const recPieces = anyPartial ? cycleNeededPieces : (recCartons * Math.max(1, p.packSize));
 
-        // השוואת מחירים על בסיס כולל מע״מ ליחידה בודדת
         const vEntries = Object.entries(p.vendorSpecs).filter(([, sp]) => sp.unitPriceIncVat > 0);
         const cheapest = vEntries.length ? vEntries.reduce((min, cur) => cur[1].unitPriceIncVat < min[1].unitPriceIncVat ? cur : min) : null;
         const mostExpensive = vEntries.length > 1 ? vEntries.reduce((max, cur) => cur[1].unitPriceIncVat > max[1].unitPriceIncVat ? cur : max) : null;
         const monthlySavings = (cheapest && mostExpensive) ? Math.round((mostExpensive[1].unitPriceIncVat - cheapest[1].unitPriceIncVat) * (monthlyRate || recPieces)) : 0;
 
-        // מגמת מחיר אחרונה לכל ספק
         const trendBadges = {};
         Object.keys(p.vendorSpecs).forEach(vn => {
           const histArr = priceTrendsByKey[`${p.itemName}__${vn}`] || [];
@@ -2170,13 +2235,19 @@
 
     function renderMgrSupplierModule() {
       const { summaries, allProducts, allVendors } = computeSupplierAnalytics();
+      const qText = (document.getElementById("mgrSupSearchInput")?.value || "").trim();
+      const qNorm = normalizeSearchStr(qText);
 
       const itemSel = document.getElementById("supItemNameSelect");
       if (itemSel) {
         const prev = itemSel.value;
-        itemSel.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
-        itemSel.value = allProducts.includes(prev) ? prev : "";
+        const visibleProds = qNorm ? allProducts.filter(p => normalizeSearchStr(p).includes(qNorm)) : allProducts;
+        itemSel.innerHTML = `<option value="">-- בחר מוצר --</option>` + visibleProds.map(p => `<option value="${p}">${p}</option>`).join("");
+        if (visibleProds.includes(prev)) itemSel.value = prev;
+        else if (visibleProds.length === 1 && qNorm) itemSel.value = visibleProds[0];
+        else itemSel.value = "";
       }
+
       const vendSel = document.getElementById("supVendorSelect");
       if (vendSel) {
         const prev = vendSel.value;
@@ -2222,14 +2293,13 @@
           : '<span class="text-slate-400">טרם נוספו ספקים</span>';
       }
 
-      const qText = (document.getElementById("mgrSupSearchInput")?.value || "").trim().toLowerCase();
       const catF = document.getElementById("mgrSupGlobalCatFilter")?.value || "הכל";
       const pF = prodFlt?.value || "";
       const vF = vendFlt?.value || "";
 
       const filteredSummaries = summaries.filter(s => {
         if (catF !== "הכל" && s.category !== catF) return false;
-        if (qText && !s.itemName.toLowerCase().includes(qText) && !(s.note || "").toLowerCase().includes(qText)) return false;
+        if (qNorm && !normalizeSearchStr(s.itemName).includes(qNorm) && !normalizeSearchStr(s.note || "").includes(qNorm)) return false;
         if (pF && s.itemName !== pF) return false;
         if (vF && !Object.prototype.hasOwnProperty.call(s.vendorSpecs, vF)) return false;
         return true;
@@ -2244,10 +2314,9 @@
           : '<div class="text-emerald-400 font-bold">✓ אין מוצרים שמתקרבים לסף ההתראה כרגע</div>';
       }
 
-      // היסטוריה
       const histRows = [...(state.supplierOrders || [])].reverse().filter(o => {
         if (catF !== "הכל" && (o.category || "חטיף") !== catF) return false;
-        if (qText && !String(o.itemName || "").toLowerCase().includes(qText)) return false;
+        if (qNorm && !normalizeSearchStr(o.itemName || "").includes(qNorm)) return false;
         if (pF && o.itemName !== pF) return false;
         if (vF && o.supplier !== vF) return false;
         return true;
@@ -2269,7 +2338,6 @@
           }).join("")
         : '<tr><td colspan="8" class="py-4 text-center text-slate-400">אין רשומות</td></tr>';
 
-      // רשימת מוצרים מלאה עם עריכה, מחיקה, הערות ומגמות מחיר
       const catBody = document.getElementById("mgrCatalogTableBody");
       if (catBody) {
         catBody.innerHTML = filteredSummaries.length
@@ -2283,7 +2351,8 @@
                     const trHtml = trPct !== undefined && trPct !== 0
                       ? `<span class="mr-1 px-1.5 py-0.5 rounded text-[10px] font-black ${trPct > 0 ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">${trPct > 0 ? '▲ +' : '▼ '}${trPct}%</span>`
                       : '';
-                    return `<div class="${isBest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPriceExVat} ₪ לפני מע״מ | <strong>${sp.unitPriceIncVat} ₪ כולל מע״מ</strong>/יח׳${trHtml}${isBest ? ' ★ זול' : ''}</div>`;
+                    const packInc = Math.round(sp.unitPriceIncVat * s.packSize * 100) / 100;
+                    return `<div class="${isBest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPriceExVat} ₪ לפני מע״מ | <strong>${sp.unitPriceIncVat} ₪ כולל מע״מ</strong>/יח׳ (${packInc} ₪/קרטון)${trHtml}${isBest ? ' ★ זול' : ''}</div>`;
                   }).join("")
                 : '<span class="text-slate-400">לא הוזן מחיר</span>';
 
@@ -2303,7 +2372,6 @@
           : '<tr><td colspan="6" class="py-4 text-center text-slate-400">אין מוצרים התואמים לסינון</td></tr>';
       }
 
-      // המלצות מערכת כולל מגמות מחיר
       const recBox = document.getElementById("mgrSystemRecommendationsBox");
       if (recBox) {
         const recs = [];
@@ -2372,12 +2440,13 @@
     async function saveMgrSupplierEntry() {
       const isoDate = document.getElementById("supOrderDateInput")?.value || "";
       const entryType = document.getElementById("supEntryType")?.value || "";
-      const itemName = document.getElementById("supItemNameSelect")?.value || "";
+      const itemName = (document.getElementById("supItemNameSelect")?.value || document.getElementById("supItemSearchInput")?.value || "").trim();
       const supplier = document.getElementById("supVendorSelect")?.value || "";
       const packSize = Math.max(1, Number(document.getElementById("supPackSizeInput")?.value) || 1);
       const unitPrice = Math.max(0, Number(document.getElementById("supUnitPriceInput")?.value) || 0);
       const cartons = Math.max(0, parseInt(document.getElementById("supOrderedCartonsInput")?.value || "0", 10) || 0);
-      const loose = Math.max(0, parseInt(document.getElementById("supOrderedLooseInput")?.value || "0", 10) || 0);
+      const looseWrapHidden = document.getElementById("supOrderedLooseWrap")?.classList.contains("hidden");
+      const loose = looseWrapHidden ? 0 : Math.max(0, parseInt(document.getElementById("supOrderedLooseInput")?.value || "0", 10) || 0);
       const remainingQty = Math.max(0, Number(document.getElementById("supRemainingQtyInput")?.value) || 0);
       const note = document.getElementById("supNoteInput")?.value.trim() || "";
 
@@ -2421,6 +2490,7 @@
       document.getElementById("supUnitPriceInput").value = "";
       document.getElementById("supOrderedCartonsInput").value = "";
       document.getElementById("supOrderedLooseInput").value = "";
+      document.getElementById("supOrderedLooseWrap").classList.add("hidden");
       document.getElementById("supRemainingQtyInput").value = "";
       document.getElementById("supNoteInput").value = "";
       document.getElementById("supOrderRuleBadge").textContent = "";
