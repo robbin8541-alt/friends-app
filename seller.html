@@ -625,7 +625,7 @@
           </div>
         </div>
 
-        <!-- ספקים והזמנות (3 תתי-טאבים נקיים: 1. הזמנה חדשה / עדכון מלאי, 2. מוצרים וספקים, 3. המלצות ומתכנן הזמנה) -->
+        <!-- ספקים והזמנות (מנהל בלבד) -->
         <div id="mgrMainPane-suppliers" class="mgr-main-pane hidden space-y-4">
           <div class="p-3 rounded-xl bg-[#07192b] border border-[#1b3a5c] flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
@@ -634,6 +634,7 @@
               <button type="button" id="mgrSupTabBtn-planner" onclick="switchMgrSupSubTab('planner')" class="sub-pill">3. המלצות ומתכנן הזמנה</button>
             </div>
             <div class="flex flex-wrap items-center gap-1.5">
+              <input id="mgrSupSearchInput" type="text" oninput="renderMgrSupplierModule()" placeholder="חיפוש מוצר..." class="input-dark !w-32 text-xs py-1 !min-h-[34px]" />
               <select id="mgrSupGlobalCatFilter" onchange="renderMgrSupplierModule()" class="input-dark !w-auto text-xs font-bold py-1 !min-h-[34px]">
                 <option value="הכל">כל הקטגוריות</option>
                 <option value="שתייה">שתייה</option>
@@ -647,7 +648,7 @@
 
           <div id="mgrSupLowStockAlerts" class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs space-y-1.5"></div>
 
-          <!-- תת-טאב 1: הזמנה חדשה / עדכון מלאי -->
+          <!-- תת-טאב 1: הזמנה חדשה / עדכון מלאי (כולל הקלדה וחיפוש חופשי + בחירה + תאריך לשינוי) -->
           <div id="mgrSupPane-order" class="space-y-4">
             <div class="p-4 rounded-xl bg-[#07192b] border border-orange-500/40 space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -667,15 +668,17 @@
                     <option value="ספירת ביניים">ספירת מלאי באמצע שבוע</option>
                   </select>
                 </div>
-                <div>
-                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר</label>
-                  <select id="supItemNameSelect" onchange="onSupProductOrVendorChange()" class="input-dark text-xs font-bold">
+                <div class="relative">
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר (הקלד לחיפוש או בחר מהרשימה)</label>
+                  <input id="supItemSearchInput" type="text" autocomplete="off" placeholder="הקלד שם מוצר..." onfocus="openSupProductDropdown()" oninput="onSupItemSearchTyped()" class="input-dark text-xs font-bold !mb-1.5" />
+                  <select id="supItemNameSelect" onchange="onSupProductOrVendorChange(true)" class="input-dark text-xs font-bold">
                     <option value="">-- בחר מוצר --</option>
                   </select>
+                  <div id="supProductDropdownList" class="hidden absolute left-0 right-0 top-full mt-1 z-30 max-h-44 overflow-y-auto rounded-xl bg-[#051321] border border-orange-500/60 shadow-2xl divide-y divide-[#1b3a5c] text-xs"></div>
                 </div>
                 <div>
                   <label class="block text-[10px] text-slate-400 font-bold mb-0.5">ספק</label>
-                  <select id="supVendorSelect" onchange="onSupProductOrVendorChange()" class="input-dark text-xs font-bold">
+                  <select id="supVendorSelect" onchange="onSupProductOrVendorChange(false)" class="input-dark text-xs font-bold">
                     <option value="">-- בחר ספק --</option>
                   </select>
                 </div>
@@ -683,7 +686,7 @@
 
               <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 <div>
-                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">כמות בקרטון</label>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">סה״כ יחידות בקרטון</label>
                   <input id="supPackSizeInput" type="number" min="1" placeholder="ריק" oninput="recalcMgrSupplierOrderPreview()" class="input-dark text-xs font-bold text-center" />
                 </div>
                 <div>
@@ -722,7 +725,7 @@
             </div>
           </div>
 
-          <!-- תת-טאב 2: מוצרים וספקים (והוספה) -->
+          <!-- תת-טאב 2: מוצרים וספקים (הוספה + מע״מ ברירת מחדל לפני מע״מ + תת-כמות במארז + עריכה + מחיקה + הערות + עדכון מחיר) -->
           <div id="mgrSupPane-catalog" class="hidden space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
@@ -735,8 +738,11 @@
               </div>
 
               <div class="p-4 rounded-xl bg-[#07192b] border border-emerald-500/40 space-y-2.5">
-                <h4 class="text-xs font-extrabold text-emerald-400">+ הוספת מוצר חדש / עדכון מחיר מספק</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="flex items-center justify-between">
+                  <h4 id="mgrCatalogFormTitle" class="text-xs font-extrabold text-emerald-400">+ הוספת מוצר חדש / עדכון מחיר מספק</h4>
+                  <button type="button" onclick="resetMgrCatalogForm()" class="text-[11px] text-slate-400 underline">נקה טופס</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input id="newMgrProdName" type="text" placeholder="שם מוצר..." class="input-dark text-xs font-bold" />
                   <select id="newMgrProdCat" class="input-dark text-xs font-bold">
                     <option value="">-- קטגוריה --</option>
@@ -744,14 +750,29 @@
                     <option value="חטיף">חטיף</option>
                     <option value="שונות">שונות</option>
                   </select>
-                  <input id="newMgrProdPack" type="number" min="1" placeholder="יחידות בקרטון" class="input-dark text-xs font-bold text-center" />
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[10px] text-slate-400 font-bold mb-0.5">תת-כמות במארז (למשל 6 לשישייה, או 1)</label>
+                    <input id="newMgrProdSubPack" type="number" min="1" placeholder="1 (ברירת מחדל)" oninput="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold text-center" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-slate-400 font-bold mb-0.5">כמה מארזים / יח׳ בקרטון (למשל 4 או 24)</label>
+                    <input id="newMgrProdPackCount" type="number" min="1" placeholder="ריק" oninput="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold text-center" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <select id="newMgrProdVendor" class="input-dark text-xs font-bold">
                     <option value="">-- בחר ספק --</option>
                   </select>
-                  <input id="newMgrProdUnitPrice" type="number" min="0" step="0.01" placeholder="מחיר ליחידה בודדת (₪)" class="input-dark text-xs font-bold text-center" />
+                  <input id="newMgrProdPrice" type="number" min="0" step="0.01" placeholder="מחיר (₪)" oninput="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold text-center" />
+                  <select id="newMgrProdVatMode" onchange="recalcMgrCatalogVatPreview()" class="input-dark text-xs font-bold">
+                    <option value="לפני מע&quot;מ" selected>לפני מע״מ (ברירת מחדל)</option>
+                    <option value="כולל מע&quot;מ">כולל מע״מ (18%)</option>
+                  </select>
                 </div>
+                <div id="newMgrProdVatCalcBox" class="text-[11px] font-bold text-sky-300 tabular-nums"></div>
+                <input id="newMgrProdNote" type="text" placeholder="הערה על המוצר (למשל: מארז 6 פחיות, מבצע ספק...)" class="input-dark text-xs" />
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                   <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                     <input id="newMgrProdAllowPartial" type="checkbox" class="w-4 h-4 accent-orange-500" />
@@ -762,11 +783,28 @@
               </div>
             </div>
 
+            <!-- עדכון מחיר מהיר למוצר/ספק -->
+            <div class="p-3.5 rounded-xl bg-[#07192b] border border-amber-500/40 space-y-2">
+              <h4 id="quickPriceUpdateHeading" class="text-xs font-extrabold text-amber-300">עדכון מחיר מהיר ותיעוד בהיסטוריית מחירים</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <select id="quickPriceProdSel" onchange="onQuickPricePick()" class="input-dark text-xs font-bold"><option value="">-- בחר מוצר --</option></select>
+                <select id="quickPriceVendSel" onchange="onQuickPricePick()" class="input-dark text-xs font-bold"><option value="">-- בחר ספק --</option></select>
+                <div class="flex gap-1.5">
+                  <input id="quickPriceValInp" type="number" min="0" step="0.01" placeholder="מחיר חדש (₪)" class="input-dark text-xs font-bold text-center" />
+                  <select id="quickPriceVatSel" class="input-dark !w-auto text-xs font-bold">
+                    <option value="לפני מע&quot;מ" selected>לפני מע״מ</option>
+                    <option value="כולל מע&quot;מ">כולל מע״מ</option>
+                  </select>
+                </div>
+                <button type="button" onclick="applyQuickPriceUpdate()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs">עדכן מחיר ✓</button>
+              </div>
+            </div>
+
             <div class="p-4 rounded-xl bg-[#07192b] border border-[#1b3a5c] space-y-2">
-              <h3 class="text-xs font-extrabold text-white">מאגר מוצרים והשוואת מחירים בין ספקים</h3>
+              <h3 class="text-xs font-extrabold text-white">רשימת כל המוצרים, ספקים, השוואת מחירים ומגמות</h3>
               <div class="overflow-x-auto">
                 <table class="w-full text-xs text-right">
-                  <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">מוצר</th><th class="px-2">קטגוריה</th><th class="px-2">יח׳ בקרטון</th><th class="px-2">ספקים ומחירים (ליחידה / קרטון)</th><th class="px-2">חלק מקרטון</th><th class="px-2"></th></tr></thead>
+                  <thead><tr class="border-b border-[#23476e] text-slate-300"><th class="py-2 px-2">מוצר</th><th class="px-2">קטגוריה</th><th class="px-2">תת-כמות / קרטון</th><th class="px-2">ספקים ומחירים (כולל/לפני מע״מ)</th><th class="px-2">הערות</th><th class="px-2">פעולות</th></tr></thead>
                   <tbody id="mgrCatalogTableBody" class="divide-y divide-[#1b3a5c]"></tbody>
                 </table>
               </div>
@@ -776,7 +814,7 @@
           <!-- תת-טאב 3: המלצות ומתכנן הזמנה -->
           <div id="mgrSupPane-planner" class="hidden space-y-4">
             <div class="p-4 rounded-xl bg-[#07192b] border border-emerald-500/40 space-y-2.5">
-              <h3 class="text-xs font-extrabold text-emerald-400">המלצות המערכת החכמות (מתעדכנות אוטומטית מהנתונים)</h3>
+              <h3 class="text-xs font-extrabold text-emerald-400">המלצות המערכת החכמות (כולל מגמות מחיר, צריכה והזמנות)</h3>
               <div id="mgrSystemRecommendationsBox" class="space-y-2 text-xs"></div>
             </div>
 
@@ -956,6 +994,7 @@
     const DAYS_HE = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "מוצ\"ש"];
     const HEB_MONTHS_LIST = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
     const EOD_DRAFT_KEY = "friends_eod_draft_v1";
+    const VAT_RATE = 0.18;
 
     function getBusinessDateObj(cutoffOverride) {
       const cutoff = cutoffOverride !== undefined ? Number(cutoffOverride) : (Number(safeGet("friends_cutoff_hour", "8")) || 8);
@@ -976,7 +1015,7 @@
     const ALL_DENOMS_ASC = [0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200];
 
     let pendingWhatsAppSend = false, userPickedDay = false, lastCalcNet = 0;
-    let activeSellerTab = "closing", lastBizDateStr = _initBiz.dateStr, selectedCalDateStr = "", activeMgrSupSub = "order";
+    let activeSellerTab = "closing", lastBizDateStr = _initBiz.dateStr, selectedCalDateStr = "", activeMgrSupSub = "order", editingCatalogKey = "";
 
     let state = {
       mode: "seller", year: _initBiz.year, activeTab: _initBiz.monthTab, queueFilter: "all",
@@ -996,6 +1035,7 @@
       supplierOrders: JSON.parse(safeGet("friends_supplier_orders") || '[]'),
       supplierCatalog: JSON.parse(safeGet("friends_supplier_catalog") || '[]'),
       supplierVendors: JSON.parse(safeGet("friends_supplier_vendors") || '[]'),
+      priceHistory: JSON.parse(safeGet("friends_price_history") || '[]'),
       plannerSimCartons: {},
       teamChat: JSON.parse(safeGet("friends_team_chat") || '[]'),
       dailyRows: [], faults: JSON.parse(safeGet("friends_faults") || "[]"),
@@ -1487,6 +1527,7 @@
           if (data.supplierOrders) { state.supplierOrders = data.supplierOrders; safeSet("friends_supplier_orders", JSON.stringify(state.supplierOrders)); }
           if (data.supplierCatalog) { state.supplierCatalog = data.supplierCatalog; safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog)); }
           if (data.supplierVendors) { state.supplierVendors = data.supplierVendors; safeSet("friends_supplier_vendors", JSON.stringify(state.supplierVendors)); }
+          if (data.priceHistory) { state.priceHistory = data.priceHistory; safeSet("friends_price_history", JSON.stringify(state.priceHistory)); }
           if (data.teamChat) { state.teamChat = data.teamChat; safeSet("friends_team_chat", JSON.stringify(state.teamChat)); }
           if (data.managerTasks) { state.managerTasks = data.managerTasks; safeSet("friends_manager_tasks", JSON.stringify(state.managerTasks)); }
           if (data.queues) { state.queues = data.queues; safeSet("friends_queues", JSON.stringify(state.queues)); }
@@ -1573,7 +1614,9 @@
         document.getElementById("mgrOpsBtn-" + s).classList.toggle("active", s === sub);
       });
       const opsFlt = document.getElementById("mgrOpsStatusFilter");
-      if (sub === "faults" && opsFlt && !opsFlt.dataset.userTouched) opsFlt.value = "open";
+      if (sub === "faults" && opsFlt && !opsFlt.dataset.userTouched) {
+        opsFlt.value = "open";
+      }
       renderMgrOpsPane();
     }
 
@@ -1619,8 +1662,8 @@
     }
 
     // =========================================================================
-    // ספקים והזמנות — תתי-טאבים, מוצר אחיד בין ספקים, קרטונים שלמים / חלק מקרטון,
-    // המלצות מערכת, חיזוי ימים ותאריך הזמנה, ובדיקת "לכמה זמן יספיק"
+    // ספקים והזמנות — מע״מ (ברירת מחדל לפני מע״מ), תת-כמות במארז,
+    // רשימת מוצרים עם סינון/עריכה/מחיקה/הערות/עדכון מחיר ומגמות, והקלדה בהזמנה
     // =========================================================================
     function parseDMY(dStr) {
       const m = String(dStr || "").match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
@@ -1632,6 +1675,70 @@
       const dd = String(dt.getDate()).padStart(2, "0");
       const mm = String(dt.getMonth() + 1).padStart(2, "0");
       return `${dd}/${mm}/${dt.getFullYear()}`;
+    }
+
+    function computeVatPair(rawPrice, vatMode) {
+      const num = Math.max(0, Number(rawPrice) || 0);
+      const isInc = vatMode === "כולל מע\"מ";
+      const exVat = isInc ? Math.round((num / (1 + VAT_RATE)) * 100) / 100 : Math.round(num * 100) / 100;
+      const incVat = isInc ? Math.round(num * 100) / 100 : Math.round(num * (1 + VAT_RATE) * 100) / 100;
+      return { exVat, incVat };
+    }
+
+    function recalcMgrCatalogVatPreview() {
+      const subPack = Math.max(1, Number(document.getElementById("newMgrProdSubPack")?.value) || 1);
+      const packCount = Math.max(0, Number(document.getElementById("newMgrProdPackCount")?.value) || 0);
+      const totalInCarton = packCount > 0 ? Math.round(subPack * packCount) : 0;
+      const rawPrice = Number(document.getElementById("newMgrProdPrice")?.value) || 0;
+      const vatMode = document.getElementById("newMgrProdVatMode")?.value || "לפני מע\"מ";
+      const box = document.getElementById("newMgrProdVatCalcBox");
+      if (!box) return;
+
+      const parts = [];
+      if (totalInCarton > 0) parts.push(`סה״כ בקרטון: ${totalInCarton} יח׳ (${subPack} × ${packCount})`);
+      if (rawPrice > 0) {
+        const pair = computeVatPair(rawPrice, vatMode);
+        parts.push(`לפני מע״מ: ${pair.exVat} ₪/יח׳ • כולל מע״מ (18%): ${pair.incVat} ₪/יח׳`);
+        if (totalInCarton > 0) parts.push(`קרטון כולל מע״מ: ${Math.round(pair.incVat * totalInCarton * 100) / 100} ₪`);
+      }
+      box.textContent = parts.join(" | ");
+    }
+
+    function resetMgrCatalogForm() {
+      editingCatalogKey = "";
+      document.getElementById("mgrCatalogFormTitle").textContent = "+ הוספת מוצר חדש / עדכון מחיר מספק";
+      document.getElementById("newMgrProdName").value = "";
+      document.getElementById("newMgrProdCat").value = "";
+      document.getElementById("newMgrProdSubPack").value = "";
+      document.getElementById("newMgrProdPackCount").value = "";
+      document.getElementById("newMgrProdVendor").value = "";
+      document.getElementById("newMgrProdPrice").value = "";
+      document.getElementById("newMgrProdVatMode").value = "לפני מע\"מ";
+      document.getElementById("newMgrProdNote").value = "";
+      document.getElementById("newMgrProdAllowPartial").checked = false;
+      recalcMgrCatalogVatPreview();
+    }
+
+    function startEditMgrCatalogEntry(itemName, vendorName) {
+      const entries = (state.supplierCatalog || []).filter(c => c.itemName === itemName);
+      const target = entries.find(c => c.supplier === vendorName) || entries[0];
+      if (!target) return;
+      editingCatalogKey = `${target.itemName}__${target.supplier}`;
+      document.getElementById("mgrCatalogFormTitle").textContent = `עריכת מוצר: ${target.itemName}`;
+      document.getElementById("newMgrProdName").value = target.itemName;
+      document.getElementById("newMgrProdCat").value = target.category || "";
+      const subP = target.subPackQty || 1;
+      const pCnt = Math.max(1, Math.round((target.packSize || subP) / subP));
+      document.getElementById("newMgrProdSubPack").value = subP;
+      document.getElementById("newMgrProdPackCount").value = pCnt;
+      document.getElementById("newMgrProdVendor").value = target.supplier || "";
+      const shownPrice = target.vatMode === "כולל מע\"מ" ? (target.unitPriceIncVat || target.unitPrice) : (target.unitPriceExVat || target.unitPrice);
+      document.getElementById("newMgrProdPrice").value = shownPrice || "";
+      document.getElementById("newMgrProdVatMode").value = target.vatMode || "לפני מע\"מ";
+      document.getElementById("newMgrProdNote").value = target.note || "";
+      document.getElementById("newMgrProdAllowPartial").checked = Boolean(target.allowPartial);
+      recalcMgrCatalogVatPreview();
+      document.getElementById("newMgrProdName").scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
     function registerNewVendor() {
@@ -1655,18 +1762,31 @@
     async function registerNewProduct() {
       const itemName = String(document.getElementById("newMgrProdName")?.value || "").trim();
       const category = document.getElementById("newMgrProdCat")?.value || "";
-      const packSize = Math.max(1, Number(document.getElementById("newMgrProdPack")?.value) || 0);
+      const subPackQty = Math.max(1, Number(document.getElementById("newMgrProdSubPack")?.value) || 1);
+      const packCount = Math.max(1, Number(document.getElementById("newMgrProdPackCount")?.value) || 0);
       const supplier = document.getElementById("newMgrProdVendor")?.value || "";
-      const unitPrice = Math.max(0, Number(document.getElementById("newMgrProdUnitPrice")?.value) || 0);
+      const rawPrice = Math.max(0, Number(document.getElementById("newMgrProdPrice")?.value) || 0);
+      const vatMode = document.getElementById("newMgrProdVatMode")?.value || "לפני מע\"מ";
+      const note = String(document.getElementById("newMgrProdNote")?.value || "").trim();
       const allowPartial = Boolean(document.getElementById("newMgrProdAllowPartial")?.checked);
 
-      if (!itemName || !category || !packSize) return showSellerToast("יש להזין שם מוצר, קטגוריה וכמות בקרטון", "error");
+      if (!itemName || !category || !packCount) return showSellerToast("יש להזין שם מוצר, קטגוריה וכמות בקרטון", "error");
+      const packSize = Math.round(subPackQty * packCount);
+      const pair = computeVatPair(rawPrice, vatMode);
+      const today = formatDMYFromDate(new Date());
 
-      // עדכון קרטון אחיד לכל רשומות המוצר הקיימות
+      if (editingCatalogKey) {
+        const [oldProd, oldVend] = editingCatalogKey.split("__");
+        if (oldProd !== itemName || oldVend !== supplier) {
+          state.supplierCatalog = state.supplierCatalog.filter(c => !(c.itemName === oldProd && c.supplier === oldVend));
+        }
+      }
+
       state.supplierCatalog.forEach(c => {
         if (c.itemName === itemName) {
           c.category = category;
           c.packSize = packSize;
+          if (note) c.note = note;
         }
       });
 
@@ -1675,11 +1795,17 @@
         id: existingIdx >= 0 ? state.supplierCatalog[existingIdx].id : ("CAT" + Date.now()),
         itemName,
         category,
+        subPackQty,
         packSize,
+        packCount,
         supplier,
-        unitPrice,
+        unitPrice: pair.exVat,
+        unitPriceExVat: pair.exVat,
+        unitPriceIncVat: pair.incVat,
+        vatMode,
         allowPartial,
-        updatedAt: formatDMYFromDate(new Date())
+        note,
+        updatedAt: today
       };
       if (existingIdx >= 0) state.supplierCatalog[existingIdx] = entry;
       else state.supplierCatalog.push(entry);
@@ -1688,25 +1814,149 @@
       safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog));
       safeSet("friends_supplier_vendors", JSON.stringify(state.supplierVendors));
 
-      document.getElementById("newMgrProdName").value = "";
-      document.getElementById("newMgrProdCat").value = "";
-      document.getElementById("newMgrProdPack").value = "";
-      document.getElementById("newMgrProdVendor").value = "";
-      document.getElementById("newMgrProdUnitPrice").value = "";
-      document.getElementById("newMgrProdAllowPartial").checked = false;
+      if (rawPrice > 0) {
+        state.priceHistory.push({
+          id: "PH" + Date.now(),
+          date: today,
+          itemName,
+          supplier,
+          vatMode,
+          unitPriceExVat: pair.exVat,
+          unitPriceIncVat: pair.incVat,
+          actionType: editingCatalogKey ? "עדכון מוצר" : "הוספת מוצר",
+          note
+        });
+        safeSet("friends_price_history", JSON.stringify(state.priceHistory));
+      }
 
+      resetMgrCatalogForm();
       renderMgrSupplierModule();
       await sendToGas({ action: "saveSupplierCatalogItem", year: state.year, ...entry });
       showSellerToast(`המוצר "${itemName}" נשמר ✓`);
     }
 
-    async function deleteMgrCatalogEntry(idx) {
-      const it = state.supplierCatalog[idx];
-      if (!it) return;
-      state.supplierCatalog.splice(idx, 1);
+    async function applyQuickPriceUpdate() {
+      const itemName = document.getElementById("quickPriceProdSel")?.value || "";
+      const supplier = document.getElementById("quickPriceVendSel")?.value || "";
+      const rawPrice = Math.max(0, Number(document.getElementById("quickPriceValInp")?.value) || 0);
+      const vatMode = document.getElementById("quickPriceVatSel")?.value || "לפני מע\"מ";
+      if (!itemName || !supplier || rawPrice <= 0) return showSellerToast("בחר מוצר, ספק ומחיר חדש", "error");
+
+      const pair = computeVatPair(rawPrice, vatMode);
+      const today = formatDMYFromDate(new Date());
+      let entry = state.supplierCatalog.find(c => c.itemName === itemName && c.supplier === supplier);
+      if (entry) {
+        entry.unitPrice = pair.exVat;
+        entry.unitPriceExVat = pair.exVat;
+        entry.unitPriceIncVat = pair.incVat;
+        entry.vatMode = vatMode;
+        entry.updatedAt = today;
+      } else {
+        const ref = state.supplierCatalog.find(c => c.itemName === itemName);
+        entry = {
+          id: "CAT" + Date.now(),
+          itemName,
+          category: ref?.category || "חטיף",
+          subPackQty: ref?.subPackQty || 1,
+          packSize: ref?.packSize || 1,
+          packCount: ref?.packCount || 1,
+          supplier,
+          unitPrice: pair.exVat,
+          unitPriceExVat: pair.exVat,
+          unitPriceIncVat: pair.incVat,
+          vatMode,
+          allowPartial: false,
+          note: ref?.note || "",
+          updatedAt: today
+        };
+        state.supplierCatalog.push(entry);
+      }
+
+      state.priceHistory.push({
+        id: "PH" + Date.now(),
+        date: today,
+        itemName,
+        supplier,
+        vatMode,
+        unitPriceExVat: pair.exVat,
+        unitPriceIncVat: pair.incVat,
+        actionType: "עדכון מחיר",
+        note: ""
+      });
+
+      safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog));
+      safeSet("friends_price_history", JSON.stringify(state.priceHistory));
+      document.getElementById("quickPriceValInp").value = "";
+      renderMgrSupplierModule();
+      await sendToGas({ action: "updateSupplierPrice", year: state.year, itemName, supplier, unitPrice: rawPrice, vatMode, date: today });
+      showSellerToast(`המחיר של ${itemName} אצל ${supplier} עודכן ✓`);
+    }
+
+    function onQuickPricePick() {
+      const itemName = document.getElementById("quickPriceProdSel")?.value || "";
+      const supplier = document.getElementById("quickPriceVendSel")?.value || "";
+      const vatMode = document.getElementById("quickPriceVatSel")?.value || "לפני מע\"מ";
+      const found = state.supplierCatalog.find(c => c.itemName === itemName && (!supplier || c.supplier === supplier));
+      if (found) {
+        if (found.supplier && !supplier) document.getElementById("quickPriceVendSel").value = found.supplier;
+        const val = vatMode === "כולל מע\"מ" ? (found.unitPriceIncVat || found.unitPrice) : (found.unitPriceExVat || found.unitPrice);
+        if (val) document.getElementById("quickPriceValInp").value = val;
+      }
+    }
+
+    async function deleteMgrCatalogEntry(itemName, vendorName) {
+      const removed = state.supplierCatalog.filter(c => c.itemName === itemName && (!vendorName || c.supplier === vendorName));
+      state.supplierCatalog = state.supplierCatalog.filter(c => !(c.itemName === itemName && (!vendorName || c.supplier === vendorName)));
       safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog));
       renderMgrSupplierModule();
-      await sendToGas({ action: "deleteSupplierCatalogItem", year: state.year, id: it.id, itemName: it.itemName, supplier: it.supplier });
+      for (const it of removed) {
+        await sendToGas({ action: "deleteSupplierCatalogItem", year: state.year, id: it.id, itemName: it.itemName, supplier: it.supplier });
+      }
+      showSellerToast("הרשומה נמחקה ✓");
+    }
+
+    // הקלדה וחיפוש חופשי של מוצר בטופס ההזמנה
+    function openSupProductDropdown() {
+      renderSupProductDropdownList(document.getElementById("supItemSearchInput")?.value || "");
+      document.getElementById("supProductDropdownList")?.classList.remove("hidden");
+    }
+
+    function renderSupProductDropdownList(query) {
+      const drop = document.getElementById("supProductDropdownList");
+      if (!drop) return;
+      const { allProducts } = computeSupplierAnalytics();
+      const q = String(query || "").trim().toLowerCase();
+      const matches = allProducts.filter(p => !q || p.toLowerCase().includes(q));
+      let html = matches.map(p => `<button type="button" onclick="pickSupplierOrderProduct('${p.replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 hover:bg-orange-500/20 font-bold text-white flex justify-between items-center"><span>${p}</span><span class="text-[10px] text-orange-400">בחר</span></button>`).join("");
+      if (q && !allProducts.some(p => p.toLowerCase() === q)) {
+        html += `<button type="button" onclick="pickSupplierOrderProduct('${query.replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 font-extrabold text-emerald-300">+ השתמש בשם המוקלד: "${query}"</button>`;
+      }
+      drop.innerHTML = html || '<div class="px-3 py-2 text-slate-400">אין מוצרים תואמים</div>';
+    }
+
+    function onSupItemSearchTyped() {
+      const typed = document.getElementById("supItemSearchInput")?.value || "";
+      renderSupProductDropdownList(typed);
+      document.getElementById("supProductDropdownList")?.classList.remove("hidden");
+      const sel = document.getElementById("supItemNameSelect");
+      if (sel) {
+        const exact = [...sel.options].find(o => o.value === typed.trim());
+        sel.value = exact ? exact.value : "";
+      }
+      onSupProductOrVendorChange(false);
+    }
+
+    function pickSupplierOrderProduct(prodName) {
+      document.getElementById("supItemSearchInput").value = prodName;
+      const sel = document.getElementById("supItemNameSelect");
+      if (sel && ![...sel.options].some(o => o.value === prodName)) {
+        const opt = document.createElement("option");
+        opt.value = prodName; opt.textContent = prodName;
+        sel.appendChild(opt);
+      }
+      if (sel) sel.value = prodName;
+      document.getElementById("supProductDropdownList")?.classList.add("hidden");
+      onSupProductOrVendorChange(false);
     }
 
     function onSupEntryTypeChange() {
@@ -1716,8 +1966,13 @@
       recalcMgrSupplierOrderPreview();
     }
 
-    function onSupProductOrVendorChange() {
-      const prod = document.getElementById("supItemNameSelect")?.value || "";
+    function onSupProductOrVendorChange(syncSearchFromSelect) {
+      const sel = document.getElementById("supItemNameSelect");
+      const prod = sel?.value || "";
+      if (syncSearchFromSelect) {
+        const sInp = document.getElementById("supItemSearchInput");
+        if (sInp) sInp.value = prod;
+      }
       const vend = document.getElementById("supVendorSelect")?.value || "";
 
       const prodEntries = (state.supplierCatalog || []).filter(c => c.itemName === prod);
@@ -1725,7 +1980,7 @@
       const orderEntry = (state.supplierOrders || []).find(o => o.itemName === prod && (!vend || o.supplier === vend)) || (state.supplierOrders || []).find(o => o.itemName === prod);
 
       const packVal = exactEntry?.packSize || orderEntry?.packSize || "";
-      const unitVal = exactEntry?.unitPrice || orderEntry?.unitPrice || "";
+      const unitVal = exactEntry?.unitPriceExVat || exactEntry?.unitPrice || orderEntry?.unitPrice || "";
       const allowPartial = Boolean(exactEntry?.allowPartial);
 
       const packInp = document.getElementById("supPackSizeInput");
@@ -1743,9 +1998,7 @@
       const badge = document.getElementById("supOrderRuleBadge");
       if (badge) {
         if (!prod) badge.textContent = "";
-        else badge.textContent = allowPartial
-          ? "מותר חלק מקרטון אצל ספק זה"
-          : "קרטונים שלמים בלבד (ברירת מחדל)";
+        else badge.textContent = allowPartial ? "מותר חלק מקרטון אצל ספק זה" : "קרטונים שלמים בלבד (ברירת מחדל)";
       }
       recalcMgrSupplierOrderPreview();
     }
@@ -1762,21 +2015,15 @@
       const totalCost = Math.round(totalPieces * unitPrice * 100) / 100;
       const packPrice = Math.round(packSize * unitPrice * 100) / 100;
       prevEl.textContent = totalPieces > 0
-        ? `סה״כ להזמנה: ${totalPieces} יח׳ (${cartons} קרטון${loose ? ` + ${loose} יח׳` : ''}) • מחיר קרטון: ${packPrice.toLocaleString()} ₪ • עלות: ${totalCost.toLocaleString()} ₪`
+        ? `סה״כ: ${totalPieces} יח׳ (${cartons} קרטון${loose ? ` + ${loose} יח׳` : ''}) • קרטון: ${packPrice.toLocaleString()} ₪ • עלות: ${totalCost.toLocaleString()} ₪`
         : "";
     }
 
     function computeSupplierAnalytics() {
-      const orders = [...(state.supplierOrders || [])].sort((a, b) => {
-        const da = parseDMY(a.date)?.getTime() || 0;
-        const db = parseDMY(b.date)?.getTime() || 0;
-        return da - db;
-      });
-
+      const orders = [...(state.supplierOrders || [])].sort((a, b) => (parseDMY(a.date)?.getTime() || 0) - (parseDMY(b.date)?.getTime() || 0));
       const cycleDays = Math.max(1, Number(document.getElementById("mgrCycleDaysInput")?.value || state.supplierOrderCycleDays || 30));
       const alertDays = Math.max(1, Number(state.supplierAlertDays || 5));
-      const now = new Date();
-      const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const now = new Date(), todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
       const byProd = {};
       const vendorsSet = new Set(state.supplierVendors || []);
@@ -1787,17 +2034,24 @@
           byProd[c.itemName] = {
             itemName: c.itemName,
             category: c.category || "חטיף",
+            subPackQty: Number(c.subPackQty) || 1,
             packSize: Number(c.packSize) || 1,
+            note: c.note || "",
             events: [],
             vendorSpecs: {}
           };
         }
         if (c.category) byProd[c.itemName].category = c.category;
+        if (Number(c.subPackQty) > 0) byProd[c.itemName].subPackQty = Number(c.subPackQty);
         if (Number(c.packSize) > 0) byProd[c.itemName].packSize = Number(c.packSize);
+        if (c.note) byProd[c.itemName].note = c.note;
         if (c.supplier) {
           vendorsSet.add(c.supplier);
+          const pair = computeVatPair(c.unitPriceExVat || c.unitPrice || 0, "לפני מע\"מ");
           byProd[c.itemName].vendorSpecs[c.supplier] = {
-            unitPrice: Number(c.unitPrice) || 0,
+            unitPriceExVat: c.unitPriceExVat || pair.exVat,
+            unitPriceIncVat: c.unitPriceIncVat || pair.incVat,
+            vatMode: c.vatMode || "לפני מע\"מ",
             allowPartial: Boolean(c.allowPartial)
           };
         }
@@ -1812,23 +2066,34 @@
           byProd[prod] = {
             itemName: prod,
             category: o.category || "חטיף",
+            subPackQty: 1,
             packSize: Number(o.packSize) || 1,
+            note: "",
             events: [],
             vendorSpecs: {}
           };
         }
         if (o.category) byProd[prod].category = o.category;
-        if (Number(o.packSize) > 0) byProd[prod].packSize = Number(o.packSize);
+        if (Number(o.packSize) > 0 && !byProd[prod].packSize) byProd[prod].packSize = Number(o.packSize);
         const uPrice = Number(o.unitPrice) || (Number(o.packSize) > 0 && Number(o.packPrice) > 0 ? Number(o.packPrice) / Number(o.packSize) : 0);
-        if (vend && uPrice > 0) {
-          byProd[prod].vendorSpecs[vend] = Object.assign({ allowPartial: false }, byProd[prod].vendorSpecs[vend], { unitPrice: uPrice });
+        if (vend && uPrice > 0 && !byProd[prod].vendorSpecs[vend]) {
+          const pair = computeVatPair(uPrice, "לפני מע\"מ");
+          byProd[prod].vendorSpecs[vend] = { unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat, vatMode: "לפני מע\"מ", allowPartial: false };
         }
         byProd[prod].events.push(Object.assign({}, o, { supplier: vend }));
       });
 
+      // מגמות מחיר לכל מוצר/ספק
+      const priceTrendsByKey = {};
+      const sortedHist = [...(state.priceHistory || [])].sort((a, b) => (parseDMY(a.date)?.getTime() || 0) - (parseDMY(b.date)?.getTime() || 0));
+      sortedHist.forEach(h => {
+        const key = `${h.itemName}__${h.supplier}`;
+        if (!priceTrendsByKey[key]) priceTrendsByKey[key] = [];
+        priceTrendsByKey[key].push(h);
+      });
+
       const summaries = Object.values(byProd).map(p => {
-        const evs = p.events;
-        const lastEv = evs[evs.length - 1];
+        const evs = p.events, lastEv = evs[evs.length - 1];
         const lastRem = lastEv ? (Number(lastEv.remainingQty) || 0) : 0;
 
         let totalConsumed = 0, totalDaysSpan = 0;
@@ -1843,9 +2108,7 @@
         }
 
         const dailyRate = totalDaysSpan > 0 ? (totalConsumed / totalDaysSpan) : 0;
-        const elapsedSinceLast = lastEv && parseDMY(lastEv.date)
-          ? Math.max(0, Math.round((todayMid - parseDMY(lastEv.date)) / 86400000))
-          : 0;
+        const elapsedSinceLast = lastEv && parseDMY(lastEv.date) ? Math.max(0, Math.round((todayMid - parseDMY(lastEv.date)) / 86400000)) : 0;
         const estStockToday = Math.max(0, Math.round((lastRem - dailyRate * elapsedSinceLast) * 10) / 10);
         const monthlyRate = Math.round(dailyRate * 30);
         const daysLeft = dailyRate > 0 ? Math.max(0, Math.round(estStockToday / dailyRate)) : null;
@@ -1859,19 +2122,32 @@
           : Math.ceil(cycleNeededPieces / Math.max(1, p.packSize));
         const recPieces = anyPartial ? cycleNeededPieces : (recCartons * Math.max(1, p.packSize));
 
-        const vEntries = Object.entries(p.vendorSpecs).filter(([, sp]) => sp.unitPrice > 0);
-        const cheapest = vEntries.length ? vEntries.reduce((min, cur) => cur[1].unitPrice < min[1].unitPrice ? cur : min) : null;
-        const mostExpensive = vEntries.length > 1 ? vEntries.reduce((max, cur) => cur[1].unitPrice > max[1].unitPrice ? cur : max) : null;
-        const monthlySavings = (cheapest && mostExpensive)
-          ? Math.round((mostExpensive[1].unitPrice - cheapest[1].unitPrice) * (monthlyRate || recPieces))
-          : 0;
+        // השוואת מחירים על בסיס כולל מע״מ ליחידה בודדת
+        const vEntries = Object.entries(p.vendorSpecs).filter(([, sp]) => sp.unitPriceIncVat > 0);
+        const cheapest = vEntries.length ? vEntries.reduce((min, cur) => cur[1].unitPriceIncVat < min[1].unitPriceIncVat ? cur : min) : null;
+        const mostExpensive = vEntries.length > 1 ? vEntries.reduce((max, cur) => cur[1].unitPriceIncVat > max[1].unitPriceIncVat ? cur : max) : null;
+        const monthlySavings = (cheapest && mostExpensive) ? Math.round((mostExpensive[1].unitPriceIncVat - cheapest[1].unitPriceIncVat) * (monthlyRate || recPieces)) : 0;
+
+        // מגמת מחיר אחרונה לכל ספק
+        const trendBadges = {};
+        Object.keys(p.vendorSpecs).forEach(vn => {
+          const histArr = priceTrendsByKey[`${p.itemName}__${vn}`] || [];
+          if (histArr.length >= 2) {
+            const prevP = histArr[histArr.length - 2].unitPriceIncVat;
+            const curP = histArr[histArr.length - 1].unitPriceIncVat;
+            if (prevP > 0) {
+              const pct = Math.round(((curP - prevP) / prevP) * 1000) / 10;
+              trendBadges[vn] = pct;
+            }
+          }
+        });
 
         return {
           itemName: p.itemName,
           category: p.category,
+          subPackQty: p.subPackQty,
           packSize: p.packSize,
-          evsCount: evs.length,
-          lastRem,
+          note: p.note,
           estStockToday,
           dailyRate: Math.round(dailyRate * 100) / 100,
           monthlyRate,
@@ -1882,8 +2158,9 @@
           recCartons,
           recPieces,
           vendorSpecs: p.vendorSpecs,
+          trendBadges,
           cheapestVendor: cheapest ? cheapest[0] : "",
-          cheapestUnitPrice: cheapest ? cheapest[1].unitPrice : 0,
+          cheapestUnitPriceIncVat: cheapest ? cheapest[1].unitPriceIncVat : 0,
           monthlySavings
         };
       });
@@ -1894,7 +2171,6 @@
     function renderMgrSupplierModule() {
       const { summaries, allProducts, allVendors } = computeSupplierAnalytics();
 
-      // עדכון רשימות בחירה (select) ריקות כברירת מחדל
       const itemSel = document.getElementById("supItemNameSelect");
       if (itemSel) {
         const prev = itemSel.value;
@@ -1907,11 +2183,23 @@
         vendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
         vendSel.value = allVendors.includes(prev) ? prev : "";
       }
-      const newProdVendSel = document.getElementById("newMgrProdVendor");
-      if (newProdVendSel) {
-        const prev = newProdVendSel.value;
-        newProdVendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
-        newProdVendSel.value = allVendors.includes(prev) ? prev : "";
+      const newPV = document.getElementById("newMgrProdVendor");
+      if (newPV) {
+        const prev = newPV.value;
+        newPV.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
+        newPV.value = allVendors.includes(prev) ? prev : "";
+      }
+      const qpProd = document.getElementById("quickPriceProdSel");
+      if (qpProd) {
+        const prev = qpProd.value;
+        qpProd.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
+        qpProd.value = allProducts.includes(prev) ? prev : "";
+      }
+      const qpVend = document.getElementById("quickPriceVendSel");
+      if (qpVend) {
+        const prev = qpVend.value;
+        qpVend.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
+        qpVend.value = allVendors.includes(prev) ? prev : "";
       }
 
       const prodFlt = document.getElementById("mgrSupProductFilter");
@@ -1934,12 +2222,14 @@
           : '<span class="text-slate-400">טרם נוספו ספקים</span>';
       }
 
+      const qText = (document.getElementById("mgrSupSearchInput")?.value || "").trim().toLowerCase();
       const catF = document.getElementById("mgrSupGlobalCatFilter")?.value || "הכל";
       const pF = prodFlt?.value || "";
       const vF = vendFlt?.value || "";
 
       const filteredSummaries = summaries.filter(s => {
         if (catF !== "הכל" && s.category !== catF) return false;
+        if (qText && !s.itemName.toLowerCase().includes(qText) && !(s.note || "").toLowerCase().includes(qText)) return false;
         if (pF && s.itemName !== pF) return false;
         if (vF && !Object.prototype.hasOwnProperty.call(s.vendorSpecs, vF)) return false;
         return true;
@@ -1954,9 +2244,10 @@
           : '<div class="text-emerald-400 font-bold">✓ אין מוצרים שמתקרבים לסף ההתראה כרגע</div>';
       }
 
-      // טבלת היסטוריה
+      // היסטוריה
       const histRows = [...(state.supplierOrders || [])].reverse().filter(o => {
         if (catF !== "הכל" && (o.category || "חטיף") !== catF) return false;
+        if (qText && !String(o.itemName || "").toLowerCase().includes(qText)) return false;
         if (pF && o.itemName !== pF) return false;
         if (vF && o.supplier !== vF) return false;
         return true;
@@ -1978,68 +2269,73 @@
           }).join("")
         : '<tr><td colspan="8" class="py-4 text-center text-slate-400">אין רשומות</td></tr>';
 
-      // טבלת קטלוג והשוואת מחירים
+      // רשימת מוצרים מלאה עם עריכה, מחיקה, הערות ומגמות מחיר
       const catBody = document.getElementById("mgrCatalogTableBody");
       if (catBody) {
         catBody.innerHTML = filteredSummaries.length
           ? filteredSummaries.map(s => {
-              const vEntries = Object.entries(s.vendorSpecs).filter(([, sp]) => sp.unitPrice > 0);
-              const minP = vEntries.length ? Math.min(...vEntries.map(([, sp]) => sp.unitPrice)) : 0;
+              const vEntries = Object.entries(s.vendorSpecs).filter(([, sp]) => sp.unitPriceIncVat > 0);
+              const minInc = vEntries.length ? Math.min(...vEntries.map(([, sp]) => sp.unitPriceIncVat)) : 0;
               const vHtml = vEntries.length
                 ? vEntries.map(([vn, sp]) => {
-                    const isBest = sp.unitPrice === minP && vEntries.length > 1;
-                    const packCost = Math.round(sp.unitPrice * s.packSize * 100) / 100;
-                    return `<div class="${isBest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPrice} ₪/יח׳ (${packCost} ₪/קרטון)${sp.allowPartial ? ' • חלק מקרטון' : ''}${isBest ? ' ★ זול' : ''}</div>`;
+                    const isBest = sp.unitPriceIncVat === minInc && vEntries.length > 1;
+                    const trPct = s.trendBadges[vn];
+                    const trHtml = trPct !== undefined && trPct !== 0
+                      ? `<span class="mr-1 px-1.5 py-0.5 rounded text-[10px] font-black ${trPct > 0 ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">${trPct > 0 ? '▲ +' : '▼ '}${trPct}%</span>`
+                      : '';
+                    return `<div class="${isBest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPriceExVat} ₪ לפני מע״מ | <strong>${sp.unitPriceIncVat} ₪ כולל מע״מ</strong>/יח׳${trHtml}${isBest ? ' ★ זול' : ''}</div>`;
                   }).join("")
                 : '<span class="text-slate-400">לא הוזן מחיר</span>';
-              const cIdx = state.supplierCatalog.findIndex(c => c.itemName === s.itemName);
+
+              const firstVend = vEntries.length ? vEntries[0][0] : "";
               return `<tr>
-                <td class="py-2 px-2 font-bold">${s.itemName}</td>
+                <td class="py-2 px-2 font-bold text-white">${s.itemName}</td>
                 <td class="px-2">${s.category}</td>
-                <td class="px-2 font-bold tabular-nums">${s.packSize}</td>
+                <td class="px-2 tabular-nums">תת-כמות: <strong>${s.subPackQty}</strong><br/><span class="text-slate-400">קרטון: ${s.packSize} יח׳</span></td>
                 <td class="px-2">${vHtml}</td>
-                <td class="px-2">${s.anyPartial ? 'כן' : 'לא'}</td>
-                <td class="px-2 text-left">${cIdx >= 0 ? `<button type="button" onclick="deleteMgrCatalogEntry(${cIdx})" class="text-rose-400 font-bold">✕</button>` : ''}</td>
+                <td class="px-2 text-slate-300">${s.note || '-'}</td>
+                <td class="px-2 whitespace-nowrap">
+                  <button type="button" onclick="startEditMgrCatalogEntry('${s.itemName.replace(/'/g, "\\'")}','${firstVend.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded bg-sky-600/20 text-sky-300 font-bold ml-1">✎ ערוך</button>
+                  <button type="button" onclick="deleteMgrCatalogEntry('${s.itemName.replace(/'/g, "\\'")}','')" class="px-2 py-0.5 rounded bg-rose-600/20 text-rose-400 font-bold">✕</button>
+                </td>
               </tr>`;
             }).join("")
-          : '<tr><td colspan="6" class="py-4 text-center text-slate-400">אין מוצרים במאגר</td></tr>';
+          : '<tr><td colspan="6" class="py-4 text-center text-slate-400">אין מוצרים התואמים לסינון</td></tr>';
       }
 
-      // המלצות מערכת ומתכנן הזמנה
+      // המלצות מערכת כולל מגמות מחיר
       const recBox = document.getElementById("mgrSystemRecommendationsBox");
       if (recBox) {
         const recs = [];
         filteredSummaries.forEach(s => {
-          if (s.daysLeft !== null && s.daysLeft <= 45 && s.daysLeft > 21) {
-            recs.push(`💡 <strong>${s.itemName}</strong>: צריכה ממוצעת של ${s.dailyRate} יח׳/יום (~${s.monthlyRate}/חודש). מומלץ להגדיר מחזור הזמנה של כ-21–30 יום ולהזמין עד <strong>${s.nextOrderDate}</strong>.`);
-          } else if (s.daysLeft !== null && s.daysLeft > 50) {
-            recs.push(`⏸️ <strong>${s.itemName}</strong>: המלאי המשוער (${s.estStockToday} יח׳) מספיק לכ-${s.daysLeft} ימים — מומלץ לדלג על הזמנה השבוע.`);
-          }
+          Object.entries(s.trendBadges || {}).forEach(([vn, pct]) => {
+            if (pct > 0) recs.push(`📈 <strong>${s.itemName}</strong> (${vn}): המחיר עלה ב-<strong>+${pct}%</strong> בעדכון האחרון — מומלץ לבדוק ספק חלופי.`);
+            else if (pct < 0) recs.push(`📉 <strong>${s.itemName}</strong> (${vn}): המחיר ירד ב-<strong>${pct}%</strong> בעדכון האחרון.`);
+          });
           if (s.monthlySavings > 0) {
-            recs.push(`💰 <strong>${s.itemName}</strong>: מעבר לספק הזול (<strong>${s.cheapestVendor}</strong> ב-${s.cheapestUnitPrice} ₪/יח׳) חוסך כ-<strong>${s.monthlySavings.toLocaleString()} ₪</strong> לחודש.`);
+            recs.push(`💰 <strong>${s.itemName}</strong>: הזמנה מהספק הזול (<strong>${s.cheapestVendor}</strong> ב-${s.cheapestUnitPriceIncVat} ₪ כולל מע״מ/יח׳) חוסכת כ-<strong>${s.monthlySavings.toLocaleString()} ₪</strong> לחודש.`);
           }
-          if (s.recCartons > 0) {
-            recs.push(`📦 <strong>${s.itemName}</strong>: להזמנה למחזור הקרוב מומלץ <strong>${s.recCartons} קרטון</strong> (${s.recPieces} יח׳).`);
+          if (s.daysLeft !== null && s.daysLeft > 50) {
+            recs.push(`⏸️ <strong>${s.itemName}</strong>: מלאי משוער (${s.estStockToday} יח׳) שמספיק לכ-${s.daysLeft} ימים — מומלץ לדלג על הזמנה השבוע.`);
+          } else if (s.recCartons > 0) {
+            recs.push(`📦 <strong>${s.itemName}</strong>: מומלץ להזמין <strong>${s.recCartons} קרטון</strong> (${s.recPieces} יח׳) עד תאריך <strong>${s.nextOrderDate}</strong>.`);
           }
         });
-        recBox.innerHTML = recs.length
-          ? recs.slice(0, 8).map(r => `<div class="p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c]">${r}</div>`).join("")
-          : '<div class="text-slate-400">ככל שייצטברו יותר הזמנות וספירות ביניים, המערכת תפיק המלצות מותאמות אישית.</div>';
+        recBox.innerHTML = recs.length ? recs.slice(0, 8).map(r => `<div class="p-2.5 rounded-xl bg-[#051321] border border-[#1b3a5c]">${r}</div>`).join("") : '<div class="text-slate-400">ככל שייצטברו יותר נתונים, המערכת תציג המלצות מותאמות.</div>';
       }
 
       const planBody = document.getElementById("mgrPlannerTableBody");
       const planFoot = document.getElementById("mgrPlannerSummaryFooter");
       if (planBody) {
-        let totalSimCost = 0;
-        let maxSimDays = 0;
+        const now = new Date(), todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        let totalSimCost = 0, maxSimDays = 0;
         planBody.innerHTML = filteredSummaries.length
           ? filteredSummaries.map(s => {
               const simCartons = state.plannerSimCartons[s.itemName] !== undefined ? Number(state.plannerSimCartons[s.itemName]) : s.recCartons;
               const addedPieces = simCartons * s.packSize;
-              const totalAvail = s.estStockToday + addedPieces;
-              const simDays = s.dailyRate > 0 ? Math.round(totalAvail / s.dailyRate) : null;
+              const simDays = s.dailyRate > 0 ? Math.round((s.estStockToday + addedPieces) / s.dailyRate) : null;
               if (simDays && simDays > maxSimDays) maxSimDays = simDays;
-              const cost = Math.round(addedPieces * (s.cheapestUnitPrice || 0));
+              const cost = Math.round(addedPieces * (s.cheapestUnitPriceIncVat || 0));
               totalSimCost += cost;
               const endDtStr = simDays ? formatDMYFromDate(new Date(todayMid.getTime() + simDays * 86400000)) : "-";
 
@@ -2048,7 +2344,7 @@
                 <td class="px-2 tabular-nums">${s.estStockToday} יח׳</td>
                 <td class="px-2 font-bold ${s.lowStockAlert ? 'text-rose-400' : 'text-slate-200'} tabular-nums">${s.daysLeft !== null ? `${s.daysLeft} ימים (${s.nextOrderDate})` : '-'}</td>
                 <td class="px-2 font-bold text-emerald-400 tabular-nums">${s.recCartons} קרטון (${s.recPieces} יח׳)</td>
-                <td class="px-2"><input type="number" min="0" step="${s.anyPartial ? '0.5' : '1'}" value="${simCartons}" onchange="onMgrSimCartonChange('${s.itemName}', this.value)" class="input-dark !w-20 !min-h-[32px] text-center font-black text-xs" /></td>
+                <td class="px-2"><input type="number" min="0" step="${s.anyPartial ? '0.5' : '1'}" value="${simCartons}" onchange="onMgrSimCartonChange('${s.itemName.replace(/'/g, "\\'")}', this.value)" class="input-dark !w-20 !min-h-[32px] text-center font-black text-xs" /></td>
                 <td class="px-2 font-bold text-sky-300 tabular-nums">${simDays !== null ? `${simDays} ימים (עד ${endDtStr})` : '-'}</td>
                 <td class="px-2 font-bold tabular-nums">${cost ? cost.toLocaleString() + ' ₪' : '-'}</td>
               </tr>`;
@@ -2056,7 +2352,7 @@
           : '<tr><td colspan="7" class="py-4 text-center text-slate-400">אין מוצרים לתכנון</td></tr>';
 
         if (planFoot) {
-          planFoot.innerHTML = `<span>עלות משוערת להזמנה המסומנת: <strong class="text-emerald-400">${totalSimCost.toLocaleString()} ₪</strong></span><span>טווח כיסוי מקסימלי: <strong class="text-sky-300">${maxSimDays ? maxSimDays + ' ימים' : '-'}</strong></span>`;
+          planFoot.innerHTML = `<span>עלות משוערת (כולל מע״מ): <strong class="text-emerald-400">${totalSimCost.toLocaleString()} ₪</strong></span><span>טווח כיסוי מקסימלי: <strong class="text-sky-300">${maxSimDays ? maxSimDays + ' ימים' : '-'}</strong></span>`;
         }
       }
     }
@@ -2118,6 +2414,7 @@
       safeSet("friends_supplier_orders", JSON.stringify(state.supplierOrders));
 
       document.getElementById("supEntryType").value = "";
+      document.getElementById("supItemSearchInput").value = "";
       document.getElementById("supItemNameSelect").value = "";
       document.getElementById("supVendorSelect").value = "";
       document.getElementById("supPackSizeInput").value = "";
@@ -2855,6 +3152,11 @@
       if (opsFlt) opsFlt.addEventListener("change", () => { opsFlt.dataset.userTouched = "1"; });
       const cyc = document.getElementById("mgrCycleDaysInput");
       if (cyc) cyc.addEventListener("change", () => { cyc.dataset.userTouched = "1"; });
+      document.addEventListener("click", (ev) => {
+        const drop = document.getElementById("supProductDropdownList");
+        const sInp = document.getElementById("supItemSearchInput");
+        if (drop && !drop.contains(ev.target) && ev.target !== sInp) drop.classList.add("hidden");
+      });
       initApp();
     });
   </script>
