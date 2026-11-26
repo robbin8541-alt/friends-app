@@ -511,7 +511,7 @@
       </div>
     </section>
 
-    <!-- 3. תפעול ומשימות (ברירת מחדל: פתוח + ספקים והזמנות בתתי-טאבים + גרף ספקים + המלצות) -->
+    <!-- 3. תפעול ומשימות (ברירת מחדל: פתוח + ספקים והזמנות בתתי-טאבים + גרפים + המלצות) -->
     <section id="osec-ops" class="owner-section hidden space-y-4">
       <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
         <div class="flex flex-wrap items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
@@ -549,15 +549,16 @@
         <div id="ownerShortagesList" class="space-y-2 text-xs"></div>
       </div>
 
-      <!-- תת-טאב ספקים והזמנות (בעלים) — 3 תתי-טאבים + גרף ספקים + המלצות + בדיקה למייל -->
+      <!-- תת-טאב ספקים והזמנות (בעלים) -->
       <div id="opsPane-suppliers" class="hidden space-y-4">
         <div class="card p-3 flex flex-wrap items-center justify-between gap-2">
           <div class="flex flex-wrap items-center gap-1 bg-[#091322] p-1 rounded-xl border border-[#26466d]">
             <button type="button" id="ownSupTabBtn-order" onclick="switchOwnerSupSubTab('order')" class="seg-btn active !py-1 !px-2.5 !min-h-[30px]">1. הזמנה / עדכון מלאי</button>
             <button type="button" id="ownSupTabBtn-catalog" onclick="switchOwnerSupSubTab('catalog')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">2. מוצרים וספקים (והוספה)</button>
-            <button type="button" id="ownSupTabBtn-planner" onclick="switchOwnerSupSubTab('planner')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">3. המלצות ומתכנן הזמנה</button>
+            <button type="button" id="ownSupTabBtn-planner" onclick="switchOwnerSupSubTab('planner')" class="seg-btn !py-1 !px-2.5 !min-h-[30px]">3. המלצות, מתכנן וגרפים</button>
           </div>
           <div class="flex flex-wrap items-center gap-1.5">
+            <input id="ownSupSearchInput" type="text" oninput="renderOwnerSupplierModule()" placeholder="חיפוש מוצר (חלק ממילה)..." class="input-dark !w-36 px-2.5 py-1 text-xs !min-h-[34px]" />
             <select id="ownSupGlobalCatFilter" onchange="renderOwnerSupplierModule()" class="input-dark !w-auto px-2.5 py-1 text-xs font-bold !min-h-[34px]">
               <option value="הכל">כל הקטגוריות</option>
               <option value="שתייה">שתייה</option>
@@ -592,23 +593,25 @@
                   <option value="ספירת ביניים">ספירת מלאי באמצע שבוע</option>
                 </select>
               </div>
-              <div>
-                <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר</label>
-                <select id="ownSupItemNameSelect" onchange="onOwnSupProductOrVendorChange()" class="input-dark px-2.5 text-xs font-bold">
+              <div class="relative">
+                <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מוצר (הקלד חלק ממילה או בחר)</label>
+                <input id="ownSupItemSearchInput" type="text" autocomplete="off" placeholder="הקלד לחיפוש מוצר..." onfocus="openOwnSupProductDropdown()" oninput="onOwnSupItemSearchTyped()" class="input-dark px-2.5 text-xs font-bold !mb-1.5" />
+                <select id="ownSupItemNameSelect" onchange="onOwnSupProductOrVendorChange(true)" class="input-dark px-2.5 text-xs font-bold">
                   <option value="">-- בחר מוצר --</option>
                 </select>
+                <div id="ownSupProductDropdownList" class="hidden absolute left-0 right-0 top-full mt-1 z-30 max-h-44 overflow-y-auto rounded-xl bg-[#091322] border border-orange-500/60 shadow-2xl divide-y divide-[#1e3a5f] text-xs"></div>
               </div>
               <div>
                 <label class="block text-[10px] text-slate-400 font-bold mb-0.5">ספק</label>
-                <select id="ownSupVendorSelect" onchange="onOwnSupProductOrVendorChange()" class="input-dark px-2.5 text-xs font-bold">
+                <select id="ownSupVendorSelect" onchange="onOwnSupProductOrVendorChange(false)" class="input-dark px-2.5 text-xs font-bold">
                   <option value="">-- בחר ספק --</option>
                 </select>
               </div>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">כמות בקרטון</label><input id="ownSupPackSizeInput" type="number" min="1" placeholder="ריק" oninput="recalcOwnerSupplierOrderPreview()" class="input-dark px-2 text-xs font-bold text-center" /></div>
-              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה (₪)</label><input id="ownSupUnitPriceInput" type="number" min="0" step="0.01" placeholder="ריק" oninput="recalcOwnerSupplierOrderPreview()" class="input-dark px-2 text-xs font-bold text-center" /></div>
+              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">סה״כ יחידות בקרטון</label><input id="ownSupPackSizeInput" type="number" min="1" placeholder="ריק" oninput="recalcOwnerSupplierOrderPreview()" class="input-dark px-2 text-xs font-bold text-center" /></div>
+              <div><label class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה בודדת (₪)</label><input id="ownSupUnitPriceInput" type="number" min="0" step="0.01" placeholder="ריק" oninput="recalcOwnerSupplierOrderPreview()" class="input-dark px-2 text-xs font-bold text-center" /></div>
               <div id="ownSupOrderedCartonsWrap"><label class="block text-[10px] text-emerald-400 font-bold mb-0.5">קרטונים שלמים להזמנה</label><input id="ownSupOrderedCartonsInput" type="number" min="0" step="1" placeholder="0" oninput="recalcOwnerSupplierOrderPreview()" class="input-dark px-2 text-xs font-bold text-center" /></div>
               <div id="ownSupOrderedLooseWrap" class="hidden"><label class="block text-[10px] text-sky-400 font-bold mb-0.5">יחידות בודדות (חלק מקרטון)</label><input id="ownSupOrderedLooseInput" type="number" min="0" step="1" placeholder="0" oninput="recalcOwnerSupplierOrderPreview()" class="input-dark px-2 text-xs font-bold text-center" /></div>
               <div><label class="block text-[10px] text-slate-300 font-extrabold mb-0.5">שארית שנספרה כעת (חתיכות)</label><input id="ownSupRemainingQtyInput" type="number" min="0" placeholder="ריק" class="input-dark px-2 text-xs font-bold text-center border-amber-500/50" /></div>
@@ -632,7 +635,7 @@
           </div>
         </div>
 
-        <!-- תת-טאב 2: מוצרים וספקים (והוספה) -->
+        <!-- תת-טאב 2: מוצרים וספקים (והוספה + עריכה + מחיקה + הערות + עדכון מחיר + מע״מ + תת-כמות) -->
         <div id="ownSupPane-catalog" class="hidden space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div class="card p-3.5 border-sky-500/40 space-y-2">
@@ -644,8 +647,11 @@
               <div id="ownVendorsChips" class="flex flex-wrap gap-1.5 pt-1 text-[11px]"></div>
             </div>
             <div class="card p-3.5 border-emerald-500/40 space-y-2">
-              <h4 class="text-xs font-black text-emerald-400">+ הוספת מוצר חדש / עדכון מחיר מספק</h4>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div class="flex items-center justify-between">
+                <h4 id="ownCatalogFormTitle" class="text-xs font-black text-emerald-400">+ הוספת מוצר חדש / עדכון מחיר מספק</h4>
+                <button type="button" onclick="resetOwnCatalogForm()" class="text-[11px] text-slate-400 underline">נקה טופס</button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input id="newOwnProdName" type="text" placeholder="שם מוצר..." class="input-dark px-2.5 text-xs font-bold" />
                 <select id="newOwnProdCat" class="input-dark px-2.5 text-xs font-bold">
                   <option value="">-- קטגוריה --</option>
@@ -653,12 +659,33 @@
                   <option value="חטיף">חטיף</option>
                   <option value="שונות">שונות</option>
                 </select>
-                <input id="newOwnProdPack" type="number" min="1" placeholder="יחידות בקרטון" class="input-dark px-2 text-xs font-bold text-center" />
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">תת-כמות במארז (למשל 6, או 1)</label>
+                  <input id="newOwnProdSubPack" type="number" min="1" placeholder="1 (ברירת מחדל)" oninput="recalcOwnCatalogVatPreview()" class="input-dark px-2 text-xs font-bold text-center" />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">כמה מארזים / יח׳ בקרטון (למשל 4 או 24)</label>
+                  <input id="newOwnProdPackCount" type="number" min="1" placeholder="ריק" oninput="recalcOwnCatalogVatPreview()" class="input-dark px-2 text-xs font-bold text-center" />
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <select id="newOwnProdVendor" class="input-dark px-2.5 text-xs font-bold"><option value="">-- בחר ספק --</option></select>
-                <input id="newOwnProdUnitPrice" type="number" min="0" step="0.01" placeholder="מחיר ליחידה בודדת (₪)" class="input-dark px-2 text-xs font-bold text-center" />
+                <div>
+                  <label id="newOwnProdPriceLabel" class="block text-[10px] text-slate-400 font-bold mb-0.5">מחיר ליחידה בודדת (₪)</label>
+                  <input id="newOwnProdPrice" type="number" min="0" step="0.01" placeholder="מחיר (₪)" oninput="recalcOwnCatalogVatPreview()" class="input-dark px-2 text-xs font-bold text-center" />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-0.5">מע״מ (18%)</label>
+                  <select id="newOwnProdVatMode" onchange="recalcOwnCatalogVatPreview()" class="input-dark px-2.5 text-xs font-bold">
+                    <option value="לפני מע&quot;מ" selected>לפני מע״מ (ברירת מחדל)</option>
+                    <option value="כולל מע&quot;מ">כולל מע״מ (18%)</option>
+                  </select>
+                </div>
               </div>
+              <div id="newOwnProdVatCalcBox" class="text-[11px] font-bold text-sky-400 tabular-nums"></div>
+              <input id="newOwnProdNote" type="text" placeholder="הערה על המוצר..." class="input-dark px-2.5 text-xs" />
               <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                 <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input id="newOwnProdAllowPartial" type="checkbox" class="w-4 h-4 accent-orange-500" />
@@ -669,28 +696,48 @@
             </div>
           </div>
 
+          <div class="card p-3.5 border-amber-500/40 space-y-2">
+            <h4 class="text-xs font-black text-amber-300">עדכון מחיר מהיר ותיעוד בהיסטוריית מחירים</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+              <select id="ownQuickPriceProdSel" onchange="onOwnQuickPricePick()" class="input-dark px-2.5 text-xs font-bold"><option value="">-- בחר מוצר --</option></select>
+              <select id="ownQuickPriceVendSel" onchange="onOwnQuickPricePick()" class="input-dark px-2.5 text-xs font-bold"><option value="">-- בחר ספק --</option></select>
+              <div class="flex gap-1.5">
+                <input id="ownQuickPriceValInp" type="number" min="0" step="0.01" placeholder="מחיר חדש (₪)" class="input-dark px-2 text-xs font-bold text-center" />
+                <select id="ownQuickPriceVatSel" class="input-dark !w-auto px-2 text-xs font-bold">
+                  <option value="לפני מע&quot;מ" selected>לפני מע״מ</option>
+                  <option value="כולל מע&quot;מ">כולל מע״מ</option>
+                </select>
+              </div>
+              <button type="button" onclick="applyOwnQuickPriceUpdate()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-xs">עדכן מחיר ✓</button>
+            </div>
+          </div>
+
           <div class="card p-4 space-y-2 border-sky-500/40">
-            <h3 class="text-sm font-black text-sky-400">ממוצעים, המלצת הזמנה והשוואת מחירים בין ספקים</h3>
+            <h3 class="text-sm font-black text-sky-400">רשימת מוצרים, ממוצעים, השוואת מחירים, הערות ומגמות</h3>
             <div class="overflow-x-auto">
               <table class="w-full text-xs text-right">
-                <thead><tr class="border-b border-[#1e3a5f] text-slate-400"><th class="py-2">מוצר</th><th>קטגוריה</th><th>יח׳/קרטון</th><th>מלאי משוער</th><th>ייגמר בעוד</th><th>המלצה</th><th>השוואת מחירים</th></tr></thead>
+                <thead><tr class="border-b border-[#1e3a5f] text-slate-400"><th class="py-2">מוצר</th><th>קטגוריה</th><th>תת-כמות / קרטון</th><th>מלאי / סיום</th><th>המלצה</th><th>ספקים ומחירים (כולל/לפני מע״מ)</th><th>הערות</th><th>פעולות</th></tr></thead>
                 <tbody id="ownSupplierSummaryBody" class="divide-y divide-[#1e3a5f]"></tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- תת-טאב 3: המלצות, מתכנן הזמנה וגרף ספקים -->
+        <!-- תת-טאב 3: המלצות, מתכנן הזמנה וגרף ספקים (צריכה / ספקים / מגמת מחירים) -->
         <div id="ownSupPane-planner" class="hidden space-y-4">
           <div class="card p-4 space-y-3 border-orange-500/40">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h3 class="text-sm font-black text-white">גרף ספקים וצריכה</h3>
+                <h3 class="text-sm font-black text-white">גרף ספקים, צריכה ומגמות מחיר</h3>
                 <p id="supChartSubtitle" class="text-[11px] text-slate-400"></p>
               </div>
-              <div class="flex items-center gap-1 bg-[#091322] p-0.5 rounded-xl border border-[#26466d]">
-                <button type="button" id="supChartBtn-demand" onclick="setSupplierChartMode('demand')" class="seg-btn active !py-1 !px-2.5 !text-[11px] !min-h-[28px]">צריכה חודשית למוצר</button>
-                <button type="button" id="supChartBtn-spend" onclick="setSupplierChartMode('spend')" class="seg-btn !py-1 !px-2.5 !text-[11px] !min-h-[28px]">הוצאות לפי ספק</button>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <select id="supPriceTrendProdSel" onchange="renderOwnerSupplierModule()" class="input-dark hidden !w-auto !min-h-[28px] px-2 py-0.5 text-[11px] font-bold"></select>
+                <div class="flex items-center gap-1 bg-[#091322] p-0.5 rounded-xl border border-[#26466d]">
+                  <button type="button" id="supChartBtn-demand" onclick="setSupplierChartMode('demand')" class="seg-btn active !py-1 !px-2.5 !text-[11px] !min-h-[28px]">צריכה חודשית</button>
+                  <button type="button" id="supChartBtn-spend" onclick="setSupplierChartMode('spend')" class="seg-btn !py-1 !px-2.5 !text-[11px] !min-h-[28px]">הוצאות לפי ספק</button>
+                  <button type="button" id="supChartBtn-price" onclick="setSupplierChartMode('price')" class="seg-btn !py-1 !px-2.5 !text-[11px] !min-h-[28px]">מגמת מחירים</button>
+                </div>
               </div>
             </div>
             <div id="chartSupplierModule" class="overflow-x-auto"></div>
@@ -876,10 +923,11 @@
 
     const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaJ9beaP0gQRIxn-qnZORY784iChTuofT3vMZUgHC6TFd0V9Dzjpf7dCjvsoStlGVJnA/exec";
     let SCRIPT_URL = safeGet("friends_gas_url") || DEFAULT_SCRIPT_URL;
+    const VAT_RATE = 0.18;
 
     let allShifts = [], allBankDeposits = [], allExpenses = [], allQueues = [], allShortages = [], allFaults = [], allSchedule = [], allEmployeeHours = [], allEquipment = [], allSupplierOrders = [], allTeamChat = [];
-    let supplierCatalog = JSON.parse(safeGet("friends_owner_sup_catalog") || '[]'), supplierVendors = JSON.parse(safeGet("friends_owner_sup_vendors") || '[]');
-    let ownPlannerSimCartons = {};
+    let supplierCatalog = JSON.parse(safeGet("friends_owner_sup_catalog") || '[]'), supplierVendors = JSON.parse(safeGet("friends_owner_sup_vendors") || '[]'), priceHistory = JSON.parse(safeGet("friends_owner_price_history") || '[]');
+    let ownPlannerSimCartons = {}, editingOwnCatalogKey = "";
     let dayStatuses = {}, staffContacts = {}, staffCategories = {}, staffList = [], sellersList = ["ארי קארפ","אלחנן נהרי","יצחק קארו","יוסף שמואל"];
     let managerTasks = [], schDirectory = [], scholarships = [], hoursDraftRows = [];
     let systemSettings = { openingFloat: 500, monthlyTarget: 75000, shortageAlertEnabled: true, shortageThreshold: 0, discrepancyWarningEnabled: true, discrepancyWarningThreshold: 20, supplierAlertDays: 5, supplierOrderCycleDays: 30, businessDayCutoffHour: Number(safeGet("friends_cutoff_hour", "8")) || 8 };
@@ -939,9 +987,15 @@
       lastOwnerBizStr = formatIsraeliDate(biz);
       applyBizDateSelectors(biz);
       document.getElementById('gasUrlOwnerInput').value = SCRIPT_URL;
+      recalcOwnCatalogVatPreview();
       refreshOwnerData();
       setInterval(checkOwnerAutoRollover, 60000);
       document.addEventListener('visibilitychange', () => { if (!document.hidden) checkOwnerAutoRollover(); });
+      document.addEventListener('click', (ev) => {
+        const drop = document.getElementById('ownSupProductDropdownList');
+        const sInp = document.getElementById('ownSupItemSearchInput');
+        if (drop && !drop.contains(ev.target) && ev.target !== sInp) drop.classList.add('hidden');
+      });
     });
 
     function showOwnerToast(msg) { const t = document.getElementById('ownerToast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 3000); }
@@ -1048,6 +1102,7 @@
         allSupplierOrders = data.supplierOrders || [];
         if (Array.isArray(data.supplierCatalog)) { supplierCatalog = data.supplierCatalog; safeSet('friends_owner_sup_catalog', JSON.stringify(supplierCatalog)); }
         if (Array.isArray(data.supplierVendors)) { supplierVendors = data.supplierVendors; safeSet('friends_owner_sup_vendors', JSON.stringify(supplierVendors)); }
+        if (Array.isArray(data.priceHistory)) { priceHistory = data.priceHistory; safeSet('friends_owner_price_history', JSON.stringify(priceHistory)); }
         allTeamChat = data.teamChat || [];
         allBankDeposits = data.bankDeposits || [];
         allExpenses = data.expenses || [];
@@ -1333,12 +1388,87 @@
     }
 
     // ========================
-    // ספקים והזמנות (בעלים) + גרף ספקים + המלצות + מתכנן
+    // ספקים והזמנות (בעלים) — מע״מ (ברירת מחדל לפני מע״מ), תת-כמות במארז,
+    // רשימה מלאה עם סינון/עריכה/מחיקה/הערות/עדכון מחיר, חיפוש חלקי וגרפים
     // ========================
+    function normOwnerSearch(s) {
+      return String(s || '').toLowerCase().replace(/["״׳']/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    function calcOwnerUnitVat(rawPrice, vatMode, subPackQty) {
+      const subP = Math.max(1, Number(subPackQty) || 1);
+      const num = Math.max(0, Number(rawPrice) || 0) / subP;
+      const isInc = vatMode === 'כולל מע"מ';
+      const exVat = isInc ? Math.round((num / (1 + VAT_RATE)) * 100) / 100 : Math.round(num * 100) / 100;
+      const incVat = isInc ? Math.round(num * 100) / 100 : Math.round(num * (1 + VAT_RATE) * 100) / 100;
+      return { exVat, incVat };
+    }
+
+    function recalcOwnCatalogVatPreview() {
+      const subPack = Math.max(1, Number(document.getElementById('newOwnProdSubPack')?.value) || 1);
+      const packCount = Math.max(0, Number(document.getElementById('newOwnProdPackCount')?.value) || 0);
+      const totalInCarton = packCount > 0 ? Math.round(subPack * packCount) : 0;
+      const rawPrice = Number(document.getElementById('newOwnProdPrice')?.value) || 0;
+      const vatMode = document.getElementById('newOwnProdVatMode')?.value || 'לפני מע"מ';
+
+      const lbl = document.getElementById('newOwnProdPriceLabel');
+      if (lbl) lbl.textContent = subPack > 1 ? `מחיר למארז של ${subPack} יח׳ (₪)` : 'מחיר ליחידה בודדת (₪)';
+
+      const box = document.getElementById('newOwnProdVatCalcBox');
+      if (!box) return;
+      const parts = [];
+      if (totalInCarton > 0) parts.push(`סה״כ בקרטון: ${totalInCarton} יח׳ (${subPack} × ${packCount})`);
+      if (rawPrice > 0) {
+        const pair = calcOwnerUnitVat(rawPrice, vatMode, subPack);
+        parts.push(`ליחידה בודדת: ${pair.exVat} ₪ לפני מע״מ | ${pair.incVat} ₪ כולל מע״מ`);
+        if (totalInCarton > 0) parts.push(`קרטון כולל מע״מ: ${Math.round(pair.incVat * totalInCarton * 100) / 100} ₪`);
+      }
+      box.textContent = parts.join(' • ');
+    }
+
+    function resetOwnCatalogForm() {
+      editingOwnCatalogKey = '';
+      document.getElementById('ownCatalogFormTitle').textContent = '+ הוספת מוצר חדש / עדכון מחיר מספק';
+      document.getElementById('newOwnProdName').value = '';
+      document.getElementById('newOwnProdCat').value = '';
+      document.getElementById('newOwnProdSubPack').value = '';
+      document.getElementById('newOwnProdPackCount').value = '';
+      document.getElementById('newOwnProdVendor').value = '';
+      document.getElementById('newOwnProdPrice').value = '';
+      document.getElementById('newOwnProdVatMode').value = 'לפני מע"מ';
+      document.getElementById('newOwnProdNote').value = '';
+      document.getElementById('newOwnProdAllowPartial').checked = false;
+      recalcOwnCatalogVatPreview();
+    }
+
+    function startEditOwnCatalogEntry(itemName, vendorName) {
+      const entries = (supplierCatalog || []).filter(c => c.itemName === itemName);
+      const target = entries.find(c => c.supplier === vendorName) || entries[0];
+      if (!target) return;
+      editingOwnCatalogKey = `${target.itemName}__${target.supplier}`;
+      document.getElementById('ownCatalogFormTitle').textContent = `עריכת מוצר: ${target.itemName}`;
+      document.getElementById('newOwnProdName').value = target.itemName;
+      document.getElementById('newOwnProdCat').value = target.category || '';
+      const subP = Math.max(1, Number(target.subPackQty) || 1);
+      const pCnt = Math.max(1, Math.round((Number(target.packSize) || subP) / subP));
+      document.getElementById('newOwnProdSubPack').value = subP;
+      document.getElementById('newOwnProdPackCount').value = pCnt;
+      document.getElementById('newOwnProdVendor').value = target.supplier || '';
+      const unitShown = target.vatMode === 'כולל מע"מ' ? (target.unitPriceIncVat || target.unitPrice) : (target.unitPriceExVat || target.unitPrice);
+      document.getElementById('newOwnProdPrice').value = unitShown ? Math.round(unitShown * subP * 100) / 100 : '';
+      document.getElementById('newOwnProdVatMode').value = target.vatMode || 'לפני מע"מ';
+      document.getElementById('newOwnProdNote').value = target.note || '';
+      document.getElementById('newOwnProdAllowPartial').checked = Boolean(target.allowPartial);
+      recalcOwnCatalogVatPreview();
+      document.getElementById('newOwnProdName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     function setSupplierChartMode(mode) {
       supChartMode = mode;
       document.getElementById('supChartBtn-demand')?.classList.toggle('active', mode === 'demand');
       document.getElementById('supChartBtn-spend')?.classList.toggle('active', mode === 'spend');
+      document.getElementById('supChartBtn-price')?.classList.toggle('active', mode === 'price');
+      document.getElementById('supPriceTrendProdSel')?.classList.toggle('hidden', mode !== 'price');
       renderOwnerSupplierModule();
     }
 
@@ -1363,20 +1493,35 @@
     async function registerOwnerProduct() {
       const itemName = String(document.getElementById('newOwnProdName')?.value || '').trim();
       const category = document.getElementById('newOwnProdCat')?.value || '';
-      const packSize = Math.max(1, Number(document.getElementById('newOwnProdPack')?.value) || 0);
+      const subPackQty = Math.max(1, Number(document.getElementById('newOwnProdSubPack')?.value) || 1);
+      const packCount = Math.max(1, Number(document.getElementById('newOwnProdPackCount')?.value) || 0);
       const supplier = document.getElementById('newOwnProdVendor')?.value || '';
-      const unitPrice = Math.max(0, Number(document.getElementById('newOwnProdUnitPrice')?.value) || 0);
+      const rawPrice = Math.max(0, Number(document.getElementById('newOwnProdPrice')?.value) || 0);
+      const vatMode = document.getElementById('newOwnProdVatMode')?.value || 'לפני מע"מ';
+      const note = String(document.getElementById('newOwnProdNote')?.value || '').trim();
       const allowPartial = Boolean(document.getElementById('newOwnProdAllowPartial')?.checked);
-      if (!itemName || !category || !packSize) return showOwnerToast('יש להזין שם מוצר, קטגוריה וכמות בקרטון');
+      if (!itemName || !category || !packCount) return showOwnerToast('יש להזין שם מוצר, קטגוריה וכמות בקרטון');
+
+      const packSize = Math.round(subPackQty * packCount);
+      const pair = calcOwnerUnitVat(rawPrice, vatMode, subPackQty);
+      const today = formatIsraeliDate(new Date());
+
+      if (editingOwnCatalogKey) {
+        const [oldP, oldV] = editingOwnCatalogKey.split('__');
+        if (oldP !== itemName || oldV !== supplier) {
+          supplierCatalog = supplierCatalog.filter(c => !(c.itemName === oldP && c.supplier === oldV));
+        }
+      }
 
       supplierCatalog.forEach(c => {
-        if (c.itemName === itemName) { c.category = category; c.packSize = packSize; }
+        if (c.itemName === itemName) { c.category = category; c.packSize = packSize; if (note) c.note = note; }
       });
       const idx = supplierCatalog.findIndex(c => c.itemName === itemName && c.supplier === supplier);
       const entry = {
         id: idx >= 0 ? supplierCatalog[idx].id : ('CAT' + Date.now()),
-        itemName, category, packSize, supplier, unitPrice, allowPartial,
-        updatedAt: formatIsraeliDate(new Date())
+        itemName, category, subPackQty, packSize, packCount, supplier,
+        unitPrice: pair.exVat, unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat,
+        vatMode, allowPartial, note, updatedAt: today
       };
       if (idx >= 0) supplierCatalog[idx] = entry;
       else supplierCatalog.push(entry);
@@ -1384,43 +1529,158 @@
       safeSet('friends_owner_sup_catalog', JSON.stringify(supplierCatalog));
       safeSet('friends_owner_sup_vendors', JSON.stringify(supplierVendors));
 
-      document.getElementById('newOwnProdName').value = '';
-      document.getElementById('newOwnProdCat').value = '';
-      document.getElementById('newOwnProdPack').value = '';
-      document.getElementById('newOwnProdVendor').value = '';
-      document.getElementById('newOwnProdUnitPrice').value = '';
-      document.getElementById('newOwnProdAllowPartial').checked = false;
+      if (rawPrice > 0) {
+        priceHistory.push({ id: 'PH' + Date.now(), date: today, itemName, supplier, vatMode, unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat, actionType: editingOwnCatalogKey ? 'עדכון מוצר' : 'הוספת מוצר', note });
+        safeSet('friends_owner_price_history', JSON.stringify(priceHistory));
+      }
 
+      resetOwnCatalogForm();
       renderOwnerSupplierModule();
-      await sendToGas({ action: 'saveSupplierCatalogItem', year: document.getElementById('yearSelect').value, ...entry });
+      await sendToGas({ action: 'saveSupplierCatalogItem', year: document.getElementById('yearSelect').value, ...entry, unitPrice: rawPrice });
       showOwnerToast(`המוצר "${itemName}" נשמר ✓`);
+    }
+
+    function onOwnQuickPricePick() {
+      const itemName = document.getElementById('ownQuickPriceProdSel')?.value || '';
+      const supplier = document.getElementById('ownQuickPriceVendSel')?.value || '';
+      const vatMode = document.getElementById('ownQuickPriceVatSel')?.value || 'לפני מע"מ';
+      const found = supplierCatalog.find(c => c.itemName === itemName && (!supplier || c.supplier === supplier));
+      if (found) {
+        if (found.supplier && !supplier) document.getElementById('ownQuickPriceVendSel').value = found.supplier;
+        const subP = Math.max(1, Number(found.subPackQty) || 1);
+        const unitVal = vatMode === 'כולל מע"מ' ? (found.unitPriceIncVat || found.unitPrice) : (found.unitPriceExVat || found.unitPrice);
+        if (unitVal) document.getElementById('ownQuickPriceValInp').value = Math.round(unitVal * subP * 100) / 100;
+      }
+    }
+
+    async function applyOwnQuickPriceUpdate() {
+      const itemName = document.getElementById('ownQuickPriceProdSel')?.value || '';
+      const supplier = document.getElementById('ownQuickPriceVendSel')?.value || '';
+      const rawPrice = Math.max(0, Number(document.getElementById('ownQuickPriceValInp')?.value) || 0);
+      const vatMode = document.getElementById('ownQuickPriceVatSel')?.value || 'לפני מע"מ';
+      if (!itemName || !supplier || rawPrice <= 0) return showOwnerToast('בחר מוצר, ספק ומחיר חדש');
+
+      let entry = supplierCatalog.find(c => c.itemName === itemName && c.supplier === supplier);
+      const ref = entry || supplierCatalog.find(c => c.itemName === itemName);
+      const subPackQty = Math.max(1, Number(entry?.subPackQty || ref?.subPackQty || 1));
+      const pair = calcOwnerUnitVat(rawPrice, vatMode, subPackQty);
+      const today = formatIsraeliDate(new Date());
+
+      if (entry) {
+        entry.unitPrice = pair.exVat; entry.unitPriceExVat = pair.exVat; entry.unitPriceIncVat = pair.incVat; entry.vatMode = vatMode; entry.updatedAt = today;
+      } else {
+        entry = { id: 'CAT' + Date.now(), itemName, category: ref?.category || 'חטיף', subPackQty, packSize: ref?.packSize || subPackQty, packCount: ref?.packCount || 1, supplier, unitPrice: pair.exVat, unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat, vatMode, allowPartial: false, note: ref?.note || '', updatedAt: today };
+        supplierCatalog.push(entry);
+      }
+
+      priceHistory.push({ id: 'PH' + Date.now(), date: today, itemName, supplier, vatMode, unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat, actionType: 'עדכון מחיר', note: '' });
+      safeSet('friends_owner_sup_catalog', JSON.stringify(supplierCatalog));
+      safeSet('friends_owner_price_history', JSON.stringify(priceHistory));
+      document.getElementById('ownQuickPriceValInp').value = '';
+      renderOwnerSupplierModule();
+      await sendToGas({ action: 'updateSupplierPrice', year: document.getElementById('yearSelect').value, itemName, supplier, unitPrice: rawPrice, subPackQty, vatMode, date: today });
+      showOwnerToast(`המחיר של ${itemName} אצל ${supplier} עודכן ✓`);
+    }
+
+    async function deleteOwnCatalogEntry(itemName) {
+      const removed = supplierCatalog.filter(c => c.itemName === itemName);
+      supplierCatalog = supplierCatalog.filter(c => c.itemName !== itemName);
+      safeSet('friends_owner_sup_catalog', JSON.stringify(supplierCatalog));
+      renderOwnerSupplierModule();
+      for (const it of removed) {
+        await sendToGas({ action: 'deleteSupplierCatalogItem', year: document.getElementById('yearSelect').value, id: it.id, itemName: it.itemName, supplier: it.supplier });
+      }
+      showOwnerToast('המוצר נמחק ✓');
+    }
+
+    function openOwnSupProductDropdown() {
+      renderOwnSupProductDropdownList(document.getElementById('ownSupItemSearchInput')?.value || '');
+      document.getElementById('ownSupProductDropdownList')?.classList.remove('hidden');
+    }
+
+    function renderOwnSupProductDropdownList(query) {
+      const drop = document.getElementById('ownSupProductDropdownList');
+      if (!drop) return;
+      const { allProducts } = computeOwnerSupplierAnalytics();
+      const q = normOwnerSearch(query);
+      const matches = allProducts.filter(p => !q || normOwnerSearch(p).includes(q));
+      let html = matches.map(p => `<button type="button" onclick="pickOwnSupplierOrderProduct('${p.replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 hover:bg-orange-500/20 font-bold text-white flex justify-between items-center"><span>${p}</span><span class="text-[10px] text-orange-400">בחר</span></button>`).join('');
+      if (q && !allProducts.some(p => normOwnerSearch(p) === q)) {
+        html += `<button type="button" onclick="pickOwnSupplierOrderProduct('${String(query || '').trim().replace(/'/g, "\\'")}')" class="w-full text-right px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 font-extrabold text-emerald-300">+ השתמש בשם המוקלד: "${String(query || '').trim()}"</button>`;
+      }
+      drop.innerHTML = html || '<div class="px-3 py-2 text-slate-400">אין מוצרים תואמים</div>';
+    }
+
+    function onOwnSupItemSearchTyped() {
+      const typed = document.getElementById('ownSupItemSearchInput')?.value || '';
+      renderOwnSupProductDropdownList(typed);
+      document.getElementById('ownSupProductDropdownList')?.classList.remove('hidden');
+      const { allProducts } = computeOwnerSupplierAnalytics();
+      const q = normOwnerSearch(typed);
+      const sel = document.getElementById('ownSupItemNameSelect');
+      if (sel) {
+        const matches = q ? allProducts.filter(p => normOwnerSearch(p).includes(q)) : allProducts;
+        sel.innerHTML = `<option value="">-- בחר מוצר (${matches.length} תואמים) --</option>` + matches.map(p => `<option value="${p}">${p}</option>`).join('');
+        const exact = matches.find(p => normOwnerSearch(p) === q);
+        sel.value = exact ? exact : (matches.length === 1 && q ? matches[0] : '');
+      }
+      onOwnSupProductOrVendorChange(false);
+    }
+
+    function pickOwnSupplierOrderProduct(prodName) {
+      const clean = String(prodName || '').trim();
+      document.getElementById('ownSupItemSearchInput').value = clean;
+      const sel = document.getElementById('ownSupItemNameSelect');
+      if (sel) {
+        if (![...sel.options].some(o => o.value === clean)) {
+          const opt = document.createElement('option'); opt.value = clean; opt.textContent = clean; sel.appendChild(opt);
+        }
+        sel.value = clean;
+      }
+      document.getElementById('ownSupProductDropdownList')?.classList.add('hidden');
+      onOwnSupProductOrVendorChange(false);
+    }
+
+    function syncOwnLooseCartonVisibility() {
+      const isMid = document.getElementById('ownSupEntryType')?.value === 'ספירת ביניים';
+      const prod = document.getElementById('ownSupItemNameSelect')?.value || document.getElementById('ownSupItemSearchInput')?.value.trim() || '';
+      const vend = document.getElementById('ownSupVendorSelect')?.value || '';
+      const entries = (supplierCatalog || []).filter(c => c.itemName === prod);
+      const exact = vend ? entries.find(c => c.supplier === vend) : null;
+      const allowPartial = Boolean(exact ? exact.allowPartial : false);
+      const lWrap = document.getElementById('ownSupOrderedLooseWrap');
+      const lInp = document.getElementById('ownSupOrderedLooseInput');
+      if (lWrap) lWrap.classList.toggle('hidden', isMid || !allowPartial);
+      if ((isMid || !allowPartial) && lInp) lInp.value = '';
+      const badge = document.getElementById('ownSupOrderRuleBadge');
+      if (badge) badge.textContent = !prod ? '' : (allowPartial ? 'מותר חלק מקרטון אצל ספק זה' : 'קרטונים שלמים בלבד (ברירת מחדל)');
     }
 
     function onOwnSupEntryTypeChange() {
       const isMid = document.getElementById('ownSupEntryType').value === 'ספירת ביניים';
       document.getElementById('ownSupOrderedCartonsWrap').classList.toggle('hidden', isMid);
-      document.getElementById('ownSupOrderedLooseWrap').classList.toggle('hidden', isMid);
+      syncOwnLooseCartonVisibility();
       recalcOwnerSupplierOrderPreview();
     }
 
-    function onOwnSupProductOrVendorChange() {
-      const prod = document.getElementById('ownSupItemNameSelect')?.value || '';
+    function onOwnSupProductOrVendorChange(syncSearchFromSelect) {
+      const sel = document.getElementById('ownSupItemNameSelect');
+      const prod = sel?.value || document.getElementById('ownSupItemSearchInput')?.value.trim() || '';
+      if (syncSearchFromSelect && sel?.value) {
+        const sInp = document.getElementById('ownSupItemSearchInput');
+        if (sInp) sInp.value = sel.value;
+      }
       const vend = document.getElementById('ownSupVendorSelect')?.value || '';
       const entries = (supplierCatalog || []).filter(c => c.itemName === prod);
       const exact = entries.find(c => c.supplier === vend) || entries[0];
       const ordE = (allSupplierOrders || []).find(o => o.itemName === prod && (!vend || o.supplier === vend)) || (allSupplierOrders || []).find(o => o.itemName === prod);
       const packVal = exact?.packSize || ordE?.packSize || '';
-      const unitVal = exact?.unitPrice || ordE?.unitPrice || '';
-      const allowPartial = Boolean(exact?.allowPartial);
+      const unitVal = exact?.unitPriceExVat || exact?.unitPrice || ordE?.unitPrice || '';
 
       if (packVal) document.getElementById('ownSupPackSizeInput').value = packVal;
       if (unitVal) document.getElementById('ownSupUnitPriceInput').value = unitVal;
 
-      const isMid = document.getElementById('ownSupEntryType')?.value === 'ספירת ביניים';
-      document.getElementById('ownSupOrderedLooseWrap').classList.toggle('hidden', isMid || !allowPartial);
-      if (!allowPartial) document.getElementById('ownSupOrderedLooseInput').value = '';
-      const badge = document.getElementById('ownSupOrderRuleBadge');
-      if (badge) badge.textContent = !prod ? '' : (allowPartial ? 'מותר חלק מקרטון אצל ספק זה' : 'קרטונים שלמים בלבד (ברירת מחדל)');
+      syncOwnLooseCartonVisibility();
       recalcOwnerSupplierOrderPreview();
     }
 
@@ -1431,11 +1691,12 @@
       const packSize = Math.max(1, Number(document.getElementById('ownSupPackSizeInput')?.value) || 0);
       const unitPrice = Math.max(0, Number(document.getElementById('ownSupUnitPriceInput')?.value) || 0);
       const cartons = Math.max(0, parseInt(document.getElementById('ownSupOrderedCartonsInput')?.value || '0', 10) || 0);
-      const loose = Math.max(0, parseInt(document.getElementById('ownSupOrderedLooseInput')?.value || '0', 10) || 0);
+      const lHidden = document.getElementById('ownSupOrderedLooseWrap')?.classList.contains('hidden');
+      const loose = lHidden ? 0 : Math.max(0, parseInt(document.getElementById('ownSupOrderedLooseInput')?.value || '0', 10) || 0);
       const totalPieces = cartons * packSize + loose;
       const totalCost = Math.round(totalPieces * unitPrice * 100) / 100;
       const packPrice = Math.round(packSize * unitPrice * 100) / 100;
-      prevEl.textContent = totalPieces > 0 ? `סה״כ: ${totalPieces} יח׳ (${cartons} קרטון${loose ? ` + ${loose} יח׳` : ''}) • מחיר קרטון: ${packPrice.toLocaleString()} ₪ • עלות: ${totalCost.toLocaleString()} ₪` : '';
+      prevEl.textContent = totalPieces > 0 ? `סה״כ: ${totalPieces} יח׳ (${cartons} קרטון${loose ? ` + ${loose} יח׳` : ''}) • קרטון: ${packPrice.toLocaleString()} ₪ • עלות: ${totalCost.toLocaleString()} ₪` : '';
     }
 
     function parseDMYOwner(dStr) {
@@ -1453,12 +1714,18 @@
       const byProd = {}, vendorsSet = new Set(supplierVendors || []);
       (supplierCatalog || []).forEach(c => {
         if (!c || !c.itemName) return;
-        if (!byProd[c.itemName]) byProd[c.itemName] = { itemName: c.itemName, category: c.category || 'חטיף', packSize: Number(c.packSize) || 1, events: [], vendorSpecs: {} };
+        if (!byProd[c.itemName]) byProd[c.itemName] = { itemName: c.itemName, category: c.category || 'חטיף', subPackQty: Number(c.subPackQty) || 1, packSize: Number(c.packSize) || 1, note: c.note || '', events: [], vendorSpecs: {} };
         if (c.category) byProd[c.itemName].category = c.category;
+        if (Number(c.subPackQty) > 0) byProd[c.itemName].subPackQty = Number(c.subPackQty);
         if (Number(c.packSize) > 0) byProd[c.itemName].packSize = Number(c.packSize);
+        if (c.note) byProd[c.itemName].note = c.note;
         if (c.supplier) {
           vendorsSet.add(c.supplier);
-          byProd[c.itemName].vendorSpecs[c.supplier] = { unitPrice: Number(c.unitPrice) || 0, allowPartial: Boolean(c.allowPartial) };
+          const subP = Math.max(1, Number(c.subPackQty) || 1);
+          const rawEx = Number(c.unitPriceExVat ?? c.unitPrice ?? 0) || 0;
+          const unitEx = rawEx > 0 ? Math.round((rawEx / subP) * 100) / 100 : 0;
+          const unitInc = Number(c.unitPriceIncVat) > 0 ? Math.round((Number(c.unitPriceIncVat) / subP) * 100) / 100 : Math.round(unitEx * (1 + VAT_RATE) * 100) / 100;
+          byProd[c.itemName].vendorSpecs[c.supplier] = { unitPriceExVat: unitEx, unitPriceIncVat: unitInc, vatMode: c.vatMode || 'לפני מע"מ', allowPartial: Boolean(c.allowPartial) };
         }
       });
 
@@ -1467,12 +1734,23 @@
         if (!prod) return;
         const vend = String(o.supplier || '').trim();
         if (vend) vendorsSet.add(vend);
-        if (!byProd[prod]) byProd[prod] = { itemName: prod, category: o.category || 'חטיף', packSize: Number(o.packSize) || 1, events: [], vendorSpecs: {} };
+        if (!byProd[prod]) byProd[prod] = { itemName: prod, category: o.category || 'חטיף', subPackQty: 1, packSize: Number(o.packSize) || 1, note: '', events: [], vendorSpecs: {} };
         if (o.category) byProd[prod].category = o.category;
-        if (Number(o.packSize) > 0) byProd[prod].packSize = Number(o.packSize);
+        if (Number(o.packSize) > 0 && !byProd[prod].packSize) byProd[prod].packSize = Number(o.packSize);
         const uPrice = Number(o.unitPrice) || (Number(o.packSize) > 0 && Number(o.packPrice) > 0 ? Number(o.packPrice) / Number(o.packSize) : 0);
-        if (vend && uPrice > 0) byProd[prod].vendorSpecs[vend] = Object.assign({ allowPartial: false }, byProd[prod].vendorSpecs[vend], { unitPrice: uPrice });
+        if (vend && uPrice > 0 && !byProd[prod].vendorSpecs[vend]) {
+          const ex = Math.round(uPrice * 100) / 100;
+          const inc = Math.round(ex * (1 + VAT_RATE) * 100) / 100;
+          byProd[prod].vendorSpecs[vend] = { unitPriceExVat: ex, unitPriceIncVat: inc, vatMode: 'לפני מע"מ', allowPartial: false };
+        }
         byProd[prod].events.push(Object.assign({}, o, { supplier: vend }));
+      });
+
+      const trendsByKey = {};
+      [...(priceHistory || [])].sort((a, b) => (parseDMYOwner(a.date)?.getTime() || 0) - (parseDMYOwner(b.date)?.getTime() || 0)).forEach(h => {
+        const k = `${h.itemName}__${h.supplier}`;
+        if (!trendsByKey[k]) trendsByKey[k] = [];
+        trendsByKey[k].push(h);
       });
 
       const summaries = Object.values(byProd).map(p => {
@@ -1500,25 +1778,49 @@
         const recCartons = anyPartial ? Math.round((neededPieces / Math.max(1, p.packSize)) * 10) / 10 : Math.ceil(neededPieces / Math.max(1, p.packSize));
         const recPieces = anyPartial ? neededPieces : recCartons * Math.max(1, p.packSize);
 
-        const vEntries = Object.entries(p.vendorSpecs).filter(([, sp]) => sp.unitPrice > 0);
-        const cheapest = vEntries.length ? vEntries.reduce((min, cur) => cur[1].unitPrice < min[1].unitPrice ? cur : min) : null;
-        const mostExp = vEntries.length > 1 ? vEntries.reduce((max, cur) => cur[1].unitPrice > max[1].unitPrice ? cur : max) : null;
-        const monthlySavings = (cheapest && mostExp) ? Math.round((mostExp[1].unitPrice - cheapest[1].unitPrice) * (monthlyRate || recPieces)) : 0;
+        const vEntries = Object.entries(p.vendorSpecs).filter(([, sp]) => sp.unitPriceIncVat > 0);
+        const cheapest = vEntries.length ? vEntries.reduce((min, cur) => cur[1].unitPriceIncVat < min[1].unitPriceIncVat ? cur : min) : null;
+        const mostExp = vEntries.length > 1 ? vEntries.reduce((max, cur) => cur[1].unitPriceIncVat > max[1].unitPriceIncVat ? cur : max) : null;
+        const monthlySavings = (cheapest && mostExp) ? Math.round((mostExp[1].unitPriceIncVat - cheapest[1].unitPriceIncVat) * (monthlyRate || recPieces)) : 0;
+
+        const trendBadges = {};
+        Object.keys(p.vendorSpecs).forEach(vn => {
+          const ha = trendsByKey[`${p.itemName}__${vn}`] || [];
+          if (ha.length >= 2 && ha[ha.length - 2].unitPriceIncVat > 0) {
+            trendBadges[vn] = Math.round(((ha[ha.length - 1].unitPriceIncVat - ha[ha.length - 2].unitPriceIncVat) / ha[ha.length - 2].unitPriceIncVat) * 1000) / 10;
+          }
+        });
 
         return {
-          itemName: p.itemName, category: p.category, packSize: p.packSize, estStockToday,
-          dailyRate: Math.round(dailyRate * 100) / 100, monthlyRate, daysLeft, nextOrderDate,
-          lowStockAlert, anyPartial, recCartons, recPieces, vendorSpecs: p.vendorSpecs,
-          cheapestVendor: cheapest ? cheapest[0] : '', cheapestUnitPrice: cheapest ? cheapest[1].unitPrice : 0, monthlySavings
+          itemName: p.itemName, category: p.category, subPackQty: p.subPackQty, packSize: p.packSize, note: p.note,
+          estStockToday, dailyRate: Math.round(dailyRate * 100) / 100, monthlyRate, daysLeft, nextOrderDate,
+          lowStockAlert, anyPartial, recCartons, recPieces, vendorSpecs: p.vendorSpecs, trendBadges,
+          cheapestVendor: cheapest ? cheapest[0] : '', cheapestUnitPriceIncVat: cheapest ? cheapest[1].unitPriceIncVat : 0, monthlySavings
         };
       });
 
       return { summaries, allProducts: Object.keys(byProd), allVendors: [...vendorsSet] };
     }
 
-    function renderSupplierChartBox(filteredSummaries, filteredOrders) {
+    function renderSupplierChartBox(filteredSummaries, filteredOrders, allProducts) {
       const box = document.getElementById('chartSupplierModule'), sub = document.getElementById('supChartSubtitle');
+      const pSel = document.getElementById('supPriceTrendProdSel');
       if (!box) return;
+
+      if (supChartMode === 'price') {
+        if (sub) sub.textContent = 'מגמת שינוי מחיר ליחידה בודדת (כולל מע״מ) לאורך זמן לפי ספק';
+        if (pSel) {
+          const prevP = pSel.value;
+          pSel.innerHTML = allProducts.map(p => `<option value="${p}">${p}</option>`).join('');
+          pSel.value = allProducts.includes(prevP) ? prevP : (allProducts[0] || '');
+        }
+        const targetProd = pSel?.value || allProducts[0] || '';
+        const rows = (priceHistory || []).filter(h => h.itemName === targetProd).sort((a, b) => (parseDMYOwner(a.date)?.getTime() || 0) - (parseDMYOwner(b.date)?.getTime() || 0));
+        if (!rows.length) { box.innerHTML = '<div class="py-6 text-center text-xs text-slate-400">אין עדיין היסטוריית מחירים מתועדת למוצר זה</div>'; return; }
+        box.innerHTML = `<div class="space-y-2">${rows.map(r => `<div class="chart-readout-box p-2.5 rounded-xl border flex flex-wrap justify-between items-center gap-2 text-xs"><div><strong>${r.date}</strong> • <span class="text-sky-400 font-bold">${r.supplier || '-'}</span> <span class="text-slate-400">(${r.actionType || ''})</span></div><div class="font-bold tabular-nums">לפני מע״מ: ${r.unitPriceExVat} ₪ | <span class="text-emerald-400 font-black">${r.unitPriceIncVat} ₪ כולל מע״מ</span> ${r.changePct ? `<span class="mr-1 text-amber-300">(${r.changePct})</span>` : ''}</div></div>`).join('')}</div>`;
+        return;
+      }
+
       if (supChartMode === 'spend') {
         if (sub) sub.textContent = 'סכום הזמנות משוער לפי ספק (יחידות × מחיר ליחידה)';
         const byV = {};
@@ -1535,6 +1837,7 @@
         box.innerHTML = `<div class="space-y-2.5">${entries.map(([name, val]) => `<div class="chart-readout-box p-2.5 rounded-xl border"><div class="flex justify-between text-xs mb-1"><span class="font-bold">${name}</span><span class="font-black text-emerald-400 tabular-nums">${Math.round(val).toLocaleString()} ₪</span></div><div class="w-full h-3 bg-[#091322] rounded-full overflow-hidden"><div class="h-full bg-gradient-to-l from-emerald-400 to-emerald-600 rounded-full" style="width:${Math.max(4, Math.round(val/maxVal*100))}%"></div></div></div>`).join('')}</div>`;
         return;
       }
+
       if (sub) sub.textContent = 'צריכה חודשית משוערת למוצר (ביחידות ובקרטונים)';
       const withDemand = filteredSummaries.filter(s => s.monthlyRate > 0 || s.recPieces > 0).sort((a, b) => (b.monthlyRate || b.recPieces) - (a.monthlyRate || a.recPieces)).slice(0, 8);
       if (!withDemand.length) { box.innerHTML = '<div class="py-6 text-center text-xs text-slate-400">הזן הזמנות או ספירות ביניים כדי להציג גרף צריכה</div>'; return; }
@@ -1544,13 +1847,27 @@
 
     function renderOwnerSupplierModule() {
       const { summaries, allProducts, allVendors } = computeOwnerSupplierAnalytics();
+      const qText = (document.getElementById('ownSupSearchInput')?.value || '').trim();
+      const qNorm = normOwnerSearch(qText);
 
       const itemSel = document.getElementById('ownSupItemNameSelect');
-      if (itemSel) { const prev = itemSel.value; itemSel.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join(''); itemSel.value = allProducts.includes(prev) ? prev : ''; }
+      if (itemSel) {
+        const prev = itemSel.value;
+        const vis = qNorm ? allProducts.filter(p => normOwnerSearch(p).includes(qNorm)) : allProducts;
+        itemSel.innerHTML = `<option value="">-- בחר מוצר --</option>` + vis.map(p => `<option value="${p}">${p}</option>`).join('');
+        if (vis.includes(prev)) itemSel.value = prev;
+        else if (vis.length === 1 && qNorm) itemSel.value = vis[0];
+        else itemSel.value = '';
+      }
+
       const vendSel = document.getElementById('ownSupVendorSelect');
       if (vendSel) { const prev = vendSel.value; vendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(''); vendSel.value = allVendors.includes(prev) ? prev : ''; }
       const newPV = document.getElementById('newOwnProdVendor');
       if (newPV) { const prev = newPV.value; newPV.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(''); newPV.value = allVendors.includes(prev) ? prev : ''; }
+      const qpP = document.getElementById('ownQuickPriceProdSel');
+      if (qpP) { const prev = qpP.value; qpP.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join(''); qpP.value = allProducts.includes(prev) ? prev : ''; }
+      const qpV = document.getElementById('ownQuickPriceVendSel');
+      if (qpV) { const prev = qpV.value; qpV.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(''); qpV.value = allVendors.includes(prev) ? prev : ''; }
 
       const prodFlt = document.getElementById('ownSupProductFilter');
       if (prodFlt) { const prev = prodFlt.value; prodFlt.innerHTML = `<option value="">כל המוצרים</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join(''); prodFlt.value = allProducts.includes(prev) ? prev : ''; }
@@ -1566,6 +1883,7 @@
 
       const filteredSummaries = summaries.filter(s => {
         if (catF !== 'הכל' && s.category !== catF) return false;
+        if (qNorm && !normOwnerSearch(s.itemName).includes(qNorm) && !normOwnerSearch(s.note || '').includes(qNorm)) return false;
         if (pF && s.itemName !== pF) return false;
         if (vF && !Object.prototype.hasOwnProperty.call(s.vendorSpecs, vF)) return false;
         return true;
@@ -1573,6 +1891,7 @@
 
       const histRows = [...(allSupplierOrders || [])].reverse().filter(o => {
         if (catF !== 'הכל' && (o.category || 'חטיף') !== catF) return false;
+        if (qNorm && !normOwnerSearch(o.itemName || '').includes(qNorm)) return false;
         if (pF && o.itemName !== pF) return false;
         if (vF && o.supplier !== vF) return false;
         return true;
@@ -1589,27 +1908,36 @@
 
       document.getElementById('ownSupplierSummaryBody').innerHTML = filteredSummaries.length
         ? filteredSummaries.map(s => {
-            const vEntries = Object.entries(s.vendorSpecs).filter(([, sp]) => sp.unitPrice > 0);
-            const minPrice = vEntries.length ? Math.min(...vEntries.map(([, sp]) => sp.unitPrice)) : 0;
+            const vEntries = Object.entries(s.vendorSpecs).filter(([, sp]) => sp.unitPriceIncVat > 0);
+            const minPrice = vEntries.length ? Math.min(...vEntries.map(([, sp]) => sp.unitPriceIncVat)) : 0;
             const priceHtml = vEntries.length
               ? vEntries.map(([vn, sp]) => {
-                  const isCheapest = sp.unitPrice === minPrice && vEntries.length > 1;
-                  const packCost = Math.round(sp.unitPrice * s.packSize * 100) / 100;
-                  return `<div class="${isCheapest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPrice} ₪/יח׳ (${packCost} ₪/קרטון)${isCheapest ? ' ★ זול' : ''}</div>`;
+                  const isCheapest = sp.unitPriceIncVat === minPrice && vEntries.length > 1;
+                  const trPct = s.trendBadges[vn];
+                  const trHtml = trPct !== undefined && trPct !== 0
+                    ? `<span class="mr-1 px-1.5 py-0.5 rounded text-[10px] font-black ${trPct > 0 ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">${trPct > 0 ? '▲ +' : '▼ '}${trPct}%</span>`
+                    : '';
+                  const packInc = Math.round(sp.unitPriceIncVat * s.packSize * 100) / 100;
+                  return `<div class="${isCheapest ? 'text-emerald-400 font-black' : 'text-slate-300'}">${vn}: ${sp.unitPriceExVat} ₪ לפני מע״מ | <strong>${sp.unitPriceIncVat} ₪ כולל מע״מ</strong>/יח׳ (${packInc} ₪/קרטון)${trHtml}${isCheapest ? ' ★ זול' : ''}</div>`;
                 }).join('')
               : '<span class="text-slate-400">-</span>';
 
+            const firstVend = vEntries.length ? vEntries[0][0] : '';
             return `<tr>
               <td class="py-2 font-bold">${s.itemName}</td>
               <td>${s.category}</td>
-              <td class="tabular-nums">${s.packSize}</td>
-              <td class="font-bold text-emerald-400 tabular-nums">${s.estStockToday} יח׳</td>
-              <td class="font-bold ${s.lowStockAlert ? 'text-rose-400' : 'text-slate-300'} tabular-nums">${s.daysLeft !== null ? `${s.daysLeft} ימים (${s.nextOrderDate})` : '-'}</td>
+              <td class="tabular-nums">תת: <strong>${s.subPackQty}</strong><br/><span class="text-slate-400">קרטון: ${s.packSize}</span></td>
+              <td class="font-bold tabular-nums">${s.estStockToday} יח׳<br/><span class="${s.lowStockAlert ? 'text-rose-400' : 'text-slate-400'}">${s.daysLeft !== null ? `${s.daysLeft} ימים (${s.nextOrderDate})` : '-'}</span></td>
               <td class="font-black text-orange-400 tabular-nums">${s.recCartons} קרטון (${s.recPieces} יח׳)</td>
               <td>${priceHtml}</td>
+              <td class="text-slate-300">${s.note || '-'}</td>
+              <td class="whitespace-nowrap">
+                <button type="button" onclick="startEditOwnCatalogEntry('${s.itemName.replace(/'/g, "\\'")}','${firstVend.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded bg-sky-600/20 text-sky-300 font-bold ml-1">✎ ערוך</button>
+                <button type="button" onclick="deleteOwnCatalogEntry('${s.itemName.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded bg-rose-600/20 text-rose-400 font-bold">✕</button>
+              </td>
             </tr>`;
           }).join('')
-        : '<tr><td colspan="7" class="py-4 text-center text-slate-400">אין מוצרים התואמים לסינון</td></tr>';
+        : '<tr><td colspan="8" class="py-4 text-center text-slate-400">אין מוצרים התואמים לסינון</td></tr>';
 
       document.getElementById('ownSupplierHistoryBody').innerHTML = histRows.length
         ? histRows.map(o => {
@@ -1628,22 +1956,23 @@
           }).join('')
         : '<tr><td colspan="8" class="py-4 text-center text-slate-400">אין רשומות</td></tr>';
 
-      renderSupplierChartBox(filteredSummaries, histRows);
+      renderSupplierChartBox(filteredSummaries, histRows, allProducts);
 
       const recBox = document.getElementById('ownSystemRecommendationsBox');
       if (recBox) {
         const recs = [];
         filteredSummaries.forEach(s => {
-          if (s.daysLeft !== null && s.daysLeft <= 45 && s.daysLeft > 21) {
-            recs.push(`💡 <strong>${s.itemName}</strong>: צריכה ממוצעת של ${s.dailyRate} יח׳/יום (~${s.monthlyRate}/חודש). מומלץ להגדיר מחזור הזמנה של כ-21–30 יום ולהזמין עד <strong>${s.nextOrderDate}</strong>.`);
-          } else if (s.daysLeft !== null && s.daysLeft > 50) {
-            recs.push(`⏸️ <strong>${s.itemName}</strong>: מלאי משוער של ${s.estStockToday} יח׳ שמספיק לכ-${s.daysLeft} ימים — מומלץ לדלג על הזמנה השבוע.`);
-          }
+          Object.entries(s.trendBadges || {}).forEach(([vn, pct]) => {
+            if (pct > 0) recs.push(`📈 <strong>${s.itemName}</strong> (${vn}): המחיר עלה ב-<strong>+${pct}%</strong> בעדכון האחרון.`);
+            else if (pct < 0) recs.push(`📉 <strong>${s.itemName}</strong> (${vn}): המחיר ירד ב-<strong>${pct}%</strong> בעדכון האחרון.`);
+          });
           if (s.monthlySavings > 0) {
-            recs.push(`💰 <strong>${s.itemName}</strong>: מעבר לספק הזול (<strong>${s.cheapestVendor}</strong> ב-${s.cheapestUnitPrice} ₪/יח׳) חוסך כ-<strong>${s.monthlySavings.toLocaleString()} ₪</strong> לחודש.`);
+            recs.push(`💰 <strong>${s.itemName}</strong>: הזמנה מהספק הזול (<strong>${s.cheapestVendor}</strong> ב-${s.cheapestUnitPriceIncVat} ₪ כולל מע״מ/יח׳) חוסכת כ-<strong>${s.monthlySavings.toLocaleString()} ₪</strong> לחודש.`);
           }
-          if (s.recCartons > 0) {
-            recs.push(`📦 <strong>${s.itemName}</strong>: להזמנה למחזור הקרוב מומלץ <strong>${s.recCartons} קרטון</strong> (${s.recPieces} יח׳).`);
+          if (s.daysLeft !== null && s.daysLeft > 50) {
+            recs.push(`⏸️ <strong>${s.itemName}</strong>: מלאי משוער (${s.estStockToday} יח׳) שמספיק לכ-${s.daysLeft} ימים — מומלץ לדלג על הזמנה השבוע.`);
+          } else if (s.recCartons > 0) {
+            recs.push(`📦 <strong>${s.itemName}</strong>: מומלץ להזמין <strong>${s.recCartons} קרטון</strong> (${s.recPieces} יח׳) עד תאריך <strong>${s.nextOrderDate}</strong>.`);
           }
         });
         recBox.innerHTML = recs.length ? recs.slice(0, 8).map(r => `<div class="chart-readout-box p-2.5 rounded-xl border">${r}</div>`).join('') : '<div class="text-slate-400">ככל שייצטברו יותר נתונים, המערכת תציג המלצות מותאמות.</div>';
@@ -1659,7 +1988,7 @@
               const addP = simC * s.packSize;
               const simD = s.dailyRate > 0 ? Math.round((s.estStockToday + addP) / s.dailyRate) : null;
               if (simD && simD > maxSimDays) maxSimDays = simD;
-              const cost = Math.round(addP * (s.cheapestUnitPrice || 0));
+              const cost = Math.round(addP * (s.cheapestUnitPriceIncVat || 0));
               totalSimCost += cost;
               const endStr = simD ? formatIsraeliDate(new Date(todayMid.getTime() + simD * 86400000)) : '-';
               return `<tr>
@@ -1667,13 +1996,13 @@
                 <td class="tabular-nums">${s.estStockToday} יח׳</td>
                 <td class="font-bold ${s.lowStockAlert ? 'text-rose-400' : 'text-slate-300'} tabular-nums">${s.daysLeft !== null ? `${s.daysLeft} ימים (${s.nextOrderDate})` : '-'}</td>
                 <td class="font-bold text-orange-400 tabular-nums">${s.recCartons} קרטון (${s.recPieces} יח׳)</td>
-                <td><input type="number" min="0" step="${s.anyPartial ? '0.5' : '1'}" value="${simC}" onchange="onOwnSimCartonChange('${s.itemName}', this.value)" class="input-dark !w-20 !min-h-[32px] text-center font-black text-xs" /></td>
+                <td><input type="number" min="0" step="${s.anyPartial ? '0.5' : '1'}" value="${simC}" onchange="onOwnSimCartonChange('${s.itemName.replace(/'/g, "\\'")}', this.value)" class="input-dark !w-20 !min-h-[32px] text-center font-black text-xs" /></td>
                 <td class="font-bold text-sky-400 tabular-nums">${simD !== null ? `${simD} ימים (עד ${endStr})` : '-'}</td>
                 <td class="font-bold tabular-nums">${cost ? cost.toLocaleString() + ' ₪' : '-'}</td>
               </tr>`;
             }).join('')
           : '<tr><td colspan="7" class="py-4 text-center text-slate-400">אין מוצרים לתכנון</td></tr>';
-        if (planFoot) planFoot.innerHTML = `<span>עלות משוערת להזמנה המסומנת: <strong class="text-emerald-400">${totalSimCost.toLocaleString()} ₪</strong></span><span>טווח כיסוי מקסימלי: <strong class="text-sky-400">${maxSimDays ? maxSimDays + ' ימים' : '-'}</strong></span>`;
+        if (planFoot) planFoot.innerHTML = `<span>עלות משוערת (כולל מע״מ): <strong class="text-emerald-400">${totalSimCost.toLocaleString()} ₪</strong></span><span>טווח כיסוי מקסימלי: <strong class="text-sky-400">${maxSimDays ? maxSimDays + ' ימים' : '-'}</strong></span>`;
       }
     }
 
@@ -1691,12 +2020,13 @@
     async function saveOwnerSupplierEntry() {
       const isoDate = document.getElementById('ownSupOrderDateInput')?.value || '';
       const entryType = document.getElementById('ownSupEntryType').value;
-      const itemName = document.getElementById('ownSupItemNameSelect').value;
+      const itemName = (document.getElementById('ownSupItemNameSelect').value || document.getElementById('ownSupItemSearchInput').value || '').trim();
       const supplier = document.getElementById('ownSupVendorSelect').value;
       const packSize = Math.max(1, Number(document.getElementById('ownSupPackSizeInput').value) || 1);
       const unitPrice = Math.max(0, Number(document.getElementById('ownSupUnitPriceInput').value) || 0);
       const cartons = Math.max(0, parseInt(document.getElementById('ownSupOrderedCartonsInput').value || '0', 10) || 0);
-      const loose = Math.max(0, parseInt(document.getElementById('ownSupOrderedLooseInput').value || '0', 10) || 0);
+      const lHidden = document.getElementById('ownSupOrderedLooseWrap')?.classList.contains('hidden');
+      const loose = lHidden ? 0 : Math.max(0, parseInt(document.getElementById('ownSupOrderedLooseInput').value || '0', 10) || 0);
       const remainingQty = Math.max(0, Number(document.getElementById('ownSupRemainingQtyInput').value) || 0);
       const note = document.getElementById('ownSupNoteInput').value.trim();
       if (!entryType || !itemName || !supplier) return showOwnerToast('יש לבחור פעולה, מוצר וספק');
@@ -1715,12 +2045,14 @@
       const newRec = { id: 'SO' + Date.now(), date: dateStr, supplier, category, itemName, packSize, unitPrice, packPrice, entryType, orderedQty, remainingQty, reportedBy: 'בעלים', note };
       allSupplierOrders.push(newRec);
       document.getElementById('ownSupEntryType').value = '';
+      document.getElementById('ownSupItemSearchInput').value = '';
       document.getElementById('ownSupItemNameSelect').value = '';
       document.getElementById('ownSupVendorSelect').value = '';
       document.getElementById('ownSupPackSizeInput').value = '';
       document.getElementById('ownSupUnitPriceInput').value = '';
       document.getElementById('ownSupOrderedCartonsInput').value = '';
       document.getElementById('ownSupOrderedLooseInput').value = '';
+      document.getElementById('ownSupOrderedLooseWrap').classList.add('hidden');
       document.getElementById('ownSupRemainingQtyInput').value = '';
       document.getElementById('ownSupNoteInput').value = '';
       document.getElementById('ownSupOrderRuleBadge').textContent = '';
