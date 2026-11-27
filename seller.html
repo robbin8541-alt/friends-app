@@ -87,6 +87,7 @@
       & .text-sky-400, & .text-sky-300 { color: #0369a1 !important; }
       & .text-amber-300 { color: #b45309 !important; }
       & #sellerSidebarNav > button:not(.btn-friends) { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+      & #eodDiscrepancyWarningBanner { background-color: #fef2f2 !important; border-color: #dc2626 !important; color: #991b1b !important; }
     }
 
     header { background: light-dark(rgba(255,255,255,0.8), rgba(6,22,38,0.8)) !important; backdrop-filter: blur(18px) saturate(180%) !important; }
@@ -171,7 +172,13 @@
 
         <div id="closingSubForm" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div><label class="block text-xs text-slate-300 mb-1 font-bold">תאריך (יום עבודה — מתחלף ב-08:00)</label><select id="sellerDaySelect" onchange="userPickedDay=true;onSellerDaySelect();saveEodDraft()" class="input-dark text-sm font-bold"></select></div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1 font-bold">תאריך (יום עבודה — מתחלף ב-08:00)</label>
+              <select id="sellerDaySelect" onchange="userPickedDay=true;onSellerDaySelect();saveEodDraft()" class="input-dark text-sm font-bold"></select>
+              <div id="dayAlreadyClosedNotice" class="hidden mt-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/50 text-rose-300 text-[11px] font-extrabold">
+                🔒 סוף יום לתאריך זה כבר בוצע — לא ניתן לבצע סגירה כפולה על אותו יום
+              </div>
+            </div>
             <div>
               <label class="block text-xs text-slate-300 mb-1 font-bold">סטטוס יום</label>
               <select id="sellerStatusSelect" onchange="saveEodDraft()" class="input-dark text-sm font-bold">
@@ -421,9 +428,7 @@
       </div>
     </section>
 
-    <!-- ================================================= -->
     <!-- אזור מנהל נפרד לחלוטין -->
-    <!-- ================================================= -->
     <section id="panelManagerOnly" class="hidden space-y-4">
       <div class="card p-5 space-y-4 border-emerald-500/50">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-3">
@@ -440,7 +445,6 @@
           </div>
         </div>
 
-        <!-- ראשי 1: מעטפות וכספים -->
         <div id="mgrMainPane-finance" class="mgr-main-pane space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-[#07192b] border border-[#1b3a5c]">
             <div class="flex flex-wrap items-center gap-2">
@@ -482,7 +486,6 @@
           </div>
         </div>
 
-        <!-- ראשי 2: עובדים וציוד -->
         <div id="mgrMainPane-staffEquip" class="mgr-main-pane hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-2.5">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
@@ -625,7 +628,6 @@
           </div>
         </div>
 
-        <!-- ספקים והזמנות (מנהל בלבד) -->
         <div id="mgrMainPane-suppliers" class="mgr-main-pane hidden space-y-4">
           <div class="p-3 rounded-xl bg-[#07192b] border border-[#1b3a5c] flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
@@ -648,7 +650,6 @@
 
           <div id="mgrSupLowStockAlerts" class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs space-y-1.5"></div>
 
-          <!-- תת-טאב 1: הזמנה חדשה / עדכון מלאי -->
           <div id="mgrSupPane-order" class="space-y-4">
             <div class="p-4 rounded-xl bg-[#07192b] border border-orange-500/40 space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -725,7 +726,6 @@
             </div>
           </div>
 
-          <!-- תת-טאב 2: מוצרים וספקים -->
           <div id="mgrSupPane-catalog" class="hidden space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="p-4 rounded-xl bg-[#07192b] border border-sky-500/40 space-y-2.5">
@@ -816,7 +816,6 @@
             </div>
           </div>
 
-          <!-- תת-טאב 3: המלצות ומתכנן הזמנה -->
           <div id="mgrSupPane-planner" class="hidden space-y-4">
             <div class="p-4 rounded-xl bg-[#07192b] border border-emerald-500/40 space-y-2.5">
               <h3 class="text-xs font-extrabold text-emerald-400">המלצות המערכת החכמות (כולל מגמות מחיר, צריכה והזמנות)</h3>
@@ -848,7 +847,6 @@
           </div>
         </div>
 
-        <!-- ראשי 3: תפעול ומשימות (ברירת מחדל: פתוח) -->
         <div id="mgrMainPane-ops" class="mgr-main-pane hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1b3a5c] pb-2.5">
             <div class="flex flex-wrap items-center gap-1 bg-[#051321] p-1 rounded-xl border border-[#23476e]">
@@ -895,7 +893,6 @@
           </div>
         </div>
 
-        <!-- ראשי 4: הגדרות -->
         <div id="mgrMainPane-settings" class="mgr-main-pane hidden space-y-4">
           <div class="p-4 rounded-xl bg-[#07192b] border border-amber-500/40 space-y-3">
             <h3 class="text-sm font-extrabold text-amber-300">סף אזהרת הפרש בקופה</h3>
@@ -988,7 +985,6 @@
       </div>
     </div>
   </div>
-
   <div id="sellerToast" role="status" aria-live="polite" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border backdrop-blur-md"></div>
   <script>
     const _memStore = {};
@@ -1277,6 +1273,7 @@
         if (d.envelopeActual !== undefined) document.getElementById("inpEnvelopeActual").value = d.envelopeActual;
         if (d.extraIncome !== undefined) document.getElementById("inpExtraIncome").value = d.extraIncome;
         if (d.extraDetails !== undefined) document.getElementById("inpExtraDetails").value = d.extraDetails;
+        onSellerDaySelect();
         updateSellerDiff();
       } catch (e) {}
     }
@@ -1507,7 +1504,11 @@
         catch (e) { try { await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) }); } catch (e2) {} return { ok: true }; }
       } else {
         const lightPayload = Object.assign({}, payload, { receiptPhotoBase64: "", envelopePhotoBase64: "", photoBase64: "", skipNotify: true });
-        try { await fetch(url + "?payload=" + encodeURIComponent(JSON.stringify(lightPayload))); } catch (e) {}
+        try {
+          const r1 = await fetch(url + "?payload=" + encodeURIComponent(JSON.stringify(lightPayload)));
+          const j1 = await r1.json();
+          if (j1 && j1.ok === false) return j1;
+        } catch (e) {}
         await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(Object.assign({}, payload, { onlyPhotos: true, skipNotify: false })) });
         return { ok: true };
       }
@@ -1667,10 +1668,6 @@
       document.getElementById("mgrYearlyHoursBadge").textContent = `סה״כ שעות משמרות ב-${yr}: ${Math.round(totalYrHrs * 10) / 10} שע׳`;
     }
 
-    // =========================================================================
-    // ספקים והזמנות — תיקון מלא של תת-כמות (מחיר למארז / תת-כמות = מחיר ליחידה בודדת),
-    // הסתרה מוחלטת של "חלק מקרטון" כשלא הותר, חיפוש חלקי של מוצרים, מע״מ ומגמות
-    // =========================================================================
     function parseDMY(dStr) {
       const m = String(dStr || "").match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
       if (!m) return null;
@@ -1814,19 +1811,9 @@
       const existingIdx = state.supplierCatalog.findIndex(c => c.itemName === itemName && c.supplier === supplier);
       const entry = {
         id: existingIdx >= 0 ? state.supplierCatalog[existingIdx].id : ("CAT" + Date.now()),
-        itemName,
-        category,
-        subPackQty,
-        packSize,
-        packCount,
-        supplier,
-        unitPrice: pair.exVat,
-        unitPriceExVat: pair.exVat,
-        unitPriceIncVat: pair.incVat,
-        vatMode,
-        allowPartial,
-        note,
-        updatedAt: today
+        itemName, category, subPackQty, packSize, packCount, supplier,
+        unitPrice: pair.exVat, unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat,
+        vatMode, allowPartial, note, updatedAt: today
       };
       if (existingIdx >= 0) state.supplierCatalog[existingIdx] = entry;
       else state.supplierCatalog.push(entry);
@@ -1837,27 +1824,16 @@
 
       if (rawPrice > 0) {
         state.priceHistory.push({
-          id: "PH" + Date.now(),
-          date: today,
-          itemName,
-          supplier,
-          vatMode,
-          unitPriceExVat: pair.exVat,
-          unitPriceIncVat: pair.incVat,
-          actionType: editingCatalogKey ? "עדכון מוצר" : "הוספת מוצר",
-          note
+          id: "PH" + Date.now(), date: today, itemName, supplier, vatMode,
+          unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat,
+          actionType: editingCatalogKey ? "עדכון מוצר" : "הוספת מוצר", note
         });
         safeSet("friends_price_history", JSON.stringify(state.priceHistory));
       }
 
       resetMgrCatalogForm();
       renderMgrSupplierModule();
-      await sendToGas({
-        action: "saveSupplierCatalogItem",
-        year: state.year,
-        ...entry,
-        unitPrice: rawPrice
-      });
+      await sendToGas({ action: "saveSupplierCatalogItem", year: state.year, ...entry, unitPrice: rawPrice });
       showSellerToast(`המוצר "${itemName}" נשמר ✓`);
     }
 
@@ -1875,41 +1851,20 @@
       const today = formatDMYFromDate(new Date());
 
       if (entry) {
-        entry.unitPrice = pair.exVat;
-        entry.unitPriceExVat = pair.exVat;
-        entry.unitPriceIncVat = pair.incVat;
-        entry.vatMode = vatMode;
-        entry.updatedAt = today;
+        entry.unitPrice = pair.exVat; entry.unitPriceExVat = pair.exVat; entry.unitPriceIncVat = pair.incVat; entry.vatMode = vatMode; entry.updatedAt = today;
       } else {
         entry = {
-          id: "CAT" + Date.now(),
-          itemName,
-          category: ref?.category || "חטיף",
-          subPackQty,
-          packSize: ref?.packSize || subPackQty,
-          packCount: ref?.packCount || 1,
-          supplier,
-          unitPrice: pair.exVat,
-          unitPriceExVat: pair.exVat,
-          unitPriceIncVat: pair.incVat,
-          vatMode,
-          allowPartial: false,
-          note: ref?.note || "",
-          updatedAt: today
+          id: "CAT" + Date.now(), itemName, category: ref?.category || "חטיף", subPackQty,
+          packSize: ref?.packSize || subPackQty, packCount: ref?.packCount || 1, supplier,
+          unitPrice: pair.exVat, unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat,
+          vatMode, allowPartial: false, note: ref?.note || "", updatedAt: today
         };
         state.supplierCatalog.push(entry);
       }
 
       state.priceHistory.push({
-        id: "PH" + Date.now(),
-        date: today,
-        itemName,
-        supplier,
-        vatMode,
-        unitPriceExVat: pair.exVat,
-        unitPriceIncVat: pair.incVat,
-        actionType: "עדכון מחיר",
-        note: ""
+        id: "PH" + Date.now(), date: today, itemName, supplier, vatMode,
+        unitPriceExVat: pair.exVat, unitPriceIncVat: pair.incVat, actionType: "עדכון מחיר", note: ""
       });
 
       safeSet("friends_supplier_catalog", JSON.stringify(state.supplierCatalog));
@@ -1944,7 +1899,6 @@
       showSellerToast("הרשומה נמחקה ✓");
     }
 
-    // חיפוש מוצר לפי חלק ממילה + רשימה נפתחת + סנכרון עם select
     function openSupProductDropdown() {
       renderSupProductDropdownList(document.getElementById("supItemSearchInput")?.value || "");
       document.getElementById("supProductDropdownList")?.classList.remove("hidden");
@@ -1976,14 +1930,8 @@
       const matches = allProducts.filter(p => normalizeSearchStr(p).includes(q));
       const exact = matches.find(p => normalizeSearchStr(p) === q);
       sel.innerHTML = `<option value="">-- בחר מוצר (${matches.length} תואמים) --</option>` + matches.map(p => `<option value="${p}">${p}</option>`).join("");
-      if (exact) {
-        sel.value = exact;
-        return exact;
-      }
-      if (matches.length === 1) {
-        sel.value = matches[0];
-        return matches[0];
-      }
+      if (exact) { sel.value = exact; return exact; }
+      if (matches.length === 1) { sel.value = matches[0]; return matches[0]; }
       sel.value = "";
       return "";
     }
@@ -2002,9 +1950,7 @@
       const sel = document.getElementById("supItemNameSelect");
       if (sel) {
         if (![...sel.options].some(o => o.value === clean)) {
-          const opt = document.createElement("option");
-          opt.value = clean; opt.textContent = clean;
-          sel.appendChild(opt);
+          const opt = document.createElement("option"); opt.value = clean; opt.textContent = clean; sel.appendChild(opt);
         }
         sel.value = clean;
       }
@@ -2053,7 +1999,9 @@
       const orderEntry = (state.supplierOrders || []).find(o => o.itemName === prod && (!vend || o.supplier === vend)) || (state.supplierOrders || []).find(o => o.itemName === prod);
 
       const packVal = exactEntry?.packSize || orderEntry?.packSize || "";
-      const unitVal = exactEntry?.unitPriceExVat || exactEntry?.unitPrice || orderEntry?.unitPrice || "";
+      const subP = Math.max(1, Number(exactEntry?.subPackQty) || 1);
+      const rawUnit = exactEntry?.unitPriceExVat || exactEntry?.unitPrice || orderEntry?.unitPrice || "";
+      const unitVal = rawUnit ? Math.round((Number(rawUnit) / subP) * 100) / 100 : "";
 
       const packInp = document.getElementById("supPackSizeInput");
       const unitInp = document.getElementById("supUnitPriceInput");
@@ -2094,13 +2042,8 @@
         if (!c || !c.itemName) return;
         if (!byProd[c.itemName]) {
           byProd[c.itemName] = {
-            itemName: c.itemName,
-            category: c.category || "חטיף",
-            subPackQty: Number(c.subPackQty) || 1,
-            packSize: Number(c.packSize) || 1,
-            note: c.note || "",
-            events: [],
-            vendorSpecs: {}
+            itemName: c.itemName, category: c.category || "חטיף", subPackQty: Number(c.subPackQty) || 1,
+            packSize: Number(c.packSize) || 1, note: c.note || "", events: [], vendorSpecs: {}
           };
         }
         if (c.category) byProd[c.itemName].category = c.category;
@@ -2116,10 +2059,7 @@
             ? Math.round((Number(c.unitPriceIncVat) / subP) * 100) / 100
             : Math.round(unitEx * (1 + VAT_RATE) * 100) / 100;
           byProd[c.itemName].vendorSpecs[c.supplier] = {
-            unitPriceExVat: unitEx,
-            unitPriceIncVat: unitInc,
-            vatMode: c.vatMode || "לפני מע\"מ",
-            allowPartial: Boolean(c.allowPartial)
+            unitPriceExVat: unitEx, unitPriceIncVat: unitInc, vatMode: c.vatMode || "לפני מע\"מ", allowPartial: Boolean(c.allowPartial)
           };
         }
       });
@@ -2130,15 +2070,7 @@
         const vend = String(o.supplier || "").trim();
         if (vend) vendorsSet.add(vend);
         if (!byProd[prod]) {
-          byProd[prod] = {
-            itemName: prod,
-            category: o.category || "חטיף",
-            subPackQty: 1,
-            packSize: Number(o.packSize) || 1,
-            note: "",
-            events: [],
-            vendorSpecs: {}
-          };
+          byProd[prod] = { itemName: prod, category: o.category || "חטיף", subPackQty: 1, packSize: Number(o.packSize) || 1, note: "", events: [], vendorSpecs: {} };
         }
         if (o.category) byProd[prod].category = o.category;
         if (Number(o.packSize) > 0 && !byProd[prod].packSize) byProd[prod].packSize = Number(o.packSize);
@@ -2200,33 +2132,15 @@
           if (histArr.length >= 2) {
             const prevP = histArr[histArr.length - 2].unitPriceIncVat;
             const curP = histArr[histArr.length - 1].unitPriceIncVat;
-            if (prevP > 0) {
-              const pct = Math.round(((curP - prevP) / prevP) * 1000) / 10;
-              trendBadges[vn] = pct;
-            }
+            if (prevP > 0) trendBadges[vn] = Math.round(((curP - prevP) / prevP) * 1000) / 10;
           }
         });
 
         return {
-          itemName: p.itemName,
-          category: p.category,
-          subPackQty: p.subPackQty,
-          packSize: p.packSize,
-          note: p.note,
-          estStockToday,
-          dailyRate: Math.round(dailyRate * 100) / 100,
-          monthlyRate,
-          daysLeft,
-          nextOrderDate,
-          lowStockAlert,
-          anyPartial,
-          recCartons,
-          recPieces,
-          vendorSpecs: p.vendorSpecs,
-          trendBadges,
-          cheapestVendor: cheapest ? cheapest[0] : "",
-          cheapestUnitPriceIncVat: cheapest ? cheapest[1].unitPriceIncVat : 0,
-          monthlySavings
+          itemName: p.itemName, category: p.category, subPackQty: p.subPackQty, packSize: p.packSize, note: p.note,
+          estStockToday, dailyRate: Math.round(dailyRate * 100) / 100, monthlyRate, daysLeft, nextOrderDate,
+          lowStockAlert, anyPartial, recCartons, recPieces, vendorSpecs: p.vendorSpecs, trendBadges,
+          cheapestVendor: cheapest ? cheapest[0] : "", cheapestUnitPriceIncVat: cheapest ? cheapest[1].unitPriceIncVat : 0, monthlySavings
         };
       });
 
@@ -2249,49 +2163,21 @@
       }
 
       const vendSel = document.getElementById("supVendorSelect");
-      if (vendSel) {
-        const prev = vendSel.value;
-        vendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
-        vendSel.value = allVendors.includes(prev) ? prev : "";
-      }
+      if (vendSel) { const prev = vendSel.value; vendSel.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(""); vendSel.value = allVendors.includes(prev) ? prev : ""; }
       const newPV = document.getElementById("newMgrProdVendor");
-      if (newPV) {
-        const prev = newPV.value;
-        newPV.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
-        newPV.value = allVendors.includes(prev) ? prev : "";
-      }
+      if (newPV) { const prev = newPV.value; newPV.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(""); newPV.value = allVendors.includes(prev) ? prev : ""; }
       const qpProd = document.getElementById("quickPriceProdSel");
-      if (qpProd) {
-        const prev = qpProd.value;
-        qpProd.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
-        qpProd.value = allProducts.includes(prev) ? prev : "";
-      }
+      if (qpProd) { const prev = qpProd.value; qpProd.innerHTML = `<option value="">-- בחר מוצר --</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join(""); qpProd.value = allProducts.includes(prev) ? prev : ""; }
       const qpVend = document.getElementById("quickPriceVendSel");
-      if (qpVend) {
-        const prev = qpVend.value;
-        qpVend.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
-        qpVend.value = allVendors.includes(prev) ? prev : "";
-      }
+      if (qpVend) { const prev = qpVend.value; qpVend.innerHTML = `<option value="">-- בחר ספק --</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(""); qpVend.value = allVendors.includes(prev) ? prev : ""; }
 
       const prodFlt = document.getElementById("mgrSupProductFilter");
-      if (prodFlt) {
-        const prev = prodFlt.value;
-        prodFlt.innerHTML = `<option value="">כל המוצרים</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join("");
-        prodFlt.value = allProducts.includes(prev) ? prev : "";
-      }
+      if (prodFlt) { const prev = prodFlt.value; prodFlt.innerHTML = `<option value="">כל המוצרים</option>` + allProducts.map(p => `<option value="${p}">${p}</option>`).join(""); prodFlt.value = allProducts.includes(prev) ? prev : ""; }
       const vendFlt = document.getElementById("mgrSupVendorFilter");
-      if (vendFlt) {
-        const prev = vendFlt.value;
-        vendFlt.innerHTML = `<option value="">כל הספקים</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join("");
-        vendFlt.value = allVendors.includes(prev) ? prev : "";
-      }
+      if (vendFlt) { const prev = vendFlt.value; vendFlt.innerHTML = `<option value="">כל הספקים</option>` + allVendors.map(v => `<option value="${v}">${v}</option>`).join(""); vendFlt.value = allVendors.includes(prev) ? prev : ""; }
 
       const vChips = document.getElementById("mgrVendorsChips");
-      if (vChips) {
-        vChips.innerHTML = allVendors.length
-          ? allVendors.map(v => `<span class="px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-bold">${v}</span>`).join("")
-          : '<span class="text-slate-400">טרם נוספו ספקים</span>';
-      }
+      if (vChips) vChips.innerHTML = allVendors.length ? allVendors.map(v => `<span class="px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-bold">${v}</span>`).join("") : '<span class="text-slate-400">טרם נוספו ספקים</span>';
 
       const catF = document.getElementById("mgrSupGlobalCatFilter")?.value || "הכל";
       const pF = prodFlt?.value || "";
@@ -2423,6 +2309,7 @@
           planFoot.innerHTML = `<span>עלות משוערת (כולל מע״מ): <strong class="text-emerald-400">${totalSimCost.toLocaleString()} ₪</strong></span><span>טווח כיסוי מקסימלי: <strong class="text-sky-300">${maxSimDays ? maxSimDays + ' ימים' : '-'}</strong></span>`;
         }
       }
+      syncLooseCartonVisibility();
     }
 
     function onMgrSimCartonChange(prodName, val) {
@@ -2464,19 +2351,8 @@
       }
 
       const newRec = {
-        id: "SO" + Date.now(),
-        date: dateStr,
-        supplier,
-        category,
-        itemName,
-        packSize,
-        unitPrice,
-        packPrice,
-        entryType,
-        orderedQty,
-        remainingQty,
-        reportedBy: "מנהל",
-        note
+        id: "SO" + Date.now(), date: dateStr, supplier, category, itemName,
+        packSize, unitPrice, packPrice, entryType, orderedQty, remainingQty, reportedBy: "מנהל", note
       };
 
       state.supplierOrders.push(newRec);
@@ -2925,7 +2801,45 @@
     async function onFaultFileSelected(inp, t) { if (inp.files && inp.files[0]) { const b = await fileToBase64(inp.files[0]); if (t === "screen") { state.faultScreenPhotoBase64 = b; document.getElementById("faultScreenFileBadge").textContent = "צורף ✓"; } else { state.faultSnookerPhotoBase64 = b; document.getElementById("faultSnookerFileBadge").textContent = "צורף ✓"; } } }
     async function onShortageFileSelected(inp) { if (inp.files && inp.files[0]) { state.shortagePhotoBase64 = await fileToBase64(inp.files[0]); document.getElementById("shortPhotoBadge").textContent = "צורף ✓"; } }
 
+    function isDayAlreadyClosed(r) {
+      if (!r) return false;
+      const hasSeller = Boolean(String(r.sellerName || "").trim());
+      const hasEnv = r.envelopeActual !== "" && r.envelopeActual !== undefined && Number(r.envelopeActual) > 0;
+      const hasCred = Number(r.receiptCredit || 0) > 0;
+      const hasCash = Number(r.receiptCash || 0) > 0 && hasSeller;
+      return Boolean(hasSeller || hasEnv || hasCred || hasCash);
+    }
+
+    function applyClosedDayLockUI(isClosed, closedBy) {
+      const notice = document.getElementById("dayAlreadyClosedNotice");
+      const btnSave = document.getElementById("btnSubmitSeller");
+      const btnWa = document.getElementById("btnSubmitSellerWa");
+      const fields = ["sellerStatusSelect", "sellerNameSelect", "customSellerInput", "inpReceiptCash", "inpReceiptCredit", "inpEnvelopeActual", "inpExtraIncome", "inpExtraDetails"];
+
+      if (notice) {
+        notice.classList.toggle("hidden", !isClosed);
+        if (isClosed) {
+          notice.textContent = `🔒 סוף יום לתאריך זה כבר בוצע${closedBy ? ` ע״י ${closedBy}` : ""} — לא ניתן לבצע סגירה כפולה על אותו יום`;
+        }
+      }
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = Boolean(isClosed);
+      });
+      [btnSave, btnWa].forEach(b => {
+        if (!b) return;
+        b.disabled = Boolean(isClosed);
+        b.classList.toggle("opacity-40", Boolean(isClosed));
+        b.classList.toggle("cursor-not-allowed", Boolean(isClosed));
+      });
+    }
+
     function openEodChecklistModal(withWa) {
+      const r = state.dailyRows[Number(document.getElementById("sellerDaySelect").value || 0)];
+      if (isDayAlreadyClosed(r)) {
+        applyClosedDayLockUI(true, r?.sellerName);
+        return showSellerToast("סוף יום לתאריך זה כבר בוצע — לא ניתן לסגור שוב על אותו יום", "error");
+      }
       const sel = document.getElementById("sellerNameSelect").value;
       if (!sel || (sel === "__custom__" && !document.getElementById("customSellerInput").value.trim())) return showSellerToast("חובה לבחור שם מוכר", "error");
       if (!state.receiptPhotoBase64 || !state.envelopePhotoBase64) return showSellerToast("חובה להעלות את שני התיעודים (דוח Z + מעטפה)", "error");
@@ -2977,10 +2891,30 @@
     }
     async function submitSellerReport(sendWa) {
       const r = state.dailyRows[Number(document.getElementById("sellerDaySelect").value || 0)]; if (!r) return;
+      if (isDayAlreadyClosed(r)) {
+        applyClosedDayLockUI(true, r.sellerName);
+        return showSellerToast("סוף יום לתאריך זה כבר בוצע — לא ניתן לבצע סגירה כפולה", "error");
+      }
       let sellerName = document.getElementById("sellerNameSelect").value;
       if (sellerName === "__custom__") { sellerName = document.getElementById("customSellerInput").value.trim(); if (!state.sellers.includes(sellerName)) { state.sellers.push(sellerName); safeSet("friends_sellers", JSON.stringify(state.sellers)); renderSellersDropdown(); } }
       const envVal = document.getElementById("inpEnvelopeActual").value;
-      r.status = document.getElementById("sellerStatusSelect").value; r.receiptCash = Number(document.getElementById("inpReceiptCash").value)||0; r.receiptCredit = Number(document.getElementById("inpReceiptCredit").value)||0; r.extraIncome = Number(document.getElementById("inpExtraIncome").value)||0; r.extraDetails = document.getElementById("inpExtraDetails").value.trim(); r.envelopeActual = envVal === "" ? r.receiptCash : Number(envVal); r.sellerName = sellerName;
+      const nextStatus = document.getElementById("sellerStatusSelect").value;
+      const nextReceiptCash = Number(document.getElementById("inpReceiptCash").value)||0;
+      const nextReceiptCredit = Number(document.getElementById("inpReceiptCredit").value)||0;
+      const nextExtraIncome = Number(document.getElementById("inpExtraIncome").value)||0;
+      const nextExtraDetails = document.getElementById("inpExtraDetails").value.trim();
+      const nextEnvelopeActual = envVal === "" ? nextReceiptCash : Number(envVal);
+
+      const payload = { action: "saveSellerReport", year: state.year, monthTab: state.activeTab, rowNumber: r.rowNumber, date: r.date, status: nextStatus, receiptCash: nextReceiptCash, receiptCredit: nextReceiptCredit, extraIncome: nextExtraIncome, extraDetails: nextExtraDetails, envelopeActual: nextEnvelopeActual, sellerName: sellerName, receiptPhotoBase64: state.receiptPhotoBase64, envelopePhotoBase64: state.envelopePhotoBase64 };
+      const resp = await sendToGas(payload);
+      if (resp && resp.ok === false && resp.duplicate) {
+        r.sellerName = r.sellerName || sellerName;
+        r.envelopeActual = nextEnvelopeActual;
+        applyClosedDayLockUI(true, r.sellerName);
+        return showSellerToast(resp.error || "סוף יום לתאריך זה כבר בוצע", "error");
+      }
+
+      r.status = nextStatus; r.receiptCash = nextReceiptCash; r.receiptCredit = nextReceiptCredit; r.extraIncome = nextExtraIncome; r.extraDetails = nextExtraDetails; r.envelopeActual = nextEnvelopeActual; r.sellerName = sellerName;
       if (sendWa) {
         const diff = Math.round((r.envelopeActual - r.receiptCash) * 100) / 100;
         const tot = Math.round((r.envelopeActual + r.receiptCredit + r.extraIncome) * 100) / 100;
@@ -2995,9 +2929,8 @@
           `• מזומן בקבלה: ${r.receiptCash.toLocaleString()} ₪ (הפרש: ${diff > 0 ? '+' : ''}${diff.toLocaleString()} ₪)`
         );
       }
-      const payload = { action: "saveSellerReport", year: state.year, monthTab: state.activeTab, rowNumber: r.rowNumber, date: r.date, status: r.status, receiptCash: r.receiptCash, receiptCredit: r.receiptCredit, extraIncome: r.extraIncome, extraDetails: r.extraDetails, envelopeActual: r.envelopeActual, sellerName: r.sellerName, receiptPhotoBase64: state.receiptPhotoBase64, envelopePhotoBase64: state.envelopePhotoBase64 };
       clearSellerClosingForm(); renderAll();
-      await sendToGas(payload); showSellerToast("סגירת הקופה נשמרה ✓"); fetchFromGas();
+      showSellerToast("סגירת הקופה נשמרה ✓"); fetchFromGas();
     }
 
     async function submitShortage() {
@@ -3046,7 +2979,15 @@
       renderSellersDropdown();
       onSellerDaySelect(); renderShortages(); renderQueuesTab(); renderScreensAndSnookerTabs(); renderSellerTeamChat(); renderGuides(); renderManagerSection();
     }
-    function onSellerDaySelect() { const r = state.dailyRows[Number(document.getElementById("sellerDaySelect").value||0)]; if (r) document.getElementById("sellerStatusSelect").value = r.status || "פעיל רגיל"; updateSellerDiff(); }
+
+    function onSellerDaySelect() {
+      const r = state.dailyRows[Number(document.getElementById("sellerDaySelect").value || 0)];
+      if (!r) return;
+      document.getElementById("sellerStatusSelect").value = r.status || "פעיל רגיל";
+      const closed = isDayAlreadyClosed(r);
+      applyClosedDayLockUI(closed, r.sellerName);
+      updateSellerDiff();
+    }
 
     function setQueueFilter(qf) { state.queueFilter = qf; ["All","Sony","Snooker"].forEach(k => document.getElementById("qBtn"+k).className = qf === (k==="All"?"all":(k==="Sony"?"סוני":"סנוקר")) ? "px-3 py-1.5 rounded-lg btn-friends" : "px-3 py-1.5 rounded-lg text-slate-300"); renderQueuesTab(); }
     async function addCustomerToQueue() {
